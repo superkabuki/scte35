@@ -362,7 +362,7 @@ class XmlParser:
     XmlParser is for parsing
     a SCTE-35 Cue from  xml.
     """
-
+    
     DESCRIPTORS = [
         "AvailDescriptor",
         "DTMFDescriptor",
@@ -373,6 +373,9 @@ class XmlParser:
     def __init__(self):
         self.active = None
         self.node_list = []
+        self.depth=0
+        self.parent=None
+        self.open=False
 
     def chk_node_list(self, node):
         """
@@ -380,8 +383,11 @@ class XmlParser:
         """
         if self.active in self.node_list:
             self.node_list.remove(self.active)
+            self.open = False
         elif node[-2] != "/":
             self.node_list.append(self.active)
+            self.depth +=1
+            self.open = True
 
     def mk_value(self, value, stuff):
         """
