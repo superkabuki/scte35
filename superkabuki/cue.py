@@ -51,7 +51,6 @@ class Cue(SCTE35Base):
         packet_data is a instance passed from a Stream instance
         """
         self.command = None
-
         self.descriptors = []
         self.info_section = SpliceInfoSection()
         self.bites = None
@@ -59,6 +58,7 @@ class Cue(SCTE35Base):
             self.bites = self._mk_bits(data)
         self.packet_data = packet_data
         self.dash_data = None
+
 
     def __repr__(self):
         return str(self.__dict__)
@@ -127,14 +127,8 @@ class Cue(SCTE35Base):
         """
         return [d.get() for d in self.descriptors]
 
-    def get_json(self):
-        """
-        Cue.get_json returns the Cue instance
-        data in json.
-        """
-        return json.dumps(self.get(), indent=4)
 
-    def get_bytes(self):
+    def bytes(self):
         """
         get_bytes returns Cue.bites
         """
@@ -258,7 +252,7 @@ class Cue(SCTE35Base):
 
     # encode related
 
-    def encode(self):
+    def base64(self):
         """
         Cue.encode() converts SCTE35 data
         to a base64 encoded string.
@@ -284,33 +278,28 @@ class Cue(SCTE35Base):
         self._encode_crc()
         return b64encode(self.bites).decode()
 
-    def encode_as_int(self):
+    def encode(self):
         """
-        encode_as_int returns self.bites as an int.
+        encode is an alias for base64
+        """
+        return self.base64()
+
+    def int(self):
+
+        """
+        int returns self.bites as an int.
         """
         self.encode()
         return int.from_bytes(self.bites, byteorder="big")
 
-    def encode2int(self):
+    def hex(self):
         """
-        encode2int returns self.bites as an int.
-        """
-        return self.encode_as_int()
-
-    def encode_as_hex(self):
-        """
-        encode_as_hex returns self.bites as
+        hex returns self.bites as
         a hex string
         """
-        return hex(self.encode_as_int())
+        return hex(self.int())
 
-    def encode2hex(self):
-        """
-        encode2hex returns self.bites as
-        a hex string
-        """
-        return hex(self.encode2int())
-
+ 
     def _encode_crc(self):
         """
         _encode_crc encode crc32
@@ -467,12 +456,6 @@ class Cue(SCTE35Base):
             # Self.encode() will calculate lengths and types and such
             self.encode()
 
-    def _xmlbin(self, ns):
-        sig_attrs = {"xmlns": "https://scte.org/schemas/35"}
-        sig_node = Node("Signal", attrs=sig_attrs, ns=ns)
-        bin_node = Node("Binary", value=self.encode(), ns=ns)
-        sig_node.add_child(bin_node)
-        return sig_node
 
     def _xml_mk_descriptor(self, sis, ns):
         """
@@ -485,14 +468,12 @@ class Cue(SCTE35Base):
             sis.add_child(d.xml(ns=ns))
         return sis
 
-    def xml(self, ns="scte35", xmlbin=True):
+    def xml(self, ns="scte35"):
         """
         xml returns a superkabuki.Node instance
         which can be edited as needed or printed.
         xmlbin
         """
-        if xmlbin:
-            return self._xmlbin(ns=ns)
         sis = self.info_section.xml(ns=ns)
         # if not self.command:
         #    raise Exception("\033[7mA Splice Command is Required\033[27m")
@@ -501,3 +482,15 @@ class Cue(SCTE35Base):
         sis = self._xml_mk_descriptor(sis, ns)
         sis.mk()
         return sis
+
+    def xmlbin(self, ns="scte35"):
+        """
+        xml returns a superkabuki.Node instance
+        which can be edited as needed or printed.
+        xmlbin
+        """
+        sig_attrs = {"xmlns": "https://scte.org/schemas/35"}
+        sig_node = Node("Signal", attrs=sig_attrs, ns=ns)
+        bin_node = Node("Binary", value=self.encode(), ns=ns)
+        sig_node.add_child(bin_node)
+        return sig_node
