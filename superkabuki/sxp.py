@@ -63,7 +63,10 @@ class SuperXmlParser:
         try:
             return data[: data.index(f"</{tag}>") + len(tag) + 2]
         except:
-            return data[: data.index("/>") + 1]
+            try:
+                return data[:data.index("/>") + 1]
+            except:
+                return data[:data.index(f"{tag}>") + len(tag)]
 
     def mk(self, exemel, target="SpliceInfoSection"):
         """
@@ -81,7 +84,7 @@ class SuperXmlParser:
                 results.append(sub_data + ">")
                 data = data.replace(sub_data, "")
             else:
-                data = data = data.split(">", 1)[1]
+                data= data.split(">", 1)[1]
                 if "<" in data:
                     data = data[data.index("<") :]
                 else:
@@ -115,7 +118,9 @@ class SuperXmlParser:
     def spliceinfosection(self,exemel):
         tags = ["SpliceInfoSection"]
 
-        return self.gimme(tags,exemel)[0]
+        out =self.gimme(tags,exemel)
+        if out:
+            return out[0]
 
     def command(self,exemel):
         tags=["SpliceInsert","TimeSignal"]
