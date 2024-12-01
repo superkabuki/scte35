@@ -78,9 +78,8 @@ class SuperXmlParser:
         while data:
             sub_data = None
             tag = self.mk_tag(data)
-            if target in tag:
+            if target in tag:         # don't even consider namespace
                 sub_data = self.mk_element(data, tag)
-               # print(sub_data)
                 results.append(sub_data + ">")
                 data = data.replace(sub_data, "")
             else:
@@ -112,35 +111,30 @@ class SuperXmlParser:
         cmd =  self.gimme(tags,exemel)[0]
         if cmd:
             splice_time = self.splicetime(cmd['sub'])
-            if splice_time:
-                cmd['attrs'].update(splice_time)
+            cmd['attrs'].update(splice_time)
             break_duration=self.breakduration(cmd['sub'])
-            if break_duration:
-                cmd["attrs"].update(break_duration)
-                #cmd['attrs']['break_duration']=break_duration[0]
-                #cmd['attrs']['auto_return']=break_duration[1]
+            cmd["attrs"].update(break_duration)
             return cmd
-        return False
+        return {}
 
     def splicetime(self,exemel):
         splicetime =self.gimme(['SpliceTime'], exemel)
         if splicetime:
             return {"pts_time":splicetime[0]['attrs']['pts_time']}
-        return False
+        return {}
 
     def breakduration(self,exemel):
         break_duration= self.gimme(['BreakDuration'],exemel)
         if break_duration:
             return {"break_duration":break_duration[0]['attrs']['duration'],
                     "auto_return": break_duration[0]['attrs']['auto_return']}
-        return False
+        return {}
 
     def segmentationdescriptor(self,dscptr):
         if dscptr["tag"]=="SegmentationDescriptor":
             dr = self.deliveryrestrictions(dscptr['sub'])
-            if dr:
-                dscptr['attrs'].update(dr)
-                dscptr["upids"] =self.gimme(['SegmentationUpid'], dscptr["sub"])
+            dscptr['attrs'].update(dr)
+            dscptr["upids"] =self.gimme(['SegmentationUpid'], dscptr["sub"])
         return dscptr
 
     def descriptors(self,exemel):
@@ -159,4 +153,4 @@ class SuperXmlParser:
         dr = self.gimme(['DeliveryRestrictions'], exemel)
         if dr:
             return dr[0]['attrs']
-        return False
+        return {}
