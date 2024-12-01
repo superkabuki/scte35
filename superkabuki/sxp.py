@@ -7,6 +7,7 @@ home of the SuperXmlParser class
 from xml.sax.saxutils import escape, unescape
 from .xml import t2s, un_camel, un_xml, strip_ns, iter_attrs
 from .descriptors import descriptor_map,k_by_v
+from .segmentation import table20
 
 class SuperXmlParser:
 
@@ -117,21 +118,34 @@ class SuperXmlParser:
             return cmd
         return {}
 
+    def spliceinsert(self,exemel):
+        pass
+
     def splicetime(self,exemel):
         splicetime =self.gimme(['SpliceTime'], exemel)
         if splicetime:
-            return {"pts_time":splicetime[0]['attrs']['pts_time']}
+            return {"pts_time":splicetime[0]['attrs']['pts_time'],
+                    "time_specified_flag": True}
         return {}
 
     def breakduration(self,exemel):
         break_duration= self.gimme(['BreakDuration'],exemel)
         if break_duration:
             return {"break_duration":break_duration[0]['attrs']['duration'],
-                    "auto_return": break_duration[0]['attrs']['auto_return']}
+                    "auto_return": break_duration[0]['attrs']['auto_return'],
+                    "duration_flag":True,}
         return {}
 
     def segmentationdescriptor(self,dscptr):
         if dscptr["tag"]=="SegmentationDescriptor":
+            setme={"segmentation_event_id_compliance_indicator": True,
+            "program_segmentation_flag":True,
+            "segmentation_duration_flag": False,
+            "delivery_not_restricted_flag": True,
+            "segmentation_event_id" :hex(dscptr['attrs']["segmentation_event_id"]),}
+           #if self.segmentation_type_id in table22:
+            #   self.segmentation_message = table22[self.segmentation_type_id]
+            dscptr['attrs'].update(setme)
             dr = self.deliveryrestrictions(dscptr['sub'])
             dscptr['attrs'].update(dr)
             dscptr["upids"] =self.gimme(['SegmentationUpid'], dscptr["sub"])
@@ -152,5 +166,8 @@ class SuperXmlParser:
     def deliveryrestrictions(self,exemel):
         dr = self.gimme(['DeliveryRestrictions'], exemel)
         if dr:
+            setme={"delivery_not_restricted_flag":False,
+                   "device_restrictions": table20[dr[0]['attrs']["device_restrictions"]],}
+            dr[0]['attrs'].update(setme)
             return dr[0]['attrs']
         return {}
