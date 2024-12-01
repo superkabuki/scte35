@@ -84,7 +84,7 @@ def key2xml(string):
     new_string = string
     if "_" in string:
         new_string = string.title().replace("_", "")
-        return new_string[0].lower() + new_string[1:]
+    return new_string[0].lower() + new_string[1:]
 
 
 def mk_xml_attrs(attrs):
