@@ -6,7 +6,7 @@ home of the SuperXmlParser class
 
 from xml.sax.saxutils import escape, unescape
 from .xml import t2s, un_camel, un_xml, strip_ns, iter_attrs
-
+from .descriptors import descriptor_map,k_by_v
 
 class SuperXmlParser:
 
@@ -44,7 +44,7 @@ class SuperXmlParser:
             if "<" in sub_data:
                 lidx = sub_data.index("<")
                 value = sub_data[:lidx].strip()
-                sub_data = sub_data[lidx:]
+                sub_data = sub_data[lidx:].replace("\t","")
             return  {"tag":tag,"attrs":attrs,"value":value,"sub":sub_data,}
 
     def mk_tag(self, data):
@@ -53,7 +53,7 @@ class SuperXmlParser:
         next available xml tag from data
         """
         tag = data[1:].split(" ", 1)[0].split(">", 1)[0]
-        return strip_ns(tag)
+        return tag
 
     def mk_element(self, data, tag):
         """
@@ -64,9 +64,9 @@ class SuperXmlParser:
             return data[: data.index(f"</{tag}>") + len(tag) + 2]
         except:
             try:
-                return data[:data.index("/>") + 1]
-            except:
                 return data[:data.index(f"{tag}>") + len(tag)]
+            except:
+                return data[:data.index("/>") +1 ]
 
     def mk(self, exemel, target="SpliceInfoSection"):
         """
@@ -78,7 +78,7 @@ class SuperXmlParser:
         while data:
             sub_data = None
             tag = self.mk_tag(data)
-            if tag == target:
+            if target in tag:
                 sub_data = self.mk_element(data, tag)
                # print(sub_data)
                 results.append(sub_data + ">")
@@ -92,28 +92,13 @@ class SuperXmlParser:
 
     def gimme(self,tags,exemel):
         the_list =[]
-        for tag in tags:  
+        for tag in tags:
             results = self.mk(exemel, tag)
             if results:
                 element_list = [self.parsed(tag, sd) for sd in results]
                 if element_list:
                     the_list.extend(element_list)
         return the_list
-
-    def descriptors(self,exemel):    
-        tags = [
-        "AvailDescriptor",
-        "DTMFDescriptor",
-        "SegmentationDescriptor",
-        "TimeDescriptor",]
-
-        utags =["SegmentationUpid"]
-        
-        dlist= self.gimme(tags,exemel)
-        for dscptr in dlist:
-            if dscptr["tag"]=="SegmentationDescriptor":
-                dscptr["upids"] =self.gimme(utags, dscptr["sub"])
-        return dlist
 
     def spliceinfosection(self,exemel):
         tags = ["SpliceInfoSection"]
@@ -124,9 +109,54 @@ class SuperXmlParser:
 
     def command(self,exemel):
         tags=["SpliceInsert","TimeSignal"]
+        cmd =  self.gimme(tags,exemel)[0]
+        if cmd:
+            splice_time = self.splicetime(cmd['sub'])
+            if splice_time:
+                cmd['attrs'].update(splice_time)
+            break_duration=self.breakduration(cmd['sub'])
+            if break_duration:
+                cmd["attrs"].update(break_duration)
+                #cmd['attrs']['break_duration']=break_duration[0]
+                #cmd['attrs']['auto_return']=break_duration[1]
+            return cmd
+        return False
 
-        return self.gimme(tags,exemel)[0]
+    def splicetime(self,exemel):
+        splicetime =self.gimme(['SpliceTime'], exemel)
+        if splicetime:
+            return {"pts_time":splicetime[0]['attrs']['pts_time']}
+        return False
 
-        
-        
-            
+    def breakduration(self,exemel):
+        break_duration= self.gimme(['BreakDuration'],exemel)
+        if break_duration:
+            return {"break_duration":break_duration[0]['attrs']['duration'],
+                    "auto_return": break_duration[0]['attrs']['auto_return']}
+        return False
+
+    def segmentationdescriptor(self,dscptr):
+        if dscptr["tag"]=="SegmentationDescriptor":
+            dr = self.deliveryrestrictions(dscptr['sub'])
+            if dr:
+                dscptr['attrs'].update(dr)
+                dscptr["upids"] =self.gimme(['SegmentationUpid'], dscptr["sub"])
+        return dscptr
+
+    def descriptors(self,exemel):
+        tags = [
+        "AvailDescriptor",
+        "DTMFDescriptor",
+        "SegmentationDescriptor",
+        "TimeDescriptor",]
+
+        dlist= self.gimme(tags,exemel)
+        for dscptr in dlist:
+            dscptr = self.segmentationdescriptor(dscptr)
+        return dlist
+
+    def deliveryrestrictions(self,exemel):
+        dr = self.gimme(['DeliveryRestrictions'], exemel)
+        if dr:
+            return dr[0]['attrs']
+        return False
