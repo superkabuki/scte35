@@ -13,9 +13,9 @@ def k_by_v(adict, avalue):
     """
     dict key lookup by value
     """
-    for kay, vee in adict.items():
-        if vee == avalue:
-            return kay
+    flipped={v:k for k,v in this}
+    if avalue in flipped:
+        return flipped[avalue]
     return None
 
 
