@@ -387,11 +387,11 @@ class Umid(Upid):
 # segmentation_upid_type : [name, class, length]
 upid_map = {
     0x00: ["No UPID", NoUpid, 0],
-    0x01: ["Heads Up! UPID 0x01 'User Defined' is deprecated. Use 0x0C 'MPU'.", Upid, False],
-    0x02: ["Heads Up! UPID 0x02 'ISCI' is Deprecated use 0x03 'AdID'.", Upid, 8],
+    0x01: ["UPID type 0x01 'User Defined' is deprecated.\n Use 0x0C 'MPU'.", Upid, False],
+    0x02: ["UPID type 0x02 'ISCI' is Deprecated use 0x03 'AdID'.", Upid, 8],
     0x03: ["AdID", Upid, 12],
     0x04: ["UMID", Umid, 32],
-    0x05: ["Heads Up! UPID 0x05 'ISAN' is Deprecated use 0x06 'ISAN'.", Isan, 8],
+    0x05: ["UPID type 0x05 'ISAN' is Deprecated use 0x06 'ISAN'.", Isan, 8],
     0x06: ["ISAN", Isan, 12],
     0x07: ["TID", Upid, 12],
     0x08: ["AiringID", AirId, 8],
