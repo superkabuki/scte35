@@ -192,10 +192,3 @@ class SpliceInfoSection(SCTE35Base):
         }
         sis = Node("SpliceInfoSection", attrs=sis_attrs, ns=ns)
         return sis
-
-    def from_xml(self, gonzo):
-        """
-        from_xml SpliceInfoSection from Xml
-        """
-        short = gonzo["SpliceInfoSection"]
-        self.load(short)
