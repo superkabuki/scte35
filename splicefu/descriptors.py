@@ -14,7 +14,7 @@ def k_by_v(adict, avalue):
     dict key lookup by value
     """
     print(avalue)
-    flipped={v:k for k,v in adict.items()}
+    flipped = {v: k for k, v in adict.items()}
     if avalue in flipped:
         return flipped[avalue]
     return None
@@ -541,8 +541,8 @@ class SegmentationDescriptor(SpliceDescriptor):
             self.segmentation_upid_type_name, self.segmentation_upid = the_upid.decode()
 
     def _upid_from_xml(self, gonzo):
-        if "SegmentationUpid" in gonzo['SegmentationDescriptor']:
-            sdsu=gonzo['SegmentationDescriptor']["SegmentationUpid"]
+        if "SegmentationUpid" in gonzo["SegmentationDescriptor"]:
+            sdsu = gonzo["SegmentationDescriptor"]["SegmentationUpid"]
             if "segmentation_upid" not in sdsu:
                 self.segmentation_upid_type = 0
                 self.segmentation_upid_length = 0
