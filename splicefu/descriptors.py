@@ -13,7 +13,6 @@ def k_by_v(adict, avalue):
     """
     dict key lookup by value
     """
-    print(avalue)
     flipped = {v: k for k, v in adict.items()}
     if avalue in flipped:
         return flipped[avalue]
@@ -175,13 +174,6 @@ class AvailDescriptor(SpliceDescriptor):
         )
         return ad
 
-    def from_xml(self, gonzo):
-        """
-        Load an AvailDescriptor from XML
-        """
-        if "AvailDescriptor" in gonzo:
-            self.load(gonzo["AvailDescriptor"])
-
 
 class DtmfDescriptor(SpliceDescriptor):
     """
@@ -233,14 +225,14 @@ class DtmfDescriptor(SpliceDescriptor):
         )
         return dd
 
-    def from_xml(self, gonzo):
-        """
-        Load an DTMFDescriptor from XML
-        """
-        if "DTMFDescriptor" in gonzo:
-            gonzo["DTMFDescriptor"]["dtmf_chars"] = gonzo["DTMFDescriptor"].pop("chars")
-            self.load(gonzo["DTMFDescriptor"])
-            self.dtmf_count = len(self.dtmf_chars)
+##    def from_xml(self, gonzo):
+##        """
+##        Load an DTMFDescriptor from XML
+##        """
+##        if "DTMFDescriptor" in gonzo:
+##            gonzo["DTMFDescriptor"]["dtmf_chars"] = gonzo["DTMFDescriptor"].pop("chars")
+##            self.load(gonzo["DTMFDescriptor"])
+##            self.dtmf_count = len(self.dtmf_chars)
 
 
 class TimeDescriptor(SpliceDescriptor):
@@ -290,12 +282,12 @@ class TimeDescriptor(SpliceDescriptor):
         )
         return td
 
-    def from_xml(self, gonzo):
-        """
-        load a TimeDescriptor from XML
-        """
-        if "TimeDescriptor" in gonzo:
-            self.load(gonzo["TimeDescriptor"])
+##    def from_xml(self, gonzo):
+##        """
+##        load a TimeDescriptor from XML
+##        """
+##        if "TimeDescriptor" in gonzo:
+##            self.load(gonzo["TimeDescriptor"])
 
 
 class SegmentationDescriptor(SpliceDescriptor):
@@ -523,61 +515,38 @@ class SegmentationDescriptor(SpliceDescriptor):
             sd.add_child(upid_node)
         return sd
 
-    def _xml_redecode(self, seg_upid):
-        """
-        redecode is for decoding complex xml upids
-        before encoding to another format.
-        """
-        if isinstance(seg_upid, str):
-            bites = b""
-            bitbin = None
-            try:
-                bites = bytes.fromhex(seg_upid)
-            except ValueError:
-                bites = seg_upid.encode()
-            bitbin = BitBin(bites)
-            self.segmentation_upid_length = len(bites)
-            the_upid = self.mk_the_upid(bitbin=bitbin)
-            self.segmentation_upid_type_name, self.segmentation_upid = the_upid.decode()
-
-    def _upid_from_xml(self, gonzo):
-        if "SegmentationUpid" in gonzo["SegmentationDescriptor"]:
-            sdsu = gonzo["SegmentationDescriptor"]["SegmentationUpid"]
-            if "segmentation_upid" not in sdsu:
-                self.segmentation_upid_type = 0
-                self.segmentation_upid_length = 0
-                self.segmentation_upid = ""
-            else:
-                seg_upid = sdsu["segmentation_upid"]
-                if "segmentation_upid_type" in sdsu:
-                    self.segmentation_upid_type = sdsu["segmentation_upid_type"]
-                    self.segmentation_upid_type_name = upid_map[
-                        self.segmentation_upid_type
-                    ][0]
-                self._xml_redecode(seg_upid)
-
-    def from_xml(self, gonzo):
-        """
-        Load a SegmentationDescriptor from XML
-        """
-        ssd = gonzo["SegmentationDescriptor"]
-        self.load(ssd)
-        self.segmentation_event_id_compliance_indicator = True
-        self.program_segmentation_flag = True
-        self.segmentation_duration_flag = False
-        if "segmentationDuration" in ssd:
-            self.segmentation_duration_flag = True
-        self.delivery_not_restricted_flag = True
-        if "DeliveryRestrictions" in gonzo:
-            sdr = gonzo["DeliveryRestrictions"]
-            self.delivery_not_restricted_flag = False
-            self.load(sdr)
-            self.device_restrictions = table20[sdr["device_restrictions"]]
-        self.segmentation_event_id = hex(ssd["segmentation_event_id"])
-        if self.segmentation_type_id in table22:
-            self.segmentation_message = table22[self.segmentation_type_id]
-        self._upid_from_xml(gonzo)
-        self._chk_sub_segments()
+##    def _xml_redecode(self, seg_upid):
+##        """
+##        redecode is for decoding complex xml upids
+##        before encoding to another format.
+##        """
+##        if isinstance(seg_upid, str):
+##            bites = b""
+##            bitbin = None
+##            try:
+##                bites = bytes.fromhex(seg_upid)
+##            except ValueError:
+##                bites = seg_upid.encode()
+##            bitbin = BitBin(bites)
+##            self.segmentation_upid_length = len(bites)
+##            the_upid = self.mk_the_upid(bitbin=bitbin)
+##            self.segmentation_upid_type_name, self.segmentation_upid = the_upid.decode()
+##
+##    def _upid_from_xml(self, gonzo):
+##        if "SegmentationUpid" in gonzo["SegmentationDescriptor"]:
+##            sdsu = gonzo["SegmentationDescriptor"]["SegmentationUpid"]
+##            if "segmentation_upid" not in sdsu:
+##                self.segmentation_upid_type = 0
+##                self.segmentation_upid_length = 0
+##                self.segmentation_upid = ""
+##            else:
+##                seg_upid = sdsu["segmentation_upid"]
+##                if "segmentation_upid_type" in sdsu:
+##                    self.segmentation_upid_type = sdsu["segmentation_upid_type"]
+##                    self.segmentation_upid_type_name = upid_map[
+##                        self.segmentation_upid_type
+##                    ][0]
+##                self._xml_redecode(seg_upid)
 
 
 # map of known descriptors and associated classes
