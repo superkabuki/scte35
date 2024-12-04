@@ -75,9 +75,10 @@ class SuperXmlParser:
             return data[: data.index(f"</{tag}>") + len(tag) + 2]
         except:
             try:
-                return data[: data.index(f"{tag}>") + len(tag)]
-            except:
                 return data[: data.index("/>") + 1]
+            except:
+                print('PASS')
+            
 
     def mk(self, exemel, target="SpliceInfoSection"):
         """
@@ -100,26 +101,6 @@ class SuperXmlParser:
                 else:
                     return results
 
-    def mk_cmd(self, exemel):
-        targets = ["TimeSignal", "SpliceInsert"]
-        for target in targets:
-            out = self.mk(exemel, target)
-            if out:
-                return out
-
-    def mk_dscptrs(self, exemel):
-        dlist = []
-        targets = [
-            "AvailDescriptor",
-            "DTMFDescriptor",
-            "SegmentationDescriptor",
-            "TimeDescriptor",
-        ]
-        for target in targets:
-            dscptrs = self.mk(exemel, target)
-            dlist.extend(dscptrs)
-        return dlist
-
     def gimme(self, tags, exemel):
         the_list = []
         for tag in tags:
@@ -136,9 +117,9 @@ class SuperXmlParser:
             return one[0]
 
     def spliceinfosection(self, exemel):
-        tag = "SpliceInfoSection"
+        my_name = "SpliceInfoSection"
 
-        out = self.gimme_one(tag, exemel)
+        out = self.gimme_one(my_name, exemel)
         if out:
             return out["attrs"]
         return {}
@@ -153,6 +134,7 @@ class SuperXmlParser:
         return {}
 
     def timesignal(self, exemel):
+        my_name="TimeSignal"
         ts = self.gimme_one("TimeSignal", exemel)
         if ts:
             splice_time = self.splicetime(ts["xml"])
@@ -166,10 +148,11 @@ class SuperXmlParser:
         return {}
 
     def spliceinsert(self, exemel):
-        si = self.gimme_one("SpliceInsert", exemel)
+        my_name="SpliceInsert"
+        si = self.gimme_one(my_name, exemel)
         if si:
             setme = {
-                "name": "Splice Insert",
+                "name": my_name,
                 "command_type": 5,
                 "event_id_compliance_flag": True,
                 "program_splice_flag": False,
@@ -178,6 +161,7 @@ class SuperXmlParser:
             if splice_time:
                 setme["program_splice_flag"] = True
             si["attrs"].update(setme)
+            si['attrs'].update(splice_time)
             break_duration = self.breakduration(exemel)
             si["attrs"].update(break_duration)
             si["attrs"]["avails_expected"] = bool(si["attrs"]["avails_expected"])
@@ -198,13 +182,16 @@ class SuperXmlParser:
         if break_duration:
             return {
                 "break_duration": break_duration["attrs"]["duration"],
-                "auto_return": break_duration["attrs"]["auto_return"],
-                "duration_flag": True,
+                "break_auto_return": break_duration["attrs"]["auto_return"],
+                   "duration_flag": True,
             }
         return {}
 
     def segmentationdescriptor(self, dscptr):
+        my_name="SegmentationDescriptor"
         setme = {
+             "tag": 2,
+            "identifier": "CUEI",
             "name": "Segmentation Descriptor",
             "segmentation_event_id_compliance_indicator": True,
             "program_segmentation_flag": True,
@@ -226,15 +213,32 @@ class SuperXmlParser:
                 "segmentation_upid": upids[0]["this"],
                 "segmentation_upid_type": seg_upid_type,
                 "segmentation_upid_type_name": upid_map[seg_upid_type][0],
-            }
+                "segmentation_upid_length":8,} #len(bytes.fromhex(upids[0]["this"])) }
         dscptr["attrs"].update(the_upid)
         return dscptr["attrs"]
 
+    def availdescriptor(self,dscptr):
+        my_name="AvailDescriptor"
+        return dscptr['attrs']
+
+##    def dtmfdescriptor(self,dscptr)
+##        """
+##        Load an DTMFDescriptor from XML
+##        """
+##  
+##        gonzo["DTMFDescriptor"]["dtmf_chars"] = gonzo["DTMFDescriptor"].pop("chars")
+##        self.load(gonzo["DTMFDescriptor"])
+##        self.dtmf_count = len(self.dtmf_chars)
+
+    def timedescriptor(self,dscptr):
+        my_name="TimeDescriptor"
+        return dscptr['attrs']
+        
     def descriptors(self, exemel):
-        dmap = {  # "AvailDescriptor":,
-            # "DTMFDescriptor":,
+        dmap = {"AvailDescriptor": self.availdescriptor,
+            # "DTMFDescriptor",
             "SegmentationDescriptor": self.segmentationdescriptor,
-            # "TimeDescriptor":
+            # "TimeDescriptor",
         }
         out = []
         dlist = self.gimme(list(dmap.keys()), exemel)
@@ -254,6 +258,9 @@ class SuperXmlParser:
         return {}
 
     def xml2cue(self, exemel):
+        bindata = self.gimme_one("Binary",exemel)
+        if bindata:
+            return {'binary':bindata['this']}
         splice_info = self.spliceinfosection(exemel)
         cmd = self.command(exemel)
         dscptrs = self.descriptors(exemel)
