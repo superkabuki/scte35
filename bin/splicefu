@@ -50,7 +50,7 @@ def mk_sidecar(cue):
 
 
 HELP = f"""
-{BLUE}{B}                   splicefu                              {U}
+{BLUE}{B}                   splicefutoo                              {U}
 
 {B} Default    {U} {BLUE}The default action is to read a input and write a SCTE-35 output.{U}
 
@@ -330,7 +330,7 @@ def to_funk(this):
     try:
         # mpegts streams handled here.
         strm = Stream(this)
-        strm.decode(func=funk())
+        strm.decode(func=funk()) # funk() works here
     except:  # try to load json or xml
         try:
             cue = Cue()
@@ -343,7 +343,7 @@ def to_funk(this):
                 pass
         if cue:
             cue.encode()
-            funk()(cue)
+            funk()(cue) #   func works here too.
 
 
 def chk_stdin(args):
@@ -352,17 +352,17 @@ def chk_stdin(args):
 
     """
     readable, _, _ = select.select([sys.stdin], [], [], 0)
-    if sys.stdin in readable:
+    if sys.stdin in readable:  # check stdin for data
         one = reader(sys.stdin.buffer).read(1)
-        if one not in [b'G']:
+        if one not in [b'G']: # is this a packet?
             two = reader(sys.stdin.buffer).read()
-            args.append((one + two).decode())
+            args.append((one + two).decode()) # no rewind on stdin
         else:
-            reader(sys.stdin.buffer).read(187)
+            reader(sys.stdin.buffer).read(187) # drop first packet
             Stream(sys.stdin.buffer).decode(func=funk())
             sys.exit()
     return args
-    
+
 
 def chk_funk_map():
     """
@@ -375,7 +375,7 @@ def chk_funk_map():
     if [fkey for fkey in funk_keys if fkey in sys.argv]:
         superfunk = to_funk
     if args:
-        [superfunk(arg) for arg in args]
+        [superfunk(arg) for arg in args] # multiple file input
     sys.exit()
 
 
