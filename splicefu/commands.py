@@ -104,14 +104,14 @@ class PrivateCommand(SpliceCommand):
         pc.add_child(Node("PrivateBytes", value=self.private_bytes.hex(), ns=ns))
         return pc
 
-    def from_xml(self, gonzo):
-        """
-        load a PrivateCommand from XML
-        """
-        self.identifier = gonzo["PrivateCommand"]["identifier"]
-        if "PrivateBytes" in gonzo and "private_bytes" in gonzo["PrivateBytes"]:
-            self.private_bytes = bytes.fromhex((gonzo["PrivateBytes"]["private_bytes"]))
-
+##    def from_xml(self, gonzo):
+##        """
+##        load a PrivateCommand from XML
+##        """
+##        self.identifier = gonzo["PrivateCommand"]["identifier"]
+##        if "PrivateBytes" in gonzo and "private_bytes" in gonzo["PrivateBytes"]:
+##            self.private_bytes = bytes.fromhex((gonzo["PrivateBytes"]["private_bytes"]))
+##
 
 class SpliceNull(SpliceCommand):
     """
@@ -200,15 +200,7 @@ class TimeSignal(SpliceCommand):
                 )
                 ts.add_child(st)
         return ts
-
-    def from_xml(self, gonzo):
-        """
-        load a TimeSignal from XML
-        """
-        if "SpliceTime" in gonzo:
-            self.load(gonzo["SpliceTime"])
-            self.time_specified_flag = True
-
+    
 
 class SpliceInsert(TimeSignal):
     """
@@ -334,24 +326,6 @@ class SpliceInsert(TimeSignal):
             bd = Node("BreakDuration", attrs=bd_attrs, ns=ns)
             si.add_child(bd)
         return si
-
-    def from_xml(self, gonzo):
-        """
-        load a SpliceInsert from XML
-        """
-        self.load(gonzo["SpliceInsert"])
-        self.event_id_compliance_flag = True
-        self.program_splice_flag = False
-        if "SpliceTime" in gonzo:
-            self.load(gonzo["SpliceTime"])
-            self.program_splice_flag = True
-            self.time_specified_flag = True
-        if "BreakDuration" in gonzo:
-            self.load(gonzo["BreakDuration"])
-            self.break_duration = gonzo["BreakDuration"]["duration"]
-            self.duration_flag = True
-            self.break_auto_return = gonzo["BreakDuration"]["auto_return"]
-        self.avails_expected = bool(self.avails_expected)
 
 
 # table 7
