@@ -258,9 +258,13 @@ class SuperXmlParser:
         return {}
 
     def xml2cue(self, exemel):
+        """
+        xml2cue returns a base64 string for xmlbin
+        and a dict for xml
+        """
         bindata = self.gimme_one("Binary",exemel)
         if bindata:
-            return {'binary':bindata['this']}
+            return bindata['this']
         splice_info = self.spliceinfosection(exemel)
         cmd = self.command(exemel)
         dscptrs = self.descriptors(exemel)
