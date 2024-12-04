@@ -59,7 +59,6 @@ class Cue(SCTE35Base):
         self.packet_data = packet_data
         self.dash_data = None
 
-
     def __repr__(self):
         return str(self.__dict__)
 
@@ -127,7 +126,6 @@ class Cue(SCTE35Base):
         """
         return [d.get() for d in self.descriptors]
 
-
     def bytes(self):
         """
         get_bytes returns Cue.bites
@@ -144,11 +142,17 @@ class Cue(SCTE35Base):
         return data
 
     def _int_bits(self, data):
+        """
+        _int_bits convert a SCTE-35 Cue from integer to bytes.
+        """
         length = data.bit_length() >> 3
         bites = int.to_bytes(data, length, byteorder="big")
         return bites
 
     def _hex_bits(self, data):
+        """
+        _hex_bits convert a SCTE-35 Cue from hex to bytes.
+        """
         try:
             i = int(data, 16)
             i_len = i.bit_length() >> 3
@@ -162,6 +166,9 @@ class Cue(SCTE35Base):
         return b""
 
     def _b64_bits(self, data):
+        """
+        _b64_bits decode base64 to bytes
+        """
         try:
             return b64decode(self.fix_bad_b64(data))
         except (LookupError, TypeError, ValueError):
@@ -183,14 +190,13 @@ class Cue(SCTE35Base):
         data. Encode is called to set missing fields
         when possible and re-calc the length vars and crc.
         """
-       # pass
-       # print2("_mk_load")
-       # if self.load(data):
-        #bites = self.bites
-       # self.encode()
-        #return bites
+        # pass
+        # print2("_mk_load")
+        # if self.load(data):
+        # bites = self.bites
+        # self.encode()
+        # return bites
         return data
-
 
     def _mk_bits(self, data):
         """
@@ -252,16 +258,10 @@ class Cue(SCTE35Base):
 
     # encode related
 
-    def base64(self):
-        """
-        Cue.encode() converts SCTE35 data
-        to a base64 encoded string.
-        """
+    def _assemble(self):
         dscptr_bites = self._unloop_descriptors()
         dll = len(dscptr_bites)
         self.info_section.descriptor_loop_length = dll
-        if not self.command:
-            self.no_cmd()
         cmd_bites = self.command.encode()
         cmdl = self.command.command_length = len(cmd_bites)
         self.info_section.splice_command_length = cmdl
@@ -275,8 +275,17 @@ class Cue(SCTE35Base):
             self.info_section.descriptor_loop_length, 2, byteorder="big"
         )
         self.bites += dscptr_bites
-        self._encode_crc()
-        return b64encode(self.bites).decode()
+
+    def base64(self):
+        """
+        base64 Cue.base64() converts SCTE35 data
+        to a base64 encoded string.
+        """
+        if self.command:
+            self._assemble()
+            self._encode_crc()
+            return b64encode(self.bites).decode()
+        return False
 
     def encode(self):
         """
@@ -285,7 +294,6 @@ class Cue(SCTE35Base):
         return self.base64()
 
     def int(self):
-
         """
         int returns self.bites as an int.
         """
@@ -299,7 +307,6 @@ class Cue(SCTE35Base):
         """
         return hex(self.int())
 
- 
     def _encode_crc(self):
         """
         _encode_crc encode crc32
@@ -455,7 +462,6 @@ class Cue(SCTE35Base):
             self._xml_assemble(gonzo)
             # Self.encode() will calculate lengths and types and such
             self.encode()
-
 
     def _xml_mk_descriptor(self, sis, ns):
         """
