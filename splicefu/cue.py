@@ -11,7 +11,7 @@ from .section import SpliceInfoSection
 from .commands import command_map
 from .descriptors import splice_descriptor, descriptor_map
 from .crc import crc32
-from .xml import Node, XmlParser
+from .xml import Node
 from .segmentation import table22
 from .sxp import SuperXmlParser
 
