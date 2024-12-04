@@ -13,7 +13,7 @@ from .descriptors import splice_descriptor, descriptor_map
 from .crc import crc32
 from .xml import Node, XmlParser
 from .segmentation import table22
-
+from .sxp import SuperXmlParser
 
 class Cue(SCTE35Base):
     """
@@ -190,13 +190,12 @@ class Cue(SCTE35Base):
         data. Encode is called to set missing fields
         when possible and re-calc the length vars and crc.
         """
-        # pass
-        # print2("_mk_load")
-        # if self.load(data):
-        # bites = self.bites
-        # self.encode()
-        # return bites
-        return data
+        #if self.load(data):
+            #bites = self.bites
+            #self.encode()
+            #return bites
+        #return seldata
+        self.load(data)
 
     def _mk_bits(self, data):
         """
@@ -387,11 +386,11 @@ class Cue(SCTE35Base):
             'descriptors': [list of {dicts}],
             }
         """
+        if isinstance(gonzo,bytes):
+            gonzo=gonzo.decode()
         if isinstance(gonzo, str):
             if gonzo.strip()[0] == "<":
-                xmlp = XmlParser()
-                cue_data = xmlp.parse(gonzo)
-                self.from_xml(cue_data)
+                self.from_xml(gonzo)
                 return True
             gonzo = json.loads(gonzo)
         if "command" not in gonzo:
@@ -402,64 +401,18 @@ class Cue(SCTE35Base):
         self.encode()
         return True
 
-    # Dash
-
-    def _xml_splice_info_section(self, gonzo):
-        if "SpliceInfoSection" in gonzo:
-            self.info_section = SpliceInfoSection()
-            self.info_section.from_xml(gonzo)
-
-    def _xml_from_map(self, a_map, b_map, gonzo):
-        for k, v in a_map.items():
-            if k in gonzo:
-                made = b_map[v]()
-                made.from_xml(gonzo)
-                return made
-        return False
-
-    def _xml_splice_command(self, gonzo):
-        cmap = {
-            "BandwidthReservation": 7,
-            "PrivateCommand": 255,
-            "SpliceInsert": 5,
-            "SpliceNull": 0,
-            "TimeSignal": 6,
-        }
-        self.command = self._xml_from_map(cmap, command_map, gonzo)
-
-    def _xml_splice_descriptors(self, gonzo):
-        dmap = {
-            "SegmentationDescriptor": 2,
-            "AvailDescriptor": 0,
-            "DTMFDescriptor": 1,
-            "TimeDescriptor": 3,
-        }
-        for dstuff in gonzo["descriptors"]:
-            self.descriptors.append(self._xml_from_map(dmap, descriptor_map, dstuff))
-
-    def _xml_event_signal(self, gonzo):
-        self.dash_data = {}
-        for x in ["EventStream", "Event", "Signal", "Binary"]:
-            if x in gonzo:
-                self.dash_data[x] = gonzo[x]
-
-    def _xml_assemble(self, gonzo):
-        self._xml_splice_info_section(gonzo)
-        self._xml_splice_command(gonzo)
-        self.info_section.splice_command_type = self.command.command_type
-        self._xml_splice_descriptors(gonzo)
-
     def from_xml(self, gonzo):
         """
         build_cue takes the data put into the gonzo dict
         and builds a splicefu.Cue instance
         """
-        self._xml_event_signal(gonzo)
-        if "Binary" in gonzo:
-            self.bites = self._mk_bits(gonzo["Binary"]["binary"])
+        sxp=SuperXmlParser()
+        dat =sxp.xml2cue(gonzo)
+        if isinstance(dat,str):
+            self.bites = self._mk_bits(dat)
             self.decode()
         else:
-            self._xml_assemble(gonzo)
+            self.load(dat)
             # Self.encode() will calculate lengths and types and such
             self.encode()
 
