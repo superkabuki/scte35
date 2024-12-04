@@ -76,32 +76,42 @@ class SCTE35Base:
 
     def get(self):
         """
-        Returns instance as a dict
+        Returns instance as a kv_clean'ed dict
         """
         return self.kv_clean()
 
-    def get_json(self):
+    def has(self, what):
         """
-        get_json returns the instance
-        data as json.
+        has runs hasattr with self and what
         """
-        return json.dumps(self.get(), indent=4)
+        if hasattr(self, what):
+            if vars(self)[what]:
+                return True
+        return False
+
+    @staticmethod
+    def idxsplit(gonzo, sep):
+        """
+        idxsplit is like split but you keep
+        the sep
+        example:
+                >>> idxsplit('123456789',4)
+                >>>'456789'
+        """
+        if sep in gonzo:
+            return gonzo[gonzo.index(sep) :]
+        return False
 
     def json(self):
         """
         json returns self as kv_clean'ed json
         """
-        return self.get_json()
-
-    def show(self):
-        """
-        show prints self as json to stderr (2)
-        """
-        print2(self.get_json())
+        return json.dumps(self.get(), indent=4)
 
     def kv_clean(self):
         """
-        kv_clean removes items from a dict if the value is None
+        kv_clean recursively removes items
+        from a dict if the value is None.
         """
 
         def b2l(val):
@@ -117,14 +127,25 @@ class SCTE35Base:
 
         return {k: b2l(v) for k, v in vars(self).items() if v is not None}
 
-    def has(self, what):
+    def load(self, gonzo):
         """
-        has runs hasattr with self and what
+        load is used to load
+        data from a dict or json string.
+        only updates vars that exist in the obj.
         """
-        if hasattr(self, what):
-            if vars(self)[what]:
-                return True
-        return False
+        if isinstance(gonzo, str):
+            gonzo = json.loads(gonzo)
+        if isinstance(gonzo, dict):
+            prevars = vars(self)
+            for k, v in gonzo.items():
+                if k in prevars:
+                    self.__dict__[k] = v
+
+    def show(self):
+        """
+        show prints self as json to stderr (2)
+        """
+        print2(self.json())
 
     def xml(self, ns="scte35"):
         """
@@ -137,31 +158,3 @@ class SCTE35Base:
         iam = str(iam).split("'", 1)[1].split("'", 1)[0]
         this = Node(iam, attrs=xml_attrs, ns=ns)
         return this
-
-    @staticmethod
-    def idxsplit(gonzo, sep):
-        """
-        idxsplit is like split but you keep
-        the sep
-        example:
-                >>> idxsplit('123456789',4)
-                >>>'456789'
-
-        """
-        if sep in gonzo:
-            return gonzo[gonzo.index(sep) :]
-        return False
-
-    def load(self, gonzo):
-        """
-        load is used to load
-        data from a dict or json string
-        """
-        if isinstance(gonzo, str):
-            gonzo = json.loads(gonzo)
-        if isinstance(gonzo, dict):
-            prevars= vars(self)
-            for k, v in gonzo.items():
-                if k in prevars:
-                    self.__dict__[k] = v
-            #self.__dict__.update(gonzo)
