@@ -515,23 +515,24 @@ class SegmentationDescriptor(SpliceDescriptor):
             sd.add_child(upid_node)
         return sd
 
-##    def _xml_redecode(self, seg_upid):
-##        """
-##        redecode is for decoding complex xml upids
-##        before encoding to another format.
-##        """
-##        if isinstance(seg_upid, str):
-##            bites = b""
-##            bitbin = None
-##            try:
-##                bites = bytes.fromhex(seg_upid)
-##            except ValueError:
-##                bites = seg_upid.encode()
-##            bitbin = BitBin(bites)
-##            self.segmentation_upid_length = len(bites)
-##            the_upid = self.mk_the_upid(bitbin=bitbin)
-##            self.segmentation_upid_type_name, self.segmentation_upid = the_upid.decode()
-##
+    def xml_redecode(self):
+        """
+        redecode is for decoding complex xml upids
+        before encoding to another format.
+        """
+        seg_upid = self.segmentation_upid
+        if isinstance(seg_upid, str):
+            bites = b""
+            bitbin = None
+            try:
+                bites = bytes.fromhex(seg_upid)
+            except ValueError:
+                bites = seg_upid.encode()
+            bitbin = BitBin(bites)
+            self.segmentation_upid_length = len(bites)
+            the_upid = self.mk_the_upid(bitbin=bitbin)
+            self.segmentation_upid_type_name, self.segmentation_upid = the_upid.decode()
+
 ##    def _upid_from_xml(self, gonzo):
 ##        if "SegmentationUpid" in gonzo["SegmentationDescriptor"]:
 ##            sdsu = gonzo["SegmentationDescriptor"]["SegmentationUpid"]
