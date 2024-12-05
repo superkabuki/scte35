@@ -211,6 +211,9 @@ class Cue(SCTE35Base):
         if isinstance(data, Node):
             return self._mk_load(data.mk())
         if isinstance(data, str):
+            if data.isdigit():
+                print("iS diGIT")
+                return self._int_bits(int(data))
             return self._str_bits(data)
 
     def _mk_descriptors(self, bites):
@@ -389,10 +392,18 @@ class Cue(SCTE35Base):
         if isinstance(gonzo,bytes):
             gonzo=gonzo.decode()
         if isinstance(gonzo, str):
-            if gonzo.strip()[0] == "<":
-                self.from_xml(gonzo)
+            try:
+                gonzo=int(gonzo)
+                self.bites= self._int_bits(int(gonzo))
+                self.decode()
                 return True
+            except:
+                if gonzo.strip()[0] == "<":
+                    self.from_xml(gonzo)
+                    return True
+
             gonzo = json.loads(gonzo)
+
         if "command" not in gonzo:
             self.no_cmd()
         self.load_info_section(gonzo)
