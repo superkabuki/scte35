@@ -424,6 +424,9 @@ class Cue(SCTE35Base):
             self.decode()
         else:
             self.load(dat)
+            for d in self.descriptors:
+                if d.has('segmentation_upid'):
+                    d.xml_redecode() # Expand upids
             # Self.encode() will calculate lengths and types and such
             self.encode()
 
