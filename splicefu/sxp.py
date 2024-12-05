@@ -102,6 +102,10 @@ class SuperXmlParser:
                     return results
 
     def gimme(self, tags, exemel):
+        """
+        gimme get all instances of tag from exemel and return a list of them.
+        """
+        
         the_list = []
         for tag in tags:
             results = self.mk(exemel, tag)
@@ -112,11 +116,18 @@ class SuperXmlParser:
         return the_list
 
     def gimme_one(self, tag, exemel):
+        """
+        gimme_one get the first instance of tag from exemel and return it.
+        """
         one = self.gimme([tag], exemel)
         if one:
             return one[0]
 
     def spliceinfosection(self, exemel):
+        """
+        spliceinfosection parses exemel for info section data
+        and returns a loadable dict
+        """
         my_name = "SpliceInfoSection"
 
         out = self.gimme_one(my_name, exemel)
@@ -125,6 +136,11 @@ class SuperXmlParser:
         return {}
 
     def command(self, exemel):
+        """
+        command parses exemel for a splice command
+        and returns a loadable dict
+
+        """
         ts = self.timesignal(exemel)
         if ts:
             return ts
@@ -134,6 +150,10 @@ class SuperXmlParser:
         return {}
 
     def timesignal(self, exemel):
+        """
+        timesignal parses exemel for TimeSignal data
+        and creates a loadable dict for the Cue class.
+        """
         my_name="TimeSignal"
         ts = self.gimme_one("TimeSignal", exemel)
         if ts:
@@ -148,6 +168,10 @@ class SuperXmlParser:
         return {}
 
     def spliceinsert(self, exemel):
+        """
+        spliceinsert parses exemel for SpliceInsert data
+        and creates a loadable dict for the Cue class.
+        """
         my_name="SpliceInsert"
         si = self.gimme_one(my_name, exemel)
         if si:
@@ -170,6 +194,10 @@ class SuperXmlParser:
         return {}
 
     def splicetime(self, exemel):
+        """
+        splicetime parses xml from a splice command
+        to get pts_time, sets time_specified_flag to True
+        """
         splicetime = self.gimme_one("SpliceTime", exemel)
         if splicetime:
             return {
@@ -179,6 +207,10 @@ class SuperXmlParser:
         return {}
 
     def breakduration(self, exemel):
+        """
+        breakduration parses xml for break duration, break_auto_return
+        and sets duration_flag to True.
+        """
         break_duration = self.gimme_one("BreakDuration", exemel)
         if break_duration:
             return {
@@ -189,6 +221,9 @@ class SuperXmlParser:
         return {}
 
     def segmentationdescriptor(self, dscptr):
+        """
+        segmentationdescriptor creates a dict to be loaded.
+        """
         my_name="SegmentationDescriptor"
         setme = {
              "tag": 2,
@@ -207,16 +242,23 @@ class SuperXmlParser:
         dscptr["attrs"].update(setme)
         dr = self.deliveryrestrictions(dscptr["xml"])
         dscptr["attrs"].update(dr)
-        upids = self.gimme(["SegmentationUpid"], dscptr["xml"])
-        if len(upids) == 1:
-            seg_upid_type = upids[0]["attrs"]["segmentation_upid_type"]
+        the_upid=self.upids(dscptr["xml"])
+        dscptr["attrs"].update(the_upid)
+        return dscptr["attrs"]
+
+    def upids(self,exemel):
+        """
+        upids parses out upids from a splice descriptors xml
+        """
+        ulist = self.gimme(["SegmentationUpid"], exemel)
+        if len(ulist) == 1:
+            seg_upid_type = ulist[0]["attrs"]["segmentation_upid_type"]
             the_upid = {
-                "segmentation_upid": upids[0]["this"],
+                "segmentation_upid": ulist[0]["this"],
                 "segmentation_upid_type": seg_upid_type,
                 "segmentation_upid_type_name": upid_map[seg_upid_type][0],
                 "segmentation_upid_length":8,} #len(bytes.fromhex(upids[0]["this"])) }
-        dscptr["attrs"].update(the_upid)
-        return dscptr["attrs"]
+            return the_upid
 
     def availdescriptor(self,dscptr):
         my_name="AvailDescriptor"
