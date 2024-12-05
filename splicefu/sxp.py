@@ -78,7 +78,7 @@ class SuperXmlParser:
                 return data[: data.index("/>") + 1]
             except:
                 print('PASS')
-            
+
 
     def mk(self, exemel, target="SpliceInfoSection"):
         """
@@ -156,6 +156,7 @@ class SuperXmlParser:
                 "command_type": 5,
                 "event_id_compliance_flag": True,
                 "program_splice_flag": False,
+                "duration_flag":False,
             }
             splice_time = self.splicetime(exemel)
             if splice_time:
@@ -219,21 +220,31 @@ class SuperXmlParser:
 
     def availdescriptor(self,dscptr):
         my_name="AvailDescriptor"
+        setme={"tag": 0,
+                "identifier": "CUEI",
+                "name":my_name,}
+        dscptr['attrs'].update(setme)
         return dscptr['attrs']
 
 ##    def dtmfdescriptor(self,dscptr)
 ##        """
 ##        Load an DTMFDescriptor from XML
 ##        """
-##  
+##         setme={"tag": 1,
+##                "identifier": "CUEI",
+##                "name":my_name,}
 ##        gonzo["DTMFDescriptor"]["dtmf_chars"] = gonzo["DTMFDescriptor"].pop("chars")
 ##        self.load(gonzo["DTMFDescriptor"])
 ##        self.dtmf_count = len(self.dtmf_chars)
 
     def timedescriptor(self,dscptr):
         my_name="TimeDescriptor"
+        setme={"tag": 3,
+                "identifier": "CUEI",
+                "name":my_name,}
+        dscptr['attrs'].update(setme)
         return dscptr['attrs']
-        
+
     def descriptors(self, exemel):
         dmap = {"AvailDescriptor": self.availdescriptor,
             # "DTMFDescriptor",
