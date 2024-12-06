@@ -77,8 +77,7 @@ class SuperXmlParser:
             try:
                 return data[: data.index("/>") + 1]
             except:
-                print('PASS')
-
+                print("PASS")
 
     def mk(self, exemel, target="SpliceInfoSection"):
         """
@@ -105,7 +104,7 @@ class SuperXmlParser:
         """
         gimme get all instances of tag from exemel and return a list of them.
         """
-        
+
         the_list = []
         for tag in tags:
             results = self.mk(exemel, tag)
@@ -154,7 +153,7 @@ class SuperXmlParser:
         timesignal parses exemel for TimeSignal data
         and creates a loadable dict for the Cue class.
         """
-        my_name="TimeSignal"
+        my_name = "TimeSignal"
         ts = self.gimme_one("TimeSignal", exemel)
         if ts:
             splice_time = self.splicetime(ts["xml"])
@@ -172,7 +171,7 @@ class SuperXmlParser:
         spliceinsert parses exemel for SpliceInsert data
         and creates a loadable dict for the Cue class.
         """
-        my_name="SpliceInsert"
+        my_name = "SpliceInsert"
         si = self.gimme_one(my_name, exemel)
         if si:
             setme = {
@@ -180,13 +179,13 @@ class SuperXmlParser:
                 "command_type": 5,
                 "event_id_compliance_flag": True,
                 "program_splice_flag": False,
-                "duration_flag":False,
+                "duration_flag": False,
             }
             splice_time = self.splicetime(exemel)
             if splice_time:
                 setme["program_splice_flag"] = True
             si["attrs"].update(setme)
-            si['attrs'].update(splice_time)
+            si["attrs"].update(splice_time)
             break_duration = self.breakduration(exemel)
             si["attrs"].update(break_duration)
             si["attrs"]["avails_expected"] = bool(si["attrs"]["avails_expected"])
@@ -216,7 +215,7 @@ class SuperXmlParser:
             return {
                 "break_duration": break_duration["attrs"]["duration"],
                 "break_auto_return": break_duration["attrs"]["auto_return"],
-                   "duration_flag": True,
+                "duration_flag": True,
             }
         return {}
 
@@ -224,9 +223,9 @@ class SuperXmlParser:
         """
         segmentationdescriptor creates a dict to be loaded.
         """
-        my_name="SegmentationDescriptor"
+        my_name = "SegmentationDescriptor"
         setme = {
-             "tag": 2,
+            "tag": 2,
             "identifier": "CUEI",
             "name": "Segmentation Descriptor",
             "segmentation_event_id_compliance_indicator": True,
@@ -242,56 +241,62 @@ class SuperXmlParser:
         dscptr["attrs"].update(setme)
         dr = self.deliveryrestrictions(dscptr["xml"])
         dscptr["attrs"].update(dr)
-        the_upid=self.upids(dscptr["xml"])
+        the_upid = self.upids(dscptr["xml"])
         dscptr["attrs"].update(the_upid)
         return dscptr["attrs"]
 
-    def upids(self,exemel):
+    def upids(self, exemel):
         """
         upids parses out upids from a splice descriptors xml
         """
         ulist = self.gimme(["SegmentationUpid"], exemel)
         if len(ulist) == 1:
-            
-            seg_upid=bytes.fromhex(ulist[0]["this"].lower().replace('0x',''))
+
+            seg_upid = bytes.fromhex(ulist[0]["this"].lower().replace("0x", ""))
             print(seg_upid)
             seg_upid_type = ulist[0]["attrs"]["segmentation_upid_type"]
             the_upid = {
                 "segmentation_upid": ulist[0]["this"],
                 "segmentation_upid_type": seg_upid_type,
                 "segmentation_upid_type_name": upid_map[seg_upid_type][0],
-                "segmentation_upid_length":len(seg_upid),}
+                "segmentation_upid_length": len(seg_upid),
+            }
             return the_upid
 
-    def availdescriptor(self,dscptr):
-        my_name="AvailDescriptor"
-        setme={"tag": 0,
-                "identifier": "CUEI",
-                "name":my_name,}
-        dscptr['attrs'].update(setme)
-        return dscptr['attrs']
+    def availdescriptor(self, dscptr):
+        my_name = "AvailDescriptor"
+        setme = {
+            "tag": 0,
+            "identifier": "CUEI",
+            "name": my_name,
+        }
+        dscptr["attrs"].update(setme)
+        return dscptr["attrs"]
 
-##    def dtmfdescriptor(self,dscptr)
-##        """
-##        Load an DTMFDescriptor from XML
-##        """
-##         setme={"tag": 1,
-##                "identifier": "CUEI",
-##                "name":my_name,}
-##        gonzo["DTMFDescriptor"]["dtmf_chars"] = gonzo["DTMFDescriptor"].pop("chars")
-##        self.load(gonzo["DTMFDescriptor"])
-##        self.dtmf_count = len(self.dtmf_chars)
+    ##    def dtmfdescriptor(self,dscptr)
+    ##        """
+    ##        Load an DTMFDescriptor from XML
+    ##        """
+    ##         setme={"tag": 1,
+    ##                "identifier": "CUEI",
+    ##                "name":my_name,}
+    ##        gonzo["DTMFDescriptor"]["dtmf_chars"] = gonzo["DTMFDescriptor"].pop("chars")
+    ##        self.load(gonzo["DTMFDescriptor"])
+    ##        self.dtmf_count = len(self.dtmf_chars)
 
-    def timedescriptor(self,dscptr):
-        my_name="TimeDescriptor"
-        setme={"tag": 3,
-                "identifier": "CUEI",
-                "name":my_name,}
-        dscptr['attrs'].update(setme)
-        return dscptr['attrs']
+    def timedescriptor(self, dscptr):
+        my_name = "TimeDescriptor"
+        setme = {
+            "tag": 3,
+            "identifier": "CUEI",
+            "name": my_name,
+        }
+        dscptr["attrs"].update(setme)
+        return dscptr["attrs"]
 
     def descriptors(self, exemel):
-        dmap = {"AvailDescriptor": self.availdescriptor,
+        dmap = {
+            "AvailDescriptor": self.availdescriptor,
             # "DTMFDescriptor",
             "SegmentationDescriptor": self.segmentationdescriptor,
             # "TimeDescriptor",
@@ -318,9 +323,9 @@ class SuperXmlParser:
         xml2cue returns a base64 string for xmlbin
         and a dict for xml
         """
-        bindata = self.gimme_one("Binary",exemel)
+        bindata = self.gimme_one("Binary", exemel)
         if bindata:
-            return bindata['this']
+            return bindata["this"]
         splice_info = self.spliceinfosection(exemel)
         cmd = self.command(exemel)
         dscptrs = self.descriptors(exemel)
