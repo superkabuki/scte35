@@ -15,6 +15,7 @@ from .xml import Node
 from .segmentation import table22
 from .sxp import SuperXmlParser
 
+
 class Cue(SCTE35Base):
     """
     The splicefu.Splice class handles parsing
@@ -190,11 +191,11 @@ class Cue(SCTE35Base):
         data. Encode is called to set missing fields
         when possible and re-calc the length vars and crc.
         """
-        #if self.load(data):
-            #bites = self.bites
-            #self.encode()
-            #return bites
-        #return seldata
+        # if self.load(data):
+        # bites = self.bites
+        # self.encode()
+        # return bites
+        # return seldata
         self.load(data)
 
     def _mk_bits(self, data):
@@ -211,8 +212,8 @@ class Cue(SCTE35Base):
         if isinstance(data, Node):
             return self.load(data.mk())
         if isinstance(data, str):
-##            if data.isdigit():
-##                return self._int_bits(int(data))
+            ##            if data.isdigit():
+            ##                return self._int_bits(int(data))
             return self._str_bits(data)
 
     def _mk_descriptors(self, bites):
@@ -369,8 +370,8 @@ class Cue(SCTE35Base):
             if "tag" in dstuff:
                 dscptr = descriptor_map[dstuff["tag"]]()
                 dscptr.load(dstuff)
-              #  if dscptr.has('segmentation_upid'):
-               #     dscptr.xml_redecode() # Expand upids
+                #  if dscptr.has('segmentation_upid'):
+                #     dscptr.xml_redecode() # Expand upids
                 self.descriptors.append(dscptr)
 
     def no_cmd(self):
@@ -390,12 +391,12 @@ class Cue(SCTE35Base):
             'descriptors': [list of {dicts}],
             }
         """
-        if isinstance(gonzo,bytes):
-            gonzo=gonzo.decode()
+        if isinstance(gonzo, bytes):
+            gonzo = gonzo.decode()
         if isinstance(gonzo, str):
             try:
-                gonzo=int(gonzo)
-                self.bites= self._int_bits(int(gonzo))
+                gonzo = int(gonzo)
+                self.bites = self._int_bits(int(gonzo))
                 self.decode()
                 return True
             except:
@@ -418,16 +419,18 @@ class Cue(SCTE35Base):
         build_cue takes the data put into the gonzo dict
         and builds a splicefu.Cue instance
         """
-        sxp=SuperXmlParser()
-        dat =sxp.xml2cue(gonzo)
-        if isinstance(dat,str): # a string  is returned for Binary xml tag, make sense?
+        sxp = SuperXmlParser()
+        dat = sxp.xml2cue(gonzo)
+        if isinstance(
+            dat, str
+        ):  # a string  is returned for Binary xml tag, make sense?
             self.bites = self._mk_bits(dat)
             self.decode()
         else:
-            self.load(dat) # a dict is returned plain xml.
+            self.load(dat)  # a dict is returned plain xml.
             for d in self.descriptors:
-                if d.has('segmentation_upid'):
-                    d.xml_redecode() # Expand upids
+                if d.has("segmentation_upid"):
+                    d.xml_redecode()  # Expand upids
             # Self.encode() will calculate lengths and types and such
             self.encode()
 
