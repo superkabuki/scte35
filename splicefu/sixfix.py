@@ -9,11 +9,15 @@ from splicefu.bitn import NBin
 from splicefu.spare import print2
 from splicefu.stream import Stream
 
+fixme = []
+
 
 def passed(cue):
     """
     passed a no-op function
     """
+    global fixme
+    fixme.append(int(cue.packet_data.pid,base=16))
     return cue
 
 
@@ -24,10 +28,10 @@ class PreFix(Stream):
 
     def decode(self, func=passed):
         super().decode(func=passed)
-        sixed = self.pids.maybe_scte35
-        if sixed:
-            print("fixing these pids", sixed)
-        return sixed
+        global fixme
+        fixme = list(set(fixme))
+        print("fixing these pids", fixme)
+        return fixme
 
 
 class SixFix(Stream):
@@ -174,13 +178,16 @@ def sixfix(arg):
     """
     s1 = PreFix(arg)
     sixed = s1.decode(func=passed)
+    global fixme
+    fixme=[]
     if not sixed:
         print2("No bin data SCTE-35 streams were found.")
-    else:
-        s2 = SixFix(arg)
-        s2.con_pids = sixed
-        s2.convert_pids()
-        print2(f'Wrote: sixfixed-{arg.rsplit("/")[-1]}')
+        return
+    s2 = SixFix(arg)
+    s2.con_pids = sixed
+    s2.convert_pids()
+    print2(f'Wrote: sixfixed-{arg.rsplit("/")[-1]}')
+    return
 
 
 if __name__ == "__main__":
