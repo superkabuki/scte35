@@ -157,7 +157,7 @@ class Node:
         print(ts)
     """
 
-    def __init__(self, name, value='', attrs=None, ns=None):
+    def __init__(self, name, value="", attrs=None, ns=None):
         self.name = name
         self.value = value
         self.depth = 0
