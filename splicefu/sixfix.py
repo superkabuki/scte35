@@ -17,7 +17,7 @@ def passed(cue):
     passed a no-op function
     """
     global fixme
-    fixme.append(int(cue.packet_data.pid,base=16))
+    fixme.append(int(cue.packet_data.pid, base=16))
     return cue
 
 
@@ -179,7 +179,7 @@ def sixfix(arg):
     s1 = PreFix(arg)
     sixed = s1.decode(func=passed)
     global fixme
-    fixme=[]
+    fixme = []
     if not sixed:
         print2("No bin data SCTE-35 streams were found.")
         return
