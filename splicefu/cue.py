@@ -207,13 +207,12 @@ class Cue(SCTE35Base):
         if isinstance(data, int):
             return self._int_bits(data)
         if isinstance(data, dict):
-            return self._mk_load(data)
+            return self.load(data)
         if isinstance(data, Node):
-            return self._mk_load(data.mk())
+            return self.load(data.mk())
         if isinstance(data, str):
-            if data.isdigit():
-                print("iS diGIT")
-                return self._int_bits(int(data))
+##            if data.isdigit():
+##                return self._int_bits(int(data))
             return self._str_bits(data)
 
     def _mk_descriptors(self, bites):
@@ -370,6 +369,8 @@ class Cue(SCTE35Base):
             if "tag" in dstuff:
                 dscptr = descriptor_map[dstuff["tag"]]()
                 dscptr.load(dstuff)
+              #  if dscptr.has('segmentation_upid'):
+               #     dscptr.xml_redecode() # Expand upids
                 self.descriptors.append(dscptr)
 
     def no_cmd(self):
@@ -419,11 +420,11 @@ class Cue(SCTE35Base):
         """
         sxp=SuperXmlParser()
         dat =sxp.xml2cue(gonzo)
-        if isinstance(dat,str):
+        if isinstance(dat,str): # a string  is returned for Binary xml tag, make sense?
             self.bites = self._mk_bits(dat)
             self.decode()
         else:
-            self.load(dat)
+            self.load(dat) # a dict is returned plain xml.
             for d in self.descriptors:
                 if d.has('segmentation_upid'):
                     d.xml_redecode() # Expand upids
