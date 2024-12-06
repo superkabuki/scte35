@@ -225,6 +225,7 @@ class DtmfDescriptor(SpliceDescriptor):
         )
         return dd
 
+
 ##    def from_xml(self, gonzo):
 ##        """
 ##        Load an DTMFDescriptor from XML
@@ -281,6 +282,7 @@ class TimeDescriptor(SpliceDescriptor):
             ns=ns,
         )
         return td
+
 
 ##    def from_xml(self, gonzo):
 ##        """
@@ -532,22 +534,6 @@ class SegmentationDescriptor(SpliceDescriptor):
             self.segmentation_upid_length = len(bites)
             the_upid = self.mk_the_upid(bitbin=bitbin)
             self.segmentation_upid_type_name, self.segmentation_upid = the_upid.decode()
-
-##    def _upid_from_xml(self, gonzo):
-##        if "SegmentationUpid" in gonzo["SegmentationDescriptor"]:
-##            sdsu = gonzo["SegmentationDescriptor"]["SegmentationUpid"]
-##            if "segmentation_upid" not in sdsu:
-##                self.segmentation_upid_type = 0
-##                self.segmentation_upid_length = 0
-##                self.segmentation_upid = ""
-##            else:
-##                seg_upid = sdsu["segmentation_upid"]
-##                if "segmentation_upid_type" in sdsu:
-##                    self.segmentation_upid_type = sdsu["segmentation_upid_type"]
-##                    self.segmentation_upid_type_name = upid_map[
-##                        self.segmentation_upid_type
-##                    ][0]
-##                self._xml_redecode(seg_upid)
 
 
 # map of known descriptors and associated classes
