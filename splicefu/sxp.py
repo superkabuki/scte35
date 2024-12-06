@@ -252,12 +252,15 @@ class SuperXmlParser:
         """
         ulist = self.gimme(["SegmentationUpid"], exemel)
         if len(ulist) == 1:
+            
+            seg_upid=bytes.fromhex(ulist[0]["this"].lower().replace('0x',''))
+            print(seg_upid)
             seg_upid_type = ulist[0]["attrs"]["segmentation_upid_type"]
             the_upid = {
                 "segmentation_upid": ulist[0]["this"],
                 "segmentation_upid_type": seg_upid_type,
                 "segmentation_upid_type_name": upid_map[seg_upid_type][0],
-                "segmentation_upid_length":8,} #len(bytes.fromhex(upids[0]["this"])) }
+                "segmentation_upid_length":len(seg_upid),}
             return the_upid
 
     def availdescriptor(self,dscptr):
