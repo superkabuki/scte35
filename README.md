@@ -101,7 +101,7 @@ splicefu udp://10.0.0.7:5555
 
 ## Output
 
-* __Base64, Bytes, Hex, Json, Int, Xml, or Xml+bin__ can be specified as output.
+* Base64, Bytes, Hex, Json, Int, Xml, or Xml+bin can be specified as output.
 
 * __base64__
 ```lua
@@ -153,7 +153,7 @@ splicefu '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' xml
 ```
 * __xml+bin__
 ```xml
-a@fu:~$ splicefu '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' xmlbin
+splicefu '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' xmlbin
 ```
 * _output_
 ```xml
