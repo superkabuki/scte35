@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-splicefu command line SCTE35 decoder.
+fu command line SCTE35 decoder.
 
 """
 
@@ -9,10 +9,10 @@ splicefu command line SCTE35 decoder.
 import select
 import sys
 from new_reader import reader
-from splicefu import Cue, Stream, print2, decode, version
-from splicefu.hls import cli as hlscli
-from splicefu.sixfix import sixfix
-#from splicefu.injector import Injector
+from fu import Cue, Stream, print2,  version
+from fu.hls import cli as hlscli
+from fu.sixfix import sixfix
+#from fu.injector import Injector
 from sideways import cli as sidecli
 
 REV = "\033[7;1m"
@@ -50,7 +50,7 @@ def mk_sidecar(cue):
 
 
 HELP = f"""
-{BLUE}{B}                   splicefutoo                              {U}
+{BLUE}{B}                   futoo                              {U}
 
 {B} Default    {U} {BLUE}The default action is to read a input and write a SCTE-35 output.{U}
 
@@ -58,50 +58,50 @@ HELP = f"""
 
   {BLUE}outputs{U} base64, bytes, hex, int, json, xml, and xmlbin.{U}
 
-  {BLUE}splicefu can read from {U} strings, files, stdin, http(s), multicast, and Udp.
+  {BLUE}fu can read from {U} strings, files, stdin, http(s), multicast, and Udp.
 
   Input:{U}    Output:{U}
- {U}{BLUE} mpegts {U}  {U}{BLUE} base64 {NORM} splicefu https://example.com/video.ts  base64
- {U}{BLUE} xml    {U}  {U}{BLUE} bytes  {NORM} splicefu bytes  < xml.xml
- {U}{BLUE} base64 {U}  {U}{BLUE} hex    {NORM} splicefu '/DAWAAAAAAAAAP/wBQb+AKmKxwAACzuu2Q==' hex
- {U}{BLUE} xmlbin {U}  {U}{BLUE} int    {NORM} splicefu  int  < xml.xml
- {U}{BLUE} mpegts {U}  {U}{BLUE} json   {NORM} splicefu video.ts
- {U}{BLUE} json   {U}  {U}{BLUE} xml    {NORM} splicefu  < json.json  xml
- {U}{BLUE} hex    {U}  {U}{BLUE} xmlbin {NORM} splicefu 0xfc301600000000000000fff00506fe00a98ac700000b3baed9  xmlbin
+ {U}{BLUE} mpegts {U}  {U}{BLUE} base64 {NORM} fu https://example.com/video.ts  base64
+ {U}{BLUE} xml    {U}  {U}{BLUE} bytes  {NORM} fu bytes  < xml.xml
+ {U}{BLUE} base64 {U}  {U}{BLUE} hex    {NORM} fu '/DAWAAAAAAAAAP/wBQb+AKmKxwAACzuu2Q==' hex
+ {U}{BLUE} xmlbin {U}  {U}{BLUE} int    {NORM} fu  int  < xml.xml
+ {U}{BLUE} mpegts {U}  {U}{BLUE} json   {NORM} fu video.ts
+ {U}{BLUE} json   {U}  {U}{BLUE} xml    {NORM} fu  < json.json  xml
+ {U}{BLUE} hex    {U}  {U}{BLUE} xmlbin {NORM} fu 0xfc301600000000000000fff00506fe00a98ac700000b3baed9  xmlbin
 
-{B}  hls        {U}{NORM} {BLUE} SCTE-35 hls decode help:{U} splicefu hls help
+{B}  hls        {U}{NORM} {BLUE} SCTE-35 hls decode help:{U} fu hls help
 
-  splicefu hls https://example.com/master.m3u8
+  fu hls https://example.com/master.m3u8
 
-{B}  hls encode {U} {BLUE} SCTE-35 hls encode help:{U}splicefu hls encode help
+{B}  hls encode {U} {BLUE} SCTE-35 hls encode help:{U}fu hls encode help
 
-  splicefu hls encode  -i https://example.com/master.m3u8 -s sidecar.txt -o output_dir
+  fu hls encode  -i https://example.com/master.m3u8 -s sidecar.txt -o output_dir
 
 {B}  inject     {U}{NORM}{BLUE} Inject an mpegts stream with a SCTE-35 sidecar file at pid:{NORM}
 
-  splicefu inject video.ts with sidecar.txt at 333
+  fu inject video.ts with sidecar.txt at 333
 
 {B}  packets    {U}{NORM}{BLUE} Print raw SCTE-35 packets from multicast mpegts video:{NORM}
 
-  splicefu packets udp://@235.35.3.5:3535
+  fu packets udp://@235.35.3.5:3535
 
 {B}  proxy      {U}{NORM}{BLUE} Parse a https stream and write raw video to stdout:{NORM}
 
-  splicefu proxy video.ts
+  fu proxy video.ts
 
-{B}  pts        {U}{NORM}{BLUE} Print PTS from mpegts video:{NORM} splicefu pts video.ts
+{B}  pts        {U}{NORM}{BLUE} Print PTS from mpegts video:{NORM} fu pts video.ts
 
 {B}  sidecar    {U}{NORM}{BLUE} Parse a stream, write pts,write SCTE-35 Cues to sidecar.txt:{NORM}
 
-  splicefu sidecar video.ts
+  fu sidecar video.ts
 
-{B}  sixfix     {U}{NORM}{BLUE} Fix SCTE-35 data mangled by ffmpeg:{NORM} splicefu sixfix video.ts
+{B}  sixfix     {U}{NORM}{BLUE} Fix SCTE-35 data mangled by ffmpeg:{NORM} fu sixfix video.ts
 
-{B}  show       {U}{NORM}{BLUE} Probe mpegts video:{NORM} splicefu show video.ts
+{B}  show       {U}{NORM}{BLUE} Probe mpegts video:{NORM} fu show video.ts
 
-{B}  version    {U}{NORM}{BLUE} Show version:{NORM} splicefu version
+{B}  version    {U}{NORM}{BLUE} Show version:{NORM} fu version
 
-{B}  help       {U}{NORM} {BLUE}Help:{NORM} splicefu help
+{B}  help       {U}{NORM} {BLUE}Help:{NORM} fu help
 
 """
 
@@ -135,7 +135,7 @@ def print_help():
 
 def print_version():
     """
-    print_version print the splicefu version
+    print_version print the fu version
     """
     print2(version)
 
@@ -152,7 +152,7 @@ def inject():
                 supak.apply_args(args)
                 supak.encode()
                 return True
-    print2("splicefu mpegts inject {infile} with {sidecar_file} at {pid}")
+    print2("fu mpegts inject {infile} with {sidecar_file} at {pid}")
     return False
 """
 
@@ -160,7 +160,7 @@ print_map = {
     "hls": hls,
     "help": print_help,
     "version": print_version,
-  #  "inject": splicefu,
+  #  "inject": fu,
 }
 
 
@@ -371,7 +371,7 @@ def chk_funk_map():
     funk_keys = list(funk_map.keys())
     args = mk_args(funk_keys)
     args = chk_stdin(args)
-    superfunk = decode
+   # superfunk = decode
     if [fkey for fkey in funk_keys if fkey in sys.argv]:
         superfunk = to_funk
     if args:
