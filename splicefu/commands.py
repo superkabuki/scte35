@@ -104,6 +104,7 @@ class PrivateCommand(SpliceCommand):
         pc.add_child(Node("PrivateBytes", value=self.private_bytes.hex(), ns=ns))
         return pc
 
+
 ##    def from_xml(self, gonzo):
 ##        """
 ##        load a PrivateCommand from XML
@@ -112,6 +113,7 @@ class PrivateCommand(SpliceCommand):
 ##        if "PrivateBytes" in gonzo and "private_bytes" in gonzo["PrivateBytes"]:
 ##            self.private_bytes = bytes.fromhex((gonzo["PrivateBytes"]["private_bytes"]))
 ##
+
 
 class SpliceNull(SpliceCommand):
     """
@@ -200,7 +202,7 @@ class TimeSignal(SpliceCommand):
                 )
                 ts.add_child(st)
         return ts
-    
+
 
 class SpliceInsert(TimeSignal):
     """
