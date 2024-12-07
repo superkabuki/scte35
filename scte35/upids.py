@@ -1,5 +1,5 @@
 """
-fu/upids.py
+scte35/upids.py
 
 classy Upids
 
@@ -382,11 +382,7 @@ class Umid(Upid):
 # segmentation_upid_type : [name, class, length]
 upid_map = {
     0x00: ["No UPID", NoUpid, 0],
-    0x01: [
-        "Type 0x01 is deprecated. Use type 0x0C, MPU.",
-        Upid,
-        False,
-    ],
+    0x01: ["Type 0x01 is deprecated. Use type 0x0C, MPU.", Upid, False],
     0x02: ["Type 0x02 is deprecated. Use type 0x03, AdID.", Upid, 8],
     0x03: ["AdID", Upid, 12],
     0x04: ["UMID", Umid, 32],
