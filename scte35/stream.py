@@ -225,14 +225,12 @@ class Stream:
         """
         while self._tsdata:
             one = self._tsdata.read(1)
-            if not one:
-                print2("\nNo Stream Found. \n")
-                return False
             if one[0] == self.SYNC_BYTE:
                 tail = self._tsdata.read(self.PACKET_SIZE - 1)
                 if tail:
                     self._parse(one + tail)
                     return True
+        print2("No Stream Found\n")
         return False
 
     def iter_pkts(self, num_pkts=1):
@@ -257,19 +255,7 @@ class Stream:
         """
         if not self._find_start():
             return
-        for pkt in self.iter_pkts():
-            cue = self._parse(pkt)
-            if cue:
-                func(cue)
-        return False
-
-    def decode_fu(self, func=show_cue):
-        """
-        Stream.decode_fu decodes
-        num_pkts packets at a time.
-        Super Fast with pypy3.
-        """
-        num_pkts = 3000
+        num_pkts = 7
         for chunk in self.iter_pkts(num_pkts=num_pkts):
             _ = [func(cue) for cue in self._mk_pkts(chunk) if cue]
             del _
