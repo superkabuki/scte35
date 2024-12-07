@@ -69,33 +69,33 @@ HELP = f"""
    {U}{BLUE} json   {U}  {U}{BLUE} xml    {NORM} scte35  < json.json  xml
    {U}{BLUE} hex    {U}  {U}{BLUE} xmlbin {NORM} scte35 0xfc301600000000000000fff00506fe00a98ac700000b3baed9  xmlbin
 
-    {B}  hls        {U}{NORM} {BLUE} SCTE-35 hls decode help:{U} scte35 hls help
+    {B} hls        {U}{NORM} {BLUE} SCTE-35 hls decode help:{U} scte35 hls help
 
     scte35 hls https://example.com/master.m3u8
 
     {B} iframes     {U}{BLUE} show MPEGTS iframes {NORM} scte35 iframes video.ts
 
-    {B}  packets    {U}{NORM}{BLUE} Print raw SCTE-35 packets from multicast mpegts video:{NORM}
+    {B} packets    {U}{NORM}{BLUE} Print raw SCTE-35 packets from multicast mpegts video:{NORM}
 
     scte35 packets udp://@235.35.3.5:3535
 
-    {B}  proxy      {U}{NORM}{BLUE} Parse a https stream and write raw video to stdout:{NORM}
+    {B} proxy      {U}{NORM}{BLUE} Parse a https stream and write raw video to stdout:{NORM}
 
     scte35 proxy video.ts
 
-    {B}  pts        {U}{NORM}{BLUE} Print PTS from mpegts video:{NORM} scte35 pts video.ts
+    {B} pts        {U}{NORM}{BLUE} Print PTS from mpegts video:{NORM} scte35 pts video.ts
 
-    {B}  sidecar    {U}{NORM}{BLUE} Parse a stream, write pts,write SCTE-35 Cues to sidecar.txt:{NORM}
+    {B} sidecar    {U}{NORM}{BLUE} Parse a stream, write pts,write SCTE-35 Cues to sidecar.txt:{NORM}
 
     scte35 sidecar video.ts
 
-    {B}  sixfix     {U}{NORM}{BLUE} Fix SCTE-35 data mangled by ffmpeg:{NORM} scte35 sixfix video.ts
+    {B} sixfix     {U}{NORM}{BLUE} Fix SCTE-35 data mangled by ffmpeg:{NORM} scte35 sixfix video.ts
 
-    {B}  show       {U}{NORM}{BLUE} Probe mpegts video:{NORM} scte35 show video.ts
+    {B} show       {U}{NORM}{BLUE} Probe mpegts video:{NORM} scte35 show video.ts
 
-    {B}  version    {U}{NORM}{BLUE} Show version:{NORM} scte35 version
+    {B} version    {U}{NORM}{BLUE} Show version:{NORM} scte35 version
 
-    {B}  help       {U}{NORM} {BLUE}Help:{NORM} scte35 help
+    {B} help       {U}{NORM} {BLUE}Help:{NORM} scte35 help
 
 """
 
