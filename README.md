@@ -3,15 +3,15 @@ threefive continued.  SCTE-35 for the People.
 
 # `Install`
 * python3 via pip
-```py3
+```rebol
 python3 -mpip install scte35
 ```
 * pypy3 
-```py3
+```rebol
 pypy3 -mpip install scte35
 ```
 * from the git repo
-```js
+```rebol
 git clone https://github.com/superkabuki/scte35.git
 cd scte35
 make install
@@ -27,36 +27,36 @@ ___
 
 #### `Base64` 
 * parse SCTE-35 encoded in Base64
-```asm
+```rebol
 scte35 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU='
 ```
 
 #### `Hex`
 * parse SCTE-35 encoded in Hex
-```smalltalk
-scte35 '0xfc302c00000003289800fff00a05000000017f5f999901010011020f43554549000000007f8001003500002d974195'
+```rebol
+scte35 0xfc302c00000003289800fff00a05000000017f5f999901010011020f43554549000000007f8001003500002d974195
 ```
 
 #### `HLS`
 
 * parse SCTE-35 from HLS manifests and segments
-```lua
+```rebol
 scte35 hls https://example.com/master.m3u8
 ```
 
 #### `Json`
 
-```lua
+```rebol
 cat json.json | scte35
 ```
 #### `Xml`
 
-```lua
+```rebol
 scte35  < xml.xml
 ```
 #### `Xml+bin`
 
-```lua
+```rebol
 scte35 < xmlbin.xml
 ```
 ___
@@ -69,27 +69,27 @@ scte35 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU='
 ```
 
 #### `base64`
-```lua
+```rebol
 scte35 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' base64
 ```
 #### `bytes`
-```lua
+```rebol
 scte35 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' bytes
 ```
 #### `hex`
-```lua
+```rebol
 scte35 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' hex
 ```
 #### `int`
-```lua
+```rebol
 scte35 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' int
 ```
 #### `xml`
-```lua
+```rebol
 scte35 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' xml
 ```
 #### `xml+bin`
-```xml
+```rebol
 scte35 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' xmlbin
 ```
 ___
@@ -97,85 +97,85 @@ ___
 ### `File and Network Protocols`
 
 #### `File` 
-```lua
+```rebol
 scte35 video.ts
 ```
 #### `Http(s)` 
-```lua
+```rebol
 scte35 https://example.com/master.m3u8
 ```
 #### `Multicast`
-```lua
+```rebol
 scte35 udp://@235.35.3.5:9999
 ```
 #### `stdin`
-```lua
+```rebol
 cat video.ts | scte35
 ```
 #### `Udp Unicast`
-```lua
+```rebol
 scte35 udp://10.0.0.7:5555
 ```
 ___
 
 ### `hls`
 * parse hls manifests and segments for SCTE-35
-```lua
+```rebol
 scte35 hls https://example.com/master.m3u8
 ```
 ___
 ### `Iframes`
 * Show iframes PTS in an MPEGTS video
-```lua
+```rebol
 scte35 iframes https://example.com/video.ts
 ```
 ___
 ### `packets`   
 * Print raw SCTE-35 packets from multicast mpegts video
-```lua
+```rebol
 scte35 packets udp://@235.35.3.5:3535
 ```
 ___
 ### `proxy`   
 * Parse a https stream and write raw video to stdout
-```lua
+```rebol
 scte35 proxy video.ts
 ```
 ___
 ### `pts`    
 * Print PTS from mpegts video
-```lua
+```rebol
  scte35 pts video.ts
 ```
 ___
 ### `sidecar`  
 * Parse a stream, write pts,write SCTE-35 Cues to sidecar.txt
-```lua
+```rebol
   scte35 sidecar video.ts
 ```
 ___
 ### `sixfix`  
 * Fix SCTE-35 data mangled by ffmpeg
-```lua
+```rebol
  scte35 sixfix video.ts
 ```
 ___
 ### `show`  
 
 * Probe mpegts video _( kind of like ffprobe )_
-```lua
+```rebol
  scte35 show video.ts
 ```
 ___
 ### `version`     
 * Show version
-```lua
+```rebol
  scte35 version
 ```
 ___
 ### `help`        
 * Help
-```lua
+```rebol
  scte35 help
 ```
 ___
