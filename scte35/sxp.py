@@ -251,9 +251,10 @@ class SuperXmlParser:
         """
         ulist = self.gimme(["SegmentationUpid"], exemel)
         if len(ulist) == 1:
-
-            seg_upid = bytes.fromhex(ulist[0]["this"].lower().replace("0x", ""))
-            print(seg_upid)
+            try:
+                seg_upid = bytes.fromhex(ulist[0]["this"].lower().replace("0x", ""))
+            except ValueError:
+                seg_upid = ulist[0]["this"]
             seg_upid_type = ulist[0]["attrs"]["segmentation_upid_type"]
             the_upid = {
                 "segmentation_upid": ulist[0]["this"],
