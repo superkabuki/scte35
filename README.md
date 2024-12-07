@@ -64,27 +64,8 @@ ___
 
 * Base64, Bytes, Hex, Json, Int, Xml, or Xml+bin can be specified as output.
 * default output is `json`
-```json
-{
-    "info_section": {
-        "table_id": "0xfc",
-        "section_syntax_indicator": false,
-        "private": false,
-        "sap_type": "0x03",
-        "sap_details": "No Sap Type",
-        "section_length": 44,
-        "protocol_version": 0,
-        "encrypted_packet": false,
-        "encryption_algorithm": 0,
-        "pts_adjustment": 2.3,
-        "cw_index": "0x00",
-        "tier": "0x0fff",
-        "splice_command_length": 10,
-        "splice_command_type": 5,
-        "descriptor_loop_length": 17,
-        "crc": "0x2d974195"
-  ...
-
+```rebol
+scte35 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU='
 ```
 
 #### `base64`
