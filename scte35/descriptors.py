@@ -14,9 +14,8 @@ def k_by_v(adict, avalue):
     dict key lookup by value
     """
     flipped = {v: k for k, v in adict.items()}
-    if avalue in flipped:
-        return flipped[avalue]
-    return None
+    return (None,flipped[avalue])[avalue in flipped]
+    
 
 
 class SpliceDescriptor(SCTE35Base):
