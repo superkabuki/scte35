@@ -10,35 +10,35 @@ threefive continued.  SCTE-35 for the People.
 * the cli can __decode SCTE-35__ from __MPEGTS Streams, Base64, Hex, HLS, JSON, Xml, and Xml+Bin__ formats.
 * Most __input__ formats are __auto-detected__ 
 
-### Base64 
+### `Base64` 
 
 ```asm
 fu '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU='
 ```
 
-### Hex
+### `Hex`
 
 ```smalltalk
 fu '0xfc302c00000003289800fff00a05000000017f5f999901010011020f43554549000000007f8001003500002d974195'
 ```
 
-### HLS
+### `HLS`
 
 ```lua
 fu hls https://example.com/master.m3u8
 ```
 
-### Json
+### `Json`
 
 ```lua
 cat json.json | fu
 ```
-### Xml
+### `Xml`
 
 ```lua
 fu  < xml.xml
 ```
-### Xml+bin
+### `Xml+bin`
 
 ```lua
 fu < xmlbin.xml
@@ -47,7 +47,7 @@ ___
 ## `Output`
 
 * Base64, Bytes, Hex, Json, Int, Xml, or Xml+bin can be specified as output.
-* default __output is json__
+* default output is `json`
 ```json
 {
     "info_section": {
@@ -71,7 +71,7 @@ ___
 
 ```
 
-### __base64__
+### `base64`
 ```lua
 fu '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' base64
 ```
@@ -79,7 +79,7 @@ fu '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' base64
 ```lua
 /DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=
 ```
-### __bytes__
+### `bytes`
 ```lua
 fu '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' bytes
 ```
@@ -87,7 +87,7 @@ fu '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' bytes
 ```lua
 b'\xfc0,\x00\x00\x00\x03(\x98\x00\xff\xf0\n\x05\x00\x00\x00\x01\x7f_\x99\x99\x01\x01\x00\x11\x02\x0fCUEI\x00\x00\x00\x00\x7f\x80\x01\x005\x00\x00-\x97A\x95'
 ```
-### __hex__
+### `hex`
 ```lua
 fu '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' hex
 ```
@@ -95,7 +95,7 @@ fu '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' hex
 ```lua
 0xfc302c00000003289800fff00a05000000017f5f999901010011020f43554549000000007f8001003500002d974195
 ```
-### __int__
+### `int`
 ```lua
 fu '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' int
 ```
@@ -103,7 +103,7 @@ fu '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' int
 ```lua
 151622312799635094191794191736756941723013293850254190245706580675544251579467254651746556435953373552591284683157
 ```
-### __xml__
+### `xml`
 ```lua
 fu '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' xml
 ```
@@ -119,7 +119,7 @@ fu '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' xml
    </scte35:SegmentationDescriptor>
 </scte35:SpliceInfoSection>
 ```
-### __xml+bin__
+### `xml+bin`
 ```xml
 fu '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' xmlbin
 ```
@@ -133,38 +133,88 @@ ___
 
 ## `File and Network Protocols`
 
-### __File__
+### `File`
   
 ```lua
 fu video.ts
 ```
 
-### __Http(s)__
+### `Http(s)`
   
 ```lua
 fu https://example.com/master.m3u8
 ```
 
-### __Multicast__
+### `Multicast`
 
 ```lua
 fu udp://@235.35.3.5:9999
 ```
 
-### __stdin__
+### `stdin`
 
 ```lua
 cat video.ts | fu
 ```
 
-### __Udp Unicast__
+### `Udp Unicast`
 
 ```lua
 fu udp://10.0.0.7:5555
 ```
 ___
-
-## HLS
-
+## `hls`
+```lua
+fu hls https://example.com/master.m3u8
+```
+___
+## `packets`     
+* Print raw SCTE-35 packets from multicast mpegts video
+```lua
+fu packets udp://@235.35.3.5:3535
+```
+___
+## `proxy`       
+* Parse a https stream and write raw video to stdout
+```lua
+fu proxy video.ts
+```
+___
+## `pts`         
+* Print PTS from mpegts video
+```lua
+ fu pts video.ts
+```
+___
+## `sidecar`     
+* Parse a stream, write pts,write SCTE-35 Cues to sidecar.txt
+```lua
+  fu sidecar video.ts
+```
+___
+## `sixfix`      
+* Fix SCTE-35 data mangled by ffmpeg
+```lua
+ fu sixfix video.ts
+```
+___
+## `show`        
+* Probe mpegts video _( kind of like ffprobe )_
+```lua
+ fu show video.ts
+```
+___
+## `version`     
+* Show version
+```lua
+ fu version
+```
+___
+## `help`        
+* Help
+```lua
+ fu help
+```
+___
 
 
