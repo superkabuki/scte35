@@ -1,6 +1,23 @@
 # `fu`
 threefive continued.  SCTE-35 for the People.
 
+# `Install`
+* python3 via pip
+```py3
+python3 -mpip install fu
+```
+* pypy3 
+```py3
+pypy3 -mpip install fu
+```
+* from the git repo
+```js
+git clone https://github.com/superkabuki/scte35.git
+cd scte35
+make install
+```
+___
+
 
 # `The Cli tool`
 > One thing I hate about video is all the complexity. I tried to keep the cli as simple as possible.
