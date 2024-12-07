@@ -107,12 +107,13 @@ def mk_args(keys):
 
 
 # print_map functions
+
 def hls():
-    sys.argv.remove("hls")
-    if "encode" in sys.argv:
-        sidecli()
-    else:
-        hlscli()
+##    sys.argv.remove("hls")
+##    if "encode" in sys.argv:
+##        sidecli()
+##    else:
+    hlscli()
 
 
 def print_help():
@@ -345,11 +346,8 @@ def chk_funk_map():
     funk_keys = list(funk_map.keys())
     args = mk_args(funk_keys)
     args = chk_stdin(args)
-    superfunk =  to_funk
-   # if [fkey for fkey in funk_keys if fkey in sys.argv]:
-   #     superfunk = to_funk
     if args:
-        [superfunk(arg) for arg in args] # multiple file input
+        [to_funk(arg) for arg in args] # multiple file input
     sys.exit()
 
 
