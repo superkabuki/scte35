@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-fu command line SCTE35 decoder.
+scte35 command line SCTE35 decoder.
 
 """
 
