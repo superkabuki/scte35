@@ -6,7 +6,6 @@ from .spare import print2
 from .cue import Cue
 from .section import SpliceInfoSection
 from .segment import Segment
-from .smoketest import smoke
 from .stream import Stream
 from .version import version
 
