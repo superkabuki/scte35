@@ -178,25 +178,12 @@ class Cue(SCTE35Base):
     def _str_bits(self, data):
         try:
             self.load(data)
-            return self._mk_load(data)
+            return self.load(data)
         except:
             hex_bits = self._hex_bits(data)
             if hex_bits:
                 return hex_bits
         return self._b64_bits(data)
-
-    def _mk_load(self, data):
-        """
-         _mk_load sets self.bytes when loading
-        data. Encode is called to set missing fields
-        when possible and re-calc the length vars and crc.
-        """
-        # if self.load(data):
-        # bites = self.bites
-        # self.encode()
-        # return bites
-        # return seldata
-        self.load(data)
 
     def _mk_bits(self, data):
         """
@@ -212,8 +199,6 @@ class Cue(SCTE35Base):
         if isinstance(data, Node):
             return self.load(data.mk())
         if isinstance(data, str):
-            ##            if data.isdigit():
-            ##                return self._int_bits(int(data))
             return self._str_bits(data)
 
     def _mk_descriptors(self, bites):
@@ -333,7 +318,7 @@ class Cue(SCTE35Base):
             all_bites.add_bites(chunk)
         return all_bites.bites
 
-    def load_info_section(self, gonzo):
+    def _load_info_section(self, gonzo):
         """
         load_info_section loads data for Cue.info_section
         isec should be a dict.
@@ -343,7 +328,7 @@ class Cue(SCTE35Base):
         if "info_section" in gonzo:
             self.info_section.load(gonzo["info_section"])
 
-    def load_command(self, gonzo):
+    def _load_command(self, gonzo):
         """
         load_command loads data for Cue.command
         cmd should be a dict.
@@ -351,13 +336,13 @@ class Cue(SCTE35Base):
         the command instance will be created.
         """
         if "command" not in gonzo:
-            self.no_cmd()
+            self._no_cmd()
         cmd = gonzo["command"]
         if "command_type" in cmd:
             self.command = command_map[cmd["command_type"]]()
             self.command.load(cmd)
 
-    def load_descriptors(self, dlist):
+    def _load_descriptors(self, dlist):
         """
         Load_descriptors loads descriptor data.
         dlist is a list of dicts
@@ -374,9 +359,9 @@ class Cue(SCTE35Base):
                 #     dscptr.xml_redecode() # Expand upids
                 self.descriptors.append(dscptr)
 
-    def no_cmd(self):
+    def _no_cmd(self):
         """
-        no_cmd raises an exception if no splice command.
+        _no_cmd raises an exception if no splice command.
         """
         raise Exception("\033[7mA splice command is required\033[27m")
 
@@ -407,10 +392,10 @@ class Cue(SCTE35Base):
             gonzo = json.loads(gonzo)
 
         if "command" not in gonzo:
-            self.no_cmd()
-        self.load_info_section(gonzo)
-        self.load_command(gonzo)
-        self.load_descriptors(gonzo["descriptors"])
+            self._no_cmd()
+        self._load_info_section(gonzo)
+        self._load_command(gonzo)
+        self._load_descriptors(gonzo["descriptors"])
         self.encode()
         return True
 
@@ -428,9 +413,9 @@ class Cue(SCTE35Base):
             self.decode()
         else:
             self.load(dat)  # a dict is returned plain xml.
-            for d in self.descriptors:
-                if d.has("segmentation_upid"):
-                    d.xml_redecode()  # Expand upids
+           # for d in self.descriptors:
+               # if d.has("segmentation_upid"):
+                #    d.xml_redecode()  # Expand upids
             # Self.encode() will calculate lengths and types and such
             self.encode()
 
