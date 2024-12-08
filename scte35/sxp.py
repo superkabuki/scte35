@@ -74,10 +74,7 @@ class SuperXmlParser:
         try:
             return data[: data.index(f"</{tag}>") + len(tag) + 2]
         except:
-            try:
-                return data[: data.index("/>") + 1]
-            except:
-                print("PASS")
+            return data[: data.index("/>") + 1]
 
     def mk(self, exemel, target="SpliceInfoSection"):
         """
@@ -104,14 +101,11 @@ class SuperXmlParser:
         """
         gimme get all instances of tag from exemel and return a list of them.
         """
-
         the_list = []
         for tag in tags:
-            results = self.mk(exemel, tag)
-            if results:
-                element_list = [self.parsed(tag, sd) for sd in results]
-                if element_list:
-                    the_list.extend(element_list)
+            element_list = [self.parsed(tag, sd) for sd in self.mk(exemel, tag)]
+            if element_list:
+                the_list.extend(element_list)
         return the_list
 
     def gimme_one(self, tag, exemel):
