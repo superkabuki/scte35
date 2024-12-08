@@ -179,7 +179,7 @@ class Cue(SCTE35Base):
         try:
             self.load(data)
             return self.load(data)
-        except:
+        except (LookupError, TypeError, ValueError):
             hex_bits = self._hex_bits(data)
             if hex_bits:
                 return hex_bits
@@ -349,15 +349,12 @@ class Cue(SCTE35Base):
         if 'tag' is included in each dict,
         a descriptor instance will be created.
         """
-        if not isinstance(dlist, list):
-            raise Exception("\033[7mdescriptors should be a list\033[27m")
+##        if not isinstance(dlist, list):
+##            raise Exception("\033[7mdescriptors should be a list\033[27m")
         for dstuff in dlist:
-            if "tag" in dstuff:
-                dscptr = descriptor_map[dstuff["tag"]]()
-                dscptr.load(dstuff)
-                #  if dscptr.has('segmentation_upid'):
-                #     dscptr.xml_redecode() # Expand upids
-                self.descriptors.append(dscptr)
+            dscptr = descriptor_map[dstuff["tag"]]()
+            dscptr.load(dstuff)
+            self.descriptors.append(dscptr)
 
     def _no_cmd(self):
         """
@@ -413,9 +410,6 @@ class Cue(SCTE35Base):
             self.decode()
         else:
             self.load(dat)  # a dict is returned plain xml.
-           # for d in self.descriptors:
-               # if d.has("segmentation_upid"):
-                #    d.xml_redecode()  # Expand upids
             # Self.encode() will calculate lengths and types and such
             self.encode()
 
@@ -437,8 +431,6 @@ class Cue(SCTE35Base):
         xmlbin
         """
         sis = self.info_section.xml(ns=ns)
-        # if not self.command:
-        #    raise Exception("\033[7mA Splice Command is Required\033[27m")
         cmd = self.command.xml(ns=ns)
         sis.add_child(cmd)
         sis = self._xml_mk_descriptor(sis, ns)
