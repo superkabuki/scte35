@@ -14,8 +14,7 @@ def k_by_v(adict, avalue):
     dict key lookup by value
     """
     flipped = {v: k for k, v in adict.items()}
-    return (None,flipped[avalue])[avalue in flipped]
-    
+    return (None, flipped[avalue])[avalue in flipped]
 
 
 class SpliceDescriptor(SCTE35Base):
@@ -281,15 +280,6 @@ class TimeDescriptor(SpliceDescriptor):
             ns=ns,
         )
         return td
-
-
-##    def from_xml(self, gonzo):
-##        """
-##        load a TimeDescriptor from XML
-##        """
-##        if "TimeDescriptor" in gonzo:
-##            self.load(gonzo["TimeDescriptor"])
-
 
 class SegmentationDescriptor(SpliceDescriptor):
     """
