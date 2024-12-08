@@ -18,8 +18,8 @@ from sideways import cli as sidecli
 REV = "\033[7;1m"
 NORM = "\033[27m\033[0m"
 NORM = "\033[0m"
-BLUE = "\033[32;1;1m"
-
+BLUE = "\033[36;1;1m"
+G = "\033[32;1;1m"
 B = "\033[7;1m"
 U = "\033[m"
 
@@ -52,7 +52,7 @@ def mk_sidecar(cue):
 HELP = f"""
 {BLUE} scte35 cli tool                                {U}
 
-    {B} Default    {U} {BLUE}The default action is to read a input and write a SCTE-35 output.{U}
+    {B} Default      {U} {BLUE}The default action is to read a input and write a SCTE-35 output.{U}
 
     {BLUE}Inputs {U} mpegts, base64, hex, json, xml, and xmlbin{U}.
 
@@ -60,7 +60,7 @@ HELP = f"""
 
     {BLUE}scte35 can read from {U} strings, files, stdin, http(s), multicast, and Udp.
 
-    {B} Input {U}   {B} Output {U}
+    Input {U}    Output {U}
    {U}{BLUE} mpegts {U}  {U}{BLUE} base64 {NORM} scte35 https://example.com/video.ts  base64
    {U}{BLUE} xml    {U}  {U}{BLUE} bytes  {NORM} scte35 bytes  < xml.xml
    {U}{BLUE} base64 {U}  {U}{BLUE} hex    {NORM} scte35 '/DAWAAAAAAAAAP/wBQb+AKmKxwAACzuu2Q==' hex
@@ -69,33 +69,27 @@ HELP = f"""
    {U}{BLUE} json   {U}  {U}{BLUE} xml    {NORM} scte35  < json.json  xml
    {U}{BLUE} hex    {U}  {U}{BLUE} xmlbin {NORM} scte35 0xfc301600000000000000fff00506fe00a98ac700000b3baed9  xmlbin
 
-    {B} hls        {U}{NORM} {BLUE} SCTE-35 hls decode help:{U} scte35 hls help
+    {B}  hls        {U}{NORM}{BLUE} SCTE-35 hls decode help:{U}  scte35 hls help
 
-    scte35 hls https://example.com/master.m3u8
+    scte35 hls https://example.com/master.m3u8{U}
 
-    {B} iframes     {U}{BLUE} show MPEGTS iframes {NORM} scte35 iframes video.ts
+    {B} iframes     {U}{BLUE} show MPEGTS iframes{NORM} scte35 iframes video.ts
 
-    {B} packets    {U}{NORM}{BLUE} Print raw SCTE-35 packets from multicast mpegts video:{NORM}
+    {B}  packets    {U}{NORM}{BLUE} Print raw SCTE-35 packets:{NORM} scte35 packets udp://@235.35.3.5:3535
 
-    scte35 packets udp://@235.35.3.5:3535
+    {B}  proxy      {U}{NORM}{BLUE} Parse a stream and copy it to stdout:{NORM} scte35 proxy video.ts
 
-    {B} proxy      {U}{NORM}{BLUE} Parse a https stream and write raw video to stdout:{NORM}
+    {B}  pts        {U}{NORM}{BLUE} Print PTS from mpegts video:{NORM} scte35 pts video.ts
 
-    scte35 proxy video.ts
+    {B}  sidecar    {U}{NORM}{BLUE} Create a sidecar file:{NORM} scte35 sidecar video.ts
 
-    {B} pts        {U}{NORM}{BLUE} Print PTS from mpegts video:{NORM} scte35 pts video.ts
+    {B}  sixfix     {U}{NORM}{BLUE} Fix SCTE-35 data mangled by ffmpeg:{NORM} scte35 sixfix video.ts
 
-    {B} sidecar    {U}{NORM}{BLUE} Parse a stream, write pts,write SCTE-35 Cues to sidecar.txt:{NORM}
+    {B}  show       {U}{NORM}{BLUE} Probe mpegts video:{NORM} scte35 show video.ts
 
-    scte35 sidecar video.ts
+    {B}  version    {U}{NORM}{BLUE} Show version:{NORM} scte35 version
 
-    {B} sixfix     {U}{NORM}{BLUE} Fix SCTE-35 data mangled by ffmpeg:{NORM} scte35 sixfix video.ts
-
-    {B} show       {U}{NORM}{BLUE} Probe mpegts video:{NORM} scte35 show video.ts
-
-    {B} version    {U}{NORM}{BLUE} Show version:{NORM} scte35 version
-
-    {B} help       {U}{NORM} {BLUE}Help:{NORM} scte35 help
+    {B}  help       {U}{NORM} {BLUE}Help:{NORM} scte35 help
 
 """
 
