@@ -227,9 +227,8 @@ class Stream:
             one = self._tsdata.read(1)
             if one[0] == self.SYNC_BYTE:
                 tail = self._tsdata.read(self.PACKET_SIZE - 1)
-                if tail:
-                    self._parse(one + tail)
-                    return True
+                self._parse(one + tail)
+                return True
         print2("No Stream Found\n")
         return False
 
@@ -322,10 +321,10 @@ class Stream:
         if self.maps.prgm.keys():
             sopro = sorted(self.maps.prgm.items())
             for k, vee in sopro:
-                if len(vee.streams.items()) > 0:
-                    print2(f"\nProgram: {k}")
-                    vee.show()
-            return True
+                #  if len(vee.streams.items()) > 0:
+                print2(f"\nProgram: {k}")
+                vee.show()
+        return True
 
     def show_pts(self):
         """
@@ -334,10 +333,10 @@ class Stream:
         print("\tPrgm\tPTS")
         for pkt in self.iter_pkts():
             pid = self._parse_info(pkt)
-            if pid in self.pids.pcr:
-                if self._pusi_flag(pkt) and pid != 0:
-                    self._parse_pts(pkt, pid)
-                    print(f"\t{self.pid2prgm(pid)}\t{self.pid2pts(pid)}")
+            #  if pid in self.pids.pcr:
+            if self._pusi_flag(pkt) and pid != 0:
+                self._parse_pts(pkt, pid)
+                print(f"\t{self.pid2prgm(pid)}\t{self.pid2pts(pid)}")
 
     def pts(self):
         """
@@ -352,8 +351,8 @@ class Stream:
         """
         prgm = 1
         if pid in self.maps.pid_prgm:
-            prgm = self.maps.pid_prgm[pid]
-        return prgm
+            return self.maps.pid_prgm[pid]
+        return False
 
     def pid2pts(self, pid):
         """
@@ -361,9 +360,9 @@ class Stream:
         returns the current pts
         """
         prgm = self.pid2prgm(pid)
-        if prgm not in self.maps.prgm_pts:
-            return False
-        return self.as_90k(self.maps.prgm_pts[prgm])
+        if prgm in self.maps.prgm_pts:
+            return self.as_90k(self.maps.prgm_pts[prgm])
+        return False
 
     def pid2pcr(self, pid):
         """
@@ -371,9 +370,9 @@ class Stream:
         returns the current pcr
         """
         prgm = self.pid2prgm(pid)
-        if prgm not in self.maps.prgm_pcr:
-            return False
-        return self.as_90k(self.maps.prgm_pcr[prgm])
+        if prgm in self.maps.prgm_pcr:
+            return self.as_90k(self.maps.prgm_pcr[prgm])
+        return False
 
     def _unpad_afc(self, pkt):
         if self._afc_flag(pkt[3]):
@@ -526,10 +525,7 @@ class Stream:
             pay = pay[peslen:]
         return pay
 
-    def _mk_scte35_payload(self, pkt, pid):
-        pay = self._strip_scte35_pes(pkt)
-        if not pay:
-            return False
+    def _chk_maybe_pid(self, pay, pid):
         pay = self._chk_partial(pay, pid, self.SCTE35_TID)
         if not pay:
             if pid in self.pids.maybe_scte35:
@@ -538,6 +534,12 @@ class Stream:
         if pay[13] == self.show_null:
             return False
         return pay
+
+    def _mk_scte35_payload(self, pkt, pid):
+        pay = self._strip_scte35_pes(pkt)
+        if not pay:
+            return False
+        return self._chk_maybe_pid(pay, pid)
 
     def _parse_scte35(self, pkt, pid):
         """
