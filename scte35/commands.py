@@ -37,10 +37,6 @@ class SpliceCommand(SCTE35Base):
         nbin = self._chk_nbin(nbin)
         return nbin.bites
 
-    def from_xml(self, gonzo):
-        """
-        load a SpliceCommand from xml - default method does nothing
-        """
 
 
 class BandwidthReservation(SpliceCommand):
@@ -103,16 +99,6 @@ class PrivateCommand(SpliceCommand):
         pc = Node("PrivateCommand", attrs=attrs)
         pc.add_child(Node("PrivateBytes", value=self.private_bytes.hex(), ns=ns))
         return pc
-
-
-##    def from_xml(self, gonzo):
-##        """
-##        load a PrivateCommand from XML
-##        """
-##        self.identifier = gonzo["PrivateCommand"]["identifier"]
-##        if "PrivateBytes" in gonzo and "private_bytes" in gonzo["PrivateBytes"]:
-##            self.private_bytes = bytes.fromhex((gonzo["PrivateBytes"]["private_bytes"]))
-##
 
 
 class SpliceNull(SpliceCommand):
