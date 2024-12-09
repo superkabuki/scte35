@@ -140,6 +140,9 @@ class SuperXmlParser:
         si = self.spliceinsert(exemel)
         if si:
             return si
+        pc = self.privatecommand(exemel)
+        if pc:
+            return pc
         return {}
 
     def timesignal(self, exemel):
@@ -158,6 +161,21 @@ class SuperXmlParser:
             }
             ts["attrs"].update(setme)
             return ts["attrs"]
+        return {}
+
+    def privatecommand(self,exemel):
+        """
+        privatecommand parses exemel for PrivateCommand
+        data and creates a loadable dict for the Cue class.
+        """
+        my_name="PrivateCommand"
+        pc = self.gimme_one("PrivateCommand",exemel)
+        if pc:
+            setme={"name": "Private Command",
+                     "command_type": 255,
+                   "private_bytes": pc["this"]}
+            pc["attrs"].update(setme)
+            return pc["attrs"]
         return {}
 
     def spliceinsert(self, exemel):
