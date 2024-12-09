@@ -462,6 +462,27 @@ class CuePuller:
         """
         return f"{NSUB}{self.hls_pts}: {self.pts}"
 
+    def _chk_cue_in(self,line,head):
+        if line.startswith("#EXT-X-CUE-IN") and self.cue_state == "CONT":
+            self.cue_state = "IN"
+            self.to_sidecar(self.pts, line)
+            self.clear()
+            print(f"{head}{self.diff_stuff()}{NSUB}{self.media_stuff()}\n")
+            self.reset_break()
+        return line
+
+    def _chk_cue_out(self,line,head):
+        if line.startswith("#EXT-X-CUE-OUT") and self.cue_state in [None, "IN"]:
+            self.reset_break()
+            self.cue_state = "OUT"
+            self.break_timer = 0.0
+            if ":" in line:
+                self.break_duration = atoif(line.split(":")[1])
+            self.to_sidecar(self.pts, line)
+            self.clear()
+            print(f"{head}{self.dur_stuff()}{NSUB}{self.media_stuff()}\n")
+        return line
+    
     def set_cue_state(self, cue, line):
         """
         set_cue_state determines cue_state
@@ -472,27 +493,12 @@ class CuePuller:
         self.last_cue = cue.encode()
         if "CONT" not in line:
             head = f"\n{iso8601()}{REV}{line}{NORM}{self.pts_stuff()} {REV} Splice Point {NORM}"
-            if line.startswith("#EXT-X-CUE-IN") and self.cue_state == "CONT":
-                self.cue_state = "IN"
-                self.to_sidecar(self.pts, line)
-                self.clear()
-                print(f"{head}{self.diff_stuff()}{NSUB}{self.media_stuff()}\n")
-                self.reset_break()
-                return line
-            if line.startswith("#EXT-X-CUE-OUT") and self.cue_state in [None, "IN"]:
-                self.reset_break()
-                self.cue_state = "OUT"
-                self.break_timer = 0.0
-                if ":" in line:
-                    self.break_duration = atoif(line.split(":")[1])
-                self.to_sidecar(self.pts, line)
-                self.clear()
-                print(f"{head}{self.dur_stuff()}{NSUB}{self.media_stuff()}\n")
-                return line
-        if "CONT" in line and self.cue_state in ["OUT", "CONT"]:
+            line=self._chk_cue_in(line,head)
+            line = self._chk_cue_out(line,head)
+
+        elif self.cue_state in ["OUT", "CONT"]:
             self.to_sidecar(self.pts, line)
             self.cue_state = "CONT"
-            return line
         return line
 
     def invalid(self, line):
@@ -594,14 +600,14 @@ class CuePuller:
         chk_x_daterange handles #EXT-X-DATERANGE tags.
         """
         self.show_tags(tags["#EXT-X-DATERANGE"])
-        for scte35_tag in ["SCTE35-OUT", "SCTE35-IN"]:
-            if scte35_tag in tags["#EXT-X-DATERANGE"]:
-                cue = Cue(tags["#EXT-X-DATERANGE"][scte35_tag])
-                pts, new_line = self.prof.validate_cue(cue)
-                if pts and new_line:
-                    return self.set_cue_state(
-                        tags["#EXT-X-DATERANGE"][scte35_tag], new_line
-                    )
+      #  for scte35_tag in ["SCTE35-OUT", "SCTE35-IN"]:
+        if scte35_tag in tags["#EXT-X-DATERANGE"]:
+            cue = Cue(tags["#EXT-X-DATERANGE"][scte35_tag])
+            pts, new_line = self.prof.validate_cue(cue)
+            if pts and new_line:
+                return self.set_cue_state(
+                    tags["#EXT-X-DATERANGE"][scte35_tag], new_line
+                )
         return self.invalid(line)
 
     def chk_x_oatcls(self, tags, line):
@@ -946,6 +952,36 @@ class CuePuller:
         with open(self.flat, "a") as flat:
             flat.write("#EXT-X-ENDLIST\n")
 
+def precheck():
+    """
+    precheck sys.argv for keywords
+    that trigger a sys.exit().
+    """
+    if "help" in sys.argv:
+        print(helpme)
+        sys.exit()
+    if "profile" in sys.argv:
+        scp = Scte35Profile()
+        scp.write_profile("hls.profile")
+        sys.exit()
+
+def find_renditions():
+    """
+    find_renditions search master.m3u8 for playable renditions.
+    """
+    with reader(sys.argv[1]) as arg:
+        renditions = [line for line in arg if b"#EXT-X-STREAM-INF" in line]
+        if renditions:
+            fumo = M3uFu()
+            fumo.m3u8 = sys.argv[1]
+            fumo.decode()
+            playlists = [
+                segment
+                for segment in fumo.segments
+                if "#EXT-X-STREAM-INF" in segment.tags
+            ]
+            return playlists
+    return False
 
 def cli():
     """
@@ -963,25 +999,8 @@ def cli():
     """
     playlists = None
     m3u8 = None
-    if "help" in sys.argv:
-        print(helpme)
-        sys.exit()
-    if sys.argv[1].lower() == "profile":
-        scp = Scte35Profile()
-        scp.write_profile("hls.profile")
-        sys.exit()
-
-    with reader(sys.argv[1]) as arg:
-        variants = [line for line in arg if b"#EXT-X-STREAM-INF" in line]
-        if variants:
-            fumo = M3uFu()
-            fumo.m3u8 = sys.argv[1]
-            fumo.decode()
-            playlists = [
-                segment
-                for segment in fumo.segments
-                if "#EXT-X-STREAM-INF" in segment.tags
-            ]
+    precheck()
+    playlists = find_renditions()
     if playlists:
         m3u8 = playlists[0].media
     else:
