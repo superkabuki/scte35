@@ -106,10 +106,7 @@ def mk_args(keys):
 # print_map functions
 
 def hls():
-##    sys.argv.remove("hls")
-##    if "encode" in sys.argv:
-##        sidecli()
-##    else:
+    sys.argv.remove("hls")
     hlscli()
 
 
