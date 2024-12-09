@@ -69,7 +69,7 @@ class Segment(Stream):
             if iv:
                 iv = iv.replace("\n", "")
                 self.iv = int.to_bytes(int(iv, base=16), 16, byteorder="big")
-            if self.key_uri:
+          #  if self.key_uri:
                 self._aes_get_key()
                 self._aes_decrypt()
         super().__init__(self.seg_uri)
@@ -120,10 +120,9 @@ class Segment(Stream):
         """
         decode a mpegts segment.
         """
-        super().decode_fu(func=self.show_cue)
+        super().decode(func=self.show_cue)
         self.pts_start = self.as_90k(self.start.popitem()[1])
         self.pts_last = self.as_90k(list(self.maps.prgm_pts.items())[0][1])
         if self.tmp:
             os.unlink(self.tmp)
-        if self.pts_start and self.pts_last:
-            self.duration = round(self.pts_last - self.pts_start, 6)
+        self.duration = round(self.pts_last - self.pts_start, 6)
