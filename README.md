@@ -79,6 +79,7 @@ ___
 
  * the cli can __encode SCTE-35__ to
  * [__Base64__](#base64-1)
+ * [__Bytes__](#bytes)
  * [__Hex,__](#hex-1)
  * [__HLS,__](#hls-1)
  * [__JSON,__](#json-1)
