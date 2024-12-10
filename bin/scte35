@@ -10,7 +10,7 @@ import select
 import sys
 from iframes import IFramer
 from new_reader import reader
-from scte35 import Cue, Stream, print2,  version
+from scte35 import Cue, Stream, print2, version
 from scte35.hls import cli as hlscli
 from scte35.sixfix import sixfix
 from sideways import cli as sidecli
@@ -105,11 +105,12 @@ def mk_args(keys):
 
 # print_map functions
 
+
 def hls():
     sys.argv.remove("hls")
-##    if "encode" in sys.argv:
-##        sidecli()
-##    else:
+    ##    if "encode" in sys.argv:
+    ##        sidecli()
+    ##    else:
     hlscli()
 
 
@@ -148,13 +149,15 @@ def chk_print_map():
 
 # functions for mpegts_map
 
+
 def iframe_chk(this):
     """
     iframe_chk show iframes pts
     for a mpegts video.
     """
-    iframer =IFramer()
+    iframer = IFramer()
     iframer.do(this)
+
 
 def packet_chk(this):
     """
@@ -305,28 +308,23 @@ def to_funk(this):
     """
     to_funk prints a cue in a variety of formats.
     """
-    if this in["",b""]:
+    if this in ["", b""]:
         return
     try:
         # mpegts streams handled here.
         strm = Stream(this)
-        strm.decode(func=funk()) # funk() works here
+        strm.decode(func=funk())  # funk() works here
     except:  # try to load json or xml
         try:
             cue = Cue(this)
         except:
-            print("BAD Data")
-            sys.exit()
-          #  cue.load(this)
-##        except:
-##            try:  # handle base64, bytes, and hex.
-##                cue = Cue(this)
-##                cue.decode()
-##            except:
-##                pass
+            try:
+                cue = Cue()
+                cue.load(this)
+            except:
+                print("Bad Data... I think")
         if cue:
-            cue.encode()
-            funk()(cue) #   func works here too.
+            funk()(cue)  #   func works here too.
 
 
 def chk_stdin(args):
@@ -337,11 +335,11 @@ def chk_stdin(args):
     readable, _, _ = select.select([sys.stdin], [], [], 0)
     if sys.stdin in readable:  # check stdin for data
         one = reader(sys.stdin.buffer).read(1)
-        if one not in [b'G']: # is this a packet?
+        if one not in [b"G"]:  # is this a packet?
             two = reader(sys.stdin.buffer).read()
-            args.append((one + two).decode()) # no rewind on stdin
+            args.append((one + two).decode())  # no rewind on stdin
         else:
-            reader(sys.stdin.buffer).read(187) # drop first packet
+            reader(sys.stdin.buffer).read(187)  # drop first packet
             Stream(sys.stdin.buffer).decode(func=funk())
             sys.exit()
     return args
@@ -355,7 +353,7 @@ def chk_funk_map():
     args = mk_args(funk_keys)
     args = chk_stdin(args)
     if args:
-        [to_funk(arg) for arg in args] # multiple file input
+        [to_funk(arg) for arg in args]  # multiple file input
     sys.exit()
 
 
