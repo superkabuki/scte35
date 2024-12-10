@@ -20,7 +20,7 @@ ___
 
 
 # `The Cli tool`
-* [inputs](#inputs)
+* [Inputs](#inputs)
 * [Outputs](#outputs)
 * [streams](#streams)
 
