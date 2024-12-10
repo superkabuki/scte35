@@ -56,7 +56,7 @@ class Cue(SCTE35Base):
         self.info_section = SpliceInfoSection()
         self.bites = None
         if data:
-            self.bites = self._mk_bits(data)
+            self._mk_bits(data)
         self.packet_data = packet_data
         self.dash_data = None
 
@@ -178,7 +178,7 @@ class Cue(SCTE35Base):
     def _str_bits(self, data):
         try:
             self.load(data)
-            return self.load(data)
+            return self.bites
         except (LookupError, TypeError, ValueError):
             hex_bits = self._hex_bits(data)
             if hex_bits:
@@ -191,15 +191,18 @@ class Cue(SCTE35Base):
         Hex and Base64 strings into bytes.
         """
         if isinstance(data, bytes):
-            return self.idxsplit(data, b"\xfc")
+            self.bites = self.idxsplit(data, b"\xfc")
+            return self.decode()
         if isinstance(data, int):
-            return self._int_bits(data)
+            self.bites = self._int_bits(data)
+            return self.decode()
         if isinstance(data, dict):
             return self.load(data)
         if isinstance(data, Node):
             return self.load(data.mk())
         if isinstance(data, str):
-            return self._str_bits(data)
+            self.bites = self._str_bits(data)
+            return self.decode()
 
     def _mk_descriptors(self, bites):
         """
@@ -390,6 +393,7 @@ class Cue(SCTE35Base):
 
         if "command" not in gonzo:
             self._no_cmd()
+            return False
         self._load_info_section(gonzo)
         self._load_command(gonzo)
         self._load_descriptors(gonzo["descriptors"])
@@ -409,7 +413,7 @@ class Cue(SCTE35Base):
             self.bites = self._mk_bits(dat)
             self.decode()
         else:
-            self.load(dat)  # a dict is returned plain xml.
+            self.load(dat)  # a dict is returned for infosection xml.
             # Self.encode() will calculate lengths and types and such
             self.encode()
 
