@@ -77,8 +77,17 @@ scte35 < xmlbin.xml
 ___
 ### `Output`
 
-* Base64, Bytes, Hex, Json, Int, Xml, or Xml+bin can be specified as output.
+ * the cli can __encode SCTE-35__ to
+ * [__Base64__](#base64-1)
+ * [__Hex,__](#hex-1)
+ * [__HLS,__](#hls-1)
+ * [__JSON,__](#json-1)
+ * [__Xml,__](#xml-1)
+ * [__Xml+Bin__](#xmlbin-1)
+
 * default output is `json`
+
+#### json
 ```rebol
 scte35 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU='
 ```
