@@ -23,7 +23,7 @@ ___
 
 ### `Decoding SCTE-35` 
 * the cli can __decode SCTE-35__ from
- * [__Base64__](#basse64)
+ * [__Base64__](#base64)
  * [__Hex,__](#hex)
  * [__HLS,__](#hls)
  * [__JSON,__](#json)
