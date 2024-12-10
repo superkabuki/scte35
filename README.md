@@ -22,9 +22,19 @@ ___
 # `The Cli tool`
 
 ### `Decoding SCTE-35` 
-* the cli can __decode SCTE-35__ from MPEGTS Streams, Base64, Hex, HLS, JSON, Xml, and Xml+Bin formats.
-* Most __inputs__ are __auto-detected__ 
+* the cli can __decode SCTE-35__ from
+ * [__Base64__](#basse64)
+ * [__Hex,__](#hex)
+ * [__HLS,__](#hls)
+ * [__JSON,__](#json)
+ * [__Xml,__](#xml)
+ * [__Xml+Bin__](#xmlbin)
+ * [__MPEGTS Streams__](#streams)
 
+* Most __inputs__ are __auto-detected.__ 
+* __stdin__ is __auto selected__ and __auto detected.__
+* __SCTE-35 data is printed to stderr__
+* __stdout is used when piping video__
 #### `Base64` 
 * parse SCTE-35 encoded in Base64
 ```rebol
@@ -50,11 +60,16 @@ scte35 hls https://example.com/master.m3u8
 cat json.json | scte35
 ```
 #### `Xml`
-
+* you can make a xml.xml file like this:
+  * redirect 2 (stderr) to the file 
+```awk
+./scte352  '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' xml 2> xml.xml
+```
+* pass in
 ```rebol
 scte35  < xml.xml
 ```
-#### `Xml+bin`
+#### `Xmlbin`
 
 ```rebol
 scte35 < xmlbin.xml
@@ -93,7 +108,7 @@ scte35 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' xml
 scte35 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' xmlbin
 ```
 ___
-
+## Streams
 ### `File and Network Protocols`
 
 #### `File` 
