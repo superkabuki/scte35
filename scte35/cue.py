@@ -178,7 +178,7 @@ class Cue(SCTE35Base):
     def _str_bits(self, data):
         try:
             self.load(data)
-            return self.bites
+            return True
         except (LookupError, TypeError, ValueError):
             hex_bits = self._hex_bits(data)
             if hex_bits:
@@ -202,7 +202,8 @@ class Cue(SCTE35Base):
             return self.load(data.mk())
         if isinstance(data, str):
             self.bites = self._str_bits(data)
-            return self.decode()
+            self.decode()
+            return
 
     def _mk_descriptors(self, bites):
         """
@@ -352,8 +353,8 @@ class Cue(SCTE35Base):
         if 'tag' is included in each dict,
         a descriptor instance will be created.
         """
-##        if not isinstance(dlist, list):
-##            raise Exception("\033[7mdescriptors should be a list\033[27m")
+        ##        if not isinstance(dlist, list):
+        ##            raise Exception("\033[7mdescriptors should be a list\033[27m")
         for dstuff in dlist:
             dscptr = descriptor_map[dstuff["tag"]]()
             dscptr.load(dstuff)
@@ -379,18 +380,15 @@ class Cue(SCTE35Base):
         if isinstance(gonzo, bytes):
             gonzo = gonzo.decode()
         if isinstance(gonzo, str):
-            try:
+            if gonzo.isdigit():
                 gonzo = int(gonzo)
                 self.bites = self._int_bits(int(gonzo))
                 self.decode()
                 return True
-            except:
-                if gonzo.strip()[0] == "<":
-                    self.from_xml(gonzo)
-                    return True
-
+            if gonzo.strip()[0] == "<":
+                self.from_xml(gonzo)
+                return True
             gonzo = json.loads(gonzo)
-
         if "command" not in gonzo:
             self._no_cmd()
             return False
