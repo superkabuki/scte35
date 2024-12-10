@@ -20,8 +20,11 @@ ___
 
 
 # `The Cli tool`
+* [inputs](#inputs)
+* [Outputs](#outputs)
+* [streams](#streams)
 
-### `Decoding SCTE-35` 
+### `Inputs` 
 * the cli can __decode SCTE-35__ from
  * [__Base64__](#base64)
  * [__Hex,__](#hex)
@@ -75,7 +78,7 @@ scte35  < xml.xml
 scte35 < xmlbin.xml
 ```
 ___
-### `Output`
+### `Outputs`
 
  * the cli can __encode SCTE-35__ to
  * [__Base64__](#base64-1)
