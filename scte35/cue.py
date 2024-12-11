@@ -329,7 +329,7 @@ class Cue(SCTE35Base):
         if 'splice_command_type' is included,
         an empty command instance will be created for Cue.command
         """
-        if "info_section" in gonzo:
+        if "info_section"  in gonzo:
             self.info_section.load(gonzo["info_section"])
 
     def _load_command(self, gonzo):
@@ -341,6 +341,7 @@ class Cue(SCTE35Base):
         """
         if "command" not in gonzo:
             self._no_cmd()
+            return False
         cmd = gonzo["command"]
         if "command_type" in cmd:
             self.command = command_map[cmd["command_type"]]()
@@ -413,7 +414,7 @@ class Cue(SCTE35Base):
         else:
             self.load(dat)  # a dict is returned for infosection xml.
             # Self.encode() will calculate lengths and types and such
-            self.encode()
+          #  self.encode()
 
     def _xml_mk_descriptor(self, sis, ns):
         """
