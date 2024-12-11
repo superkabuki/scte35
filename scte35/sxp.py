@@ -163,17 +163,19 @@ class SuperXmlParser:
             return ts["attrs"]
         return {}
 
-    def privatecommand(self,exemel):
+    def privatecommand(self, exemel):
         """
         privatecommand parses exemel for PrivateCommand
         data and creates a loadable dict for the Cue class.
         """
-        my_name="PrivateCommand"
-        pc = self.gimme_one("PrivateCommand",exemel)
+        my_name = "PrivateCommand"
+        pc = self.gimme_one("PrivateCommand", exemel)
         if pc:
-            setme={"name": "Private Command",
-                     "command_type": 255,
-                   "private_bytes": pc["this"]}
+            setme = {
+                "name": "Private Command",
+                "command_type": 255,
+                "private_bytes": pc["this"],
+            }
             pc["attrs"].update(setme)
             return pc["attrs"]
         return {}
@@ -200,7 +202,6 @@ class SuperXmlParser:
             si["attrs"].update(splice_time)
             break_duration = self.breakduration(exemel)
             si["attrs"].update(break_duration)
-            si["attrs"]["avails_expected"] = bool(si["attrs"]["avails_expected"])
             return si["attrs"]
         return {}
 
