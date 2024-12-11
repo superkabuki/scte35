@@ -26,27 +26,29 @@ class SCTE35Base:
             nbin = NBin()
         return nbin
 
+    def _err1(self,var_name,bit_count,var_type):
+            err_mesg = f"\033[1;41mError: {var_name} is not set, it should be {bit_count} bit(s) and type {var_type}\033[0m\n"
+            print2(err_mesg)        
+
+    def _err2(self,var_name,var_value,bit_count,var_type):
+            err_mesg = f'\033[1;41mError: {var_name} is "{var_value}", it should be type {var_type} and {bit_count} bit(s)\033[0m\n '
+            print2(err_mesg)
+            
     def _chk_var(self, var_type, nbin_method, var_name, bit_count):
         """
         _chk_var is used to check var values and types before encoding
         """
         var_value = self.__dict__[var_name]
         if var_value is None:
-            err_mesg = f"\033[1;41mError: {var_name} is not set, it should be {bit_count} bit(s) and type {var_type}\n\n"
-            print2(err_mesg)
+            self._err1(var_name,bit_count,var_type)
             return
-         #   raise ValueError(err_mesg)
         if var_type == int:
             if isinstance(var_value,bool):
-                err_mesg = f'\033[1;41mError: {var_name} is "{var_value}", it should be type {var_type} and {bit_count} bit(s)\n '
-                print2(err_mesg)
+                self._err2(self,var_name,var_value,bit_count,var_type) 
                 return
-           #     raise ValueError(err_mesg)
         if not isinstance(var_value, var_type):
-            err_mesg = f' \033[1;41mError: {var_name} is "{var_value}", it should be type {var_type} and {bit_count} bit(s)\n '
-            print2(err_mesg)
+            self._err2(self,var_name,var_value,bit_count,var_type) 
             return
-        #    raise ValueError(err_mesg)
         nbin_method(var_value, bit_count)
 
     @staticmethod
