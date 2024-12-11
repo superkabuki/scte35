@@ -32,11 +32,21 @@ class SCTE35Base:
         """
         var_value = self.__dict__[var_name]
         if var_value is None:
-            err_mesg = f"\033[7m{var_name} is not set, it should be {bit_count} bit(s) and type {var_type}\033[27m"
-            raise ValueError(err_mesg)
+            err_mesg = f"\033[1;41mError: {var_name} is not set, it should be {bit_count} bit(s) and type {var_type}\n\n"
+            print2(err_mesg)
+            return
+         #   raise ValueError(err_mesg)
+        if var_type == int:
+            if isinstance(var_value,bool):
+                err_mesg = f'\033[1;41mError: {var_name} is "{var_value}", it should be type {var_type} and {bit_count} bit(s)\n '
+                print2(err_mesg)
+                return
+           #     raise ValueError(err_mesg)
         if not isinstance(var_value, var_type):
-            err_mesg = f' \033[7m{var_name} is "{var_value}", it should be type {var_type}\033[27m and {bit_count} bit(s),\n '
-            raise ValueError(err_mesg)
+            err_mesg = f' \033[1;41mError: {var_name} is "{var_value}", it should be type {var_type} and {bit_count} bit(s)\n '
+            print2(err_mesg)
+            return
+        #    raise ValueError(err_mesg)
         nbin_method(var_value, bit_count)
 
     @staticmethod
