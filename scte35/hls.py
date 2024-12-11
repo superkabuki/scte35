@@ -28,22 +28,16 @@ def atoif(value):
     """
     atoif converts ascii to (int|float)
     """
-    if isinstance(value, (int, float)):
-        return value
+    ##    if isinstance(value, (int, float)):
+    ##        return value
     if isinstance(value, str):
-        if "." in value:
-            try:
-                value = float(value)
-                return value
-            except:
-                pass
-        else:
-            try:
-                value = int(value)
-                return value
-            except:
-                pass
-    return None
+        try:
+            value = float(value)
+            return value
+        except:
+            value = int(value)
+            return value
+    return value
 
 
 def iso8601():
@@ -86,6 +80,24 @@ class Scte35Profile:
 
     # self.stops = [0x23, 0x31, 0x33, 0x35, 0x37, 0x45, 0x47]
 
+    def _is_int(self, vee, line):
+        for item in vee:
+            if isinstance(item, int):
+                line = f"{line}{hex(item)},"
+            else:
+                line = f"{line}{item},"
+        return line
+
+    def _list_in_profile(self, vee, line):
+        if isinstance(vee, list):
+            line = self._is_int(vee, line)
+        return line
+
+    def _bool_in_profile(self, vee, line):
+        if isinstance(vee, bool):
+            line = f"{line}{vee}"
+        return line
+
     def write_profile(self, pro_file):
         """
         write_profile writes sc.profile for editing.
@@ -93,16 +105,9 @@ class Scte35Profile:
         with open(pro_file, "w") as pro_f:
             for que, vee in vars(self).items():
                 line = f"{que} = "
-                if isinstance(vee, list):
-                    for item in vee:
-                        if isinstance(item, int):
-                            line = f"{line}{hex(item)},"
-                        else:
-                            line = f"{line}{item},"
-                if isinstance(vee, bool):
-                    line = f"{line}{vee}"
-                if line.endswith(","):
-                    line = line[:-1]
+                line = self._list_in_profile(vee, line)
+                line = self._bool_in_profile(vee, line)
+                line = line.strip(",")
                 pro_f.write(line + "\n")
 
     def show_profile(self, headline):
@@ -132,18 +137,13 @@ class Scte35Profile:
             this = None
         return this, that
 
-    def format4profile(self, this, that):
-        """
-        format4profile formats data read from hls.profile for internal use.
-        """
-        if this is None or that is None:
-            return
-        this = this.lower()
+    def _string2bool(self, this, that):
+        print(that[0])
         if this.startswith("parse") or this.startswith("expand"):
-            if that[0].lower().startswith("f"):
-                that = False
-            else:
-                that = True
+            return [False, True][that[0] == "True"]
+        return that
+
+    def _hexed(self, this, that):
         if this in ["command_types", "descriptor_tags", "starts"]:
             new_that = []
             for s in that:
@@ -151,7 +151,18 @@ class Scte35Profile:
                     new_that.append(int(s, 16))
                 else:
                     new_that.append(int(s))
-            that = new_that
+            return new_that
+        return that
+
+    def format4profile(self, this, that):
+        """
+        format4profile formats data read from hls.profile for internal use.
+        """
+        if this is None or that is None:
+            return
+        this = this.lower()
+        that = self._string2bool(this, that)
+        that = self._hexed(this, that)
         self.__dict__.update({this: that})
 
     def read_profile(self, pro_file):
@@ -163,8 +174,6 @@ class Scte35Profile:
                 for line in pro_file:
                     this, that = self.clean_n_split(line)
                     self.format4profile(this, that)
-        except:
-            pass
         finally:
             self.show_profile("Profile:")
 
@@ -462,7 +471,7 @@ class CuePuller:
         """
         return f"{NSUB}{self.hls_pts}: {self.pts}"
 
-    def _chk_cue_in(self,line,head):
+    def _chk_cue_in(self, line, head):
         if line.startswith("#EXT-X-CUE-IN") and self.cue_state == "CONT":
             self.cue_state = "IN"
             self.to_sidecar(self.pts, line)
@@ -471,7 +480,7 @@ class CuePuller:
             self.reset_break()
         return line
 
-    def _chk_cue_out(self,line,head):
+    def _chk_cue_out(self, line, head):
         if line.startswith("#EXT-X-CUE-OUT") and self.cue_state in [None, "IN"]:
             self.reset_break()
             self.cue_state = "OUT"
@@ -482,7 +491,7 @@ class CuePuller:
             self.clear()
             print(f"{head}{self.dur_stuff()}{NSUB}{self.media_stuff()}\n")
         return line
-    
+
     def set_cue_state(self, cue, line):
         """
         set_cue_state determines cue_state
@@ -493,8 +502,8 @@ class CuePuller:
         self.last_cue = cue.encode()
         if "CONT" not in line:
             head = f"\n{iso8601()}{REV}{line}{NORM}{self.pts_stuff()} {REV} Splice Point {NORM}"
-            line=self._chk_cue_in(line,head)
-            line = self._chk_cue_out(line,head)
+            line = self._chk_cue_in(line, head)
+            line = self._chk_cue_out(line, head)
 
         elif self.cue_state in ["OUT", "CONT"]:
             self.to_sidecar(self.pts, line)
@@ -600,7 +609,7 @@ class CuePuller:
         chk_x_daterange handles #EXT-X-DATERANGE tags.
         """
         self.show_tags(tags["#EXT-X-DATERANGE"])
-      #  for scte35_tag in ["SCTE35-OUT", "SCTE35-IN"]:
+        #  for scte35_tag in ["SCTE35-OUT", "SCTE35-IN"]:
         if scte35_tag in tags["#EXT-X-DATERANGE"]:
             cue = Cue(tags["#EXT-X-DATERANGE"][scte35_tag])
             pts, new_line = self.prof.validate_cue(cue)
@@ -952,6 +961,7 @@ class CuePuller:
         with open(self.flat, "a") as flat:
             flat.write("#EXT-X-ENDLIST\n")
 
+
 def precheck():
     """
     precheck sys.argv for keywords
@@ -964,6 +974,7 @@ def precheck():
         scp = Scte35Profile()
         scp.write_profile("hls.profile")
         sys.exit()
+
 
 def find_renditions():
     """
@@ -982,6 +993,7 @@ def find_renditions():
             ]
             return playlists
     return False
+
 
 def cli():
     """
