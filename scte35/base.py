@@ -44,10 +44,10 @@ class SCTE35Base:
             return
         if var_type == int:
             if isinstance(var_value,bool):
-                self._err2(self,var_name,var_value,bit_count,var_type) 
+                self._err2(var_name,var_value,bit_count,var_type) 
                 return
         if not isinstance(var_value, var_type):
-            self._err2(self,var_name,var_value,bit_count,var_type) 
+            self._err2(var_name,var_value,bit_count,var_type) 
             return
         nbin_method(var_value, bit_count)
 
