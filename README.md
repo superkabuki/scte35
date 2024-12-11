@@ -1,5 +1,6 @@
 # `scte35`
 threefive continued.  SCTE-35 for the People.
+ 
 
 # `Install`
 * python3 via pip
@@ -20,9 +21,18 @@ ___
 
 
 # `The Cli tool`
-* [Inputs](#inputs)
-* [Outputs](#outputs)
-* [streams](#streams)
+> The cli was good, but it has improved dramatically, it has really come together.Now, the cli audetects data being available on stdin and that allows it to autodetect the SCTE-35 format as well as MPEGTS steams. Now every SCTE-35 data format, except hls, is autodetected on the commandline, as well as stdin.HLS requires the `hls` ketyword.
+
+### The cli tool installs automatically with pip or the Makefile.
+
+* [__SCTE-35 Inputs__](#inputs)
+* [__SCTE-35 Outputs__](#outputs)
+* [__Parse __MPEGTS__ streams for __SCTE-35__](#streams)
+* [Parse __SCTE-35__ in __hls__](#hls)
+* [Display __MPEGTS__ __iframes__](#iframes)
+* [Display raw __SCTE-35 packets__ from __video streams__](#packets)
+* [__Repair SCTE-35 streams__ changed to __bin data__ by __ffmpeg__](#sixfix)
+
 
 ### `Inputs` 
 * the cli can __decode SCTE-35__ from
