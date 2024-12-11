@@ -178,7 +178,7 @@ class Cue(SCTE35Base):
     def _str_bits(self, data):
         try:
             self.load(data)
-            return True
+            return self.bites
         except (LookupError, TypeError, ValueError):
             hex_bits = self._hex_bits(data)
             if hex_bits:
@@ -192,18 +192,22 @@ class Cue(SCTE35Base):
         """
         if isinstance(data, bytes):
             self.bites = self.idxsplit(data, b"\xfc")
-            return self.decode()
+            self.decode()
+            return self.bites
         if isinstance(data, int):
             self.bites = self._int_bits(data)
-            return self.decode()
+            self.decode()
+            return self.bites
         if isinstance(data, dict):
-            return self.load(data)
+            self.load(data)
+            return self.bites
         if isinstance(data, Node):
-            return self.load(data.mk())
+            self.load(data.mk())
+            return self.bites
         if isinstance(data, str):
             self.bites = self._str_bits(data)
             self.decode()
-            return
+            return self.bites
 
     def _mk_descriptors(self, bites):
         """
@@ -385,19 +389,18 @@ class Cue(SCTE35Base):
                 gonzo = int(gonzo)
                 self.bites = self._int_bits(int(gonzo))
                 self.decode()
-                return True
+                return self.bites
             if gonzo.strip()[0] == "<":
                 self.from_xml(gonzo)
-                return True
+                return self.bites
             gonzo = json.loads(gonzo)
         if "command" not in gonzo:
             self._no_cmd()
-            return False
         self._load_info_section(gonzo)
         self._load_command(gonzo)
         self._load_descriptors(gonzo["descriptors"])
         self.encode()
-        return True
+        return self.bites
 
     def from_xml(self, gonzo):
         """
