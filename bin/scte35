@@ -316,11 +316,11 @@ def to_funk(this):
         strm.decode(func=funk())  # funk() works here
     except:  # try to load json or xml
         try:
-            cue = Cue(this)
+            cue = Cue()
+            cue.load(this)
         except:
             try:
-                cue = Cue()
-                cue.load(this)
+                cue = Cue(this)
             except:
                 print("Bad Data... I think")
         if cue:
