@@ -1,6 +1,10 @@
 # `scte35`
 threefive continued.  SCTE-35 for the People.
-# Now with Super Debug Enabled.
+# Now with Super Advanced Error Detection Stuff. 
+* Does not generate Fatal errors, it won't break your process.
+* if your cue has an error in a SCTE-35 var ,this will tell you where it and the type and size it should be.
+* works in the cli
+* works in code.
 ![image](https://github.com/user-attachments/assets/581e0081-0c9d-4f9c-87a2-dd7f4cf3ce8c)
 
 
