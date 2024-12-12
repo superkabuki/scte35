@@ -58,8 +58,6 @@ class SCTE35Base:
             return
         if self._wrong_type(var_name, var_value,bit_count,var_type):
             return
-
- 
         nbin_method(var_value, bit_count)
 
     @staticmethod
