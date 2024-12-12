@@ -56,7 +56,7 @@ class Cue(SCTE35Base):
         self.info_section = SpliceInfoSection()
         self.bites = None
         if data:
-            self._mk_bits(data)
+            self.bites= self._mk_bits(data)
         self.packet_data = packet_data
         self.dash_data = None
 
@@ -190,24 +190,22 @@ class Cue(SCTE35Base):
         cue._mk_bits Converts
         Hex and Base64 strings into bytes.
         """
-        if isinstance(data, bytes):
-            self.bites = self.idxsplit(data, b"\xfc")
-            self.decode()
-            return self.bites
-        if isinstance(data, int):
-            self.bites = self._int_bits(data)
-            self.decode()
-            return self.bites
+        bites=data
         if isinstance(data, dict):
             self.load(data)
             return self.bites
         if isinstance(data, Node):
             self.load(data.mk())
             return self.bites
+        if isinstance(data, bytes):
+            bites = self.idxsplit(data, b"\xfc")
+        if isinstance(data, int):
+            bites = self._int_bits(data)
         if isinstance(data, str):
-            self.bites = self._str_bits(data)
-            self.decode()
-            return self.bites
+            bites = self._str_bits(data)
+        self.bites=bites
+        self.decode()
+        return bites
 
     def _mk_descriptors(self, bites):
         """
