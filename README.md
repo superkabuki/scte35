@@ -1,6 +1,6 @@
 # `scte35`
 threefive continued.  SCTE-35 for the People.
-# Now with Super debug, everywhere!
+# Now with Super Debug Enabled.
 ![image](https://github.com/user-attachments/assets/581e0081-0c9d-4f9c-87a2-dd7f4cf3ce8c)
 
 
