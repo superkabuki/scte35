@@ -26,7 +26,7 @@ ___
 
 
 # `The Cli tool`
-> The cli was good, but it has improved dramatically, it has really come together.Now, the cli audetects data being available on stdin and that allows it to autodetect the SCTE-35 format as well as MPEGTS steams. Now every SCTE-35 data format, except hls, is autodetected on the commandline, as well as stdin.HLS requires the `hls` ketyword.
+> The cli audetects data being available on stdin and that allows it to autodetect the SCTE-35 format as well as MPEGTS steams. Now every SCTE-35 data format, except hls, is autodetected on the commandline, as well as stdin.HLS requires the `hls` ketyword.
 
 ### The cli tool installs automatically with pip or the Makefile.
 
