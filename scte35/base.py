@@ -27,28 +27,39 @@ class SCTE35Base:
         return nbin
 
     def _err1(self,var_name,bit_count,var_type):
-            err_mesg = f"\033[1;41mError: {var_name} is not set, it should be {bit_count} bit(s) and type {var_type}\033[0m\n"
+            err_mesg = f"\033[1;41m !! \033[0m \033[1;41m {var_name} \033[0m is \033[1;41m not set \033[0m, it should be type {var_type} of {bit_count} bit(s)\n"
             print2(err_mesg)        
 
     def _err2(self,var_name,var_value,bit_count,var_type):
-            err_mesg = f'\033[1;41mError: {var_name} is "{var_value}", it should be type {var_type} and {bit_count} bit(s)\033[0m\n '
+            err_mesg = f'\033[1;41m !! \033[0m \033[1;41m {var_name}\033[0m is \033[1;41m {var_value} \033[0m, it should be type {var_type} of {bit_count} bit(s)\n '
             print2(err_mesg)
             
+    def _bool_int(self,var_name,var_value,bit_count,var_type):
+        if var_type == int:
+            if isinstance(var_value,bool):
+                self._err2(var_name,var_value,bit_count,var_type) 
+                return True
+
+    def _wrong_type(self,var_name,var_value,bit_count,var_type):
+        if not isinstance(var_value, var_type):
+            self._err2(var_name,var_value,bit_count,var_type)
+            return True
+        
     def _chk_var(self, var_type, nbin_method, var_name, bit_count):
         """
         _chk_var is used to check var values and types before encoding
         """
         var_value = self.__dict__[var_name]
+        
         if var_value is None:
             self._err1(var_name,bit_count,var_type)
             return
-        if var_type == int:
-            if isinstance(var_value,bool):
-                self._err2(var_name,var_value,bit_count,var_type) 
-                return
-        if not isinstance(var_value, var_type):
-            self._err2(var_name,var_value,bit_count,var_type) 
+        if self._bool_int(var_name, var_value,bit_count,var_type):
             return
+        if self._wrong_type(var_name, var_value,bit_count,var_type):
+            return
+
+ 
         nbin_method(var_value, bit_count)
 
     @staticmethod
@@ -97,8 +108,7 @@ class SCTE35Base:
         has runs hasattr with self and what
         """
         if hasattr(self, what):
-            if vars(self)[what]:
-                return True
+            return True
         return False
 
     @staticmethod
@@ -139,19 +149,33 @@ class SCTE35Base:
 
         return {k: b2l(v) for k, v in vars(self).items() if v is not None}
 
+    def _load_str(self,gonzo):
+        if isinstance(gonzo, str):
+            gonzo = json.loads(gonzo)
+        return gonzo
+
+    def _chk_prevars(self,k,v,prevars):
+        if k in prevars:
+            self.__dict__[k] = v      
+
+    def _vrfy_load(self,gonzo,prevars):
+        for k, v in gonzo.items():
+            self._chk_prevars(k,v,prevars)   
+
+    def _load_dict(self,gonzo):
+        if isinstance(gonzo, dict):
+            prevars = vars(self)
+            self._vrfy_load(gonzo,prevars)   
+
     def load(self, gonzo):
         """
         load is used to load
         data from a dict or json string.
         only updates vars that exist in the obj.
         """
-        if isinstance(gonzo, str):
-            gonzo = json.loads(gonzo)
-        if isinstance(gonzo, dict):
-            prevars = vars(self)
-            for k, v in gonzo.items():
-                if k in prevars:
-                    self.__dict__[k] = v
+        gonzo = self._load_str(gonzo)
+        self._load_dict(gonzo)
+  
 
     def show(self):
         """
