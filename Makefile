@@ -19,20 +19,20 @@ pkg: clean
 	$(PY3) setup.py sdist bdist_wheel
 
 uninstall: clean
-	$(PIP3) uninstall scte35
+	$(PIP3) uninstall threefive3
 	
 upload: clean pkg	
 	twine upload dist/*
 
 upgrade:
-	$(PIP3) install --upgrade scte35
+	$(PIP3) install --upgrade threefive3
 	
 cli:
-	sed -i s/$(PYPY3)/$(PY3)/ scte35
-	install scte35 /usr/local/bin
+	sed -i s/$(PYPY3)/$(PY3)/ threefive3
+	install threefive3 /usr/local/bin
 	
 pypy3-cli:
-	sed -i s/$(PY3)/$(PYPY3)/ scte35
-	install scte35 /usr/local/bin
+	sed -i s/$(PY3)/$(PYPY3)/ threefive34
+	install threefive3 /usr/local/bin
 
 
