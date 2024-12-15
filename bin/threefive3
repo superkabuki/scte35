@@ -318,12 +318,7 @@ def to_funk(this):
         try:
             cue = Cue(this)
         except:
-            try:
-                cue = Cue()
-                cue.load(this)
-                print2("LOADED")
-            except:
-                print2("MISSED")
+            print2("Bad Data")
         if cue:
             funk()(cue)  #   func works here too.
 
