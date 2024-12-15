@@ -8,9 +8,6 @@ threefive continued.  SCTE-35 for the People.
 ![image](https://github.com/user-attachments/assets/581e0081-0c9d-4f9c-87a2-dd7f4cf3ce8c)
 
 
-
- 
-
 # `Install`
 * python3 via pip
 ```rebol
@@ -27,68 +24,6 @@ cd scte35
 make install
 ```
 ___
-
-
-# `The Cli tool`
-> The cli audetects data being available on stdin and that allows it to autodetect the SCTE-35 format as well as MPEGTS steams. Now every SCTE-35 data format, except hls, is autodetected on the commandline, as well as stdin.HLS requires the `hls` ketyword.
-
-### The cli tool installs automatically with pip or the Makefile.
-
-* [__SCTE-35 Inputs__](#inputs)
-* [__SCTE-35 Outputs__](#outputs)
-* [__Parse __MPEGTS__ streams for __SCTE-35__](#streams)
-* [Parse __SCTE-35__ in __hls__](#hls)
-* [Display __MPEGTS__ __iframes__](#iframes)
-* [Display raw __SCTE-35 packets__ from __video streams__](#packets)
-* [__Repair SCTE-35 streams__ changed to __bin data__ by __ffmpeg__](#sixfix)
-
-
-### `Inputs` 
-* the cli can __decode SCTE-35__ from
- * [__Base64__](#base64)
- * [__Hex,__](#hex)
- * [__HLS,__](#hls)
- * [__JSON,__](#json)
- * [__Xml,__](#xml)
- * [__Xml+Bin__](#xmlbin)
- * [__MPEGTS Streams__](#streams)
-
-* Most __inputs__ are __auto-detected.__ 
-* __stdin__ is __auto selected__ and __auto detected.__
-* __SCTE-35 data is printed to stderr__
-* __stdout is used when piping video__
-#### `Base64` 
-* parse SCTE-35 encoded in Base64
-```rebol
-threefive3 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU='
-```
-
-#### `Hex`
-* parse SCTE-35 encoded in Hex
-```rebol
-threefive3 0xfc302c00000003289800fff00a05000000017f5f999901010011020f43554549000000007f8001003500002d974195
-```
-
-#### `HLS`
-
-* parse SCTE-35 from HLS manifests and segments
-```rebol
-threefive3 hls https://example.com/master.m3u8
-```
-
-#### `Json`
-
-```rebol
-cat json.json | threefive3
-```
-#### `Xml`* from the git repo
-```rebol
-git clone https://github.com/superkabuki/scte35.git
-cd scte35
-make install
-```
-___
-
 
 # `The Cli tool`
 > The cli audetects data being available on stdin and that allows it to autodetect the SCTE-35 format as well as MPEGTS steams. Now every SCTE-35 data format, except hls, is autodetected on the commandline, as well as stdin.HLS requires the `hls` ketyword.
