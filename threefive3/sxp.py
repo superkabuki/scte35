@@ -20,7 +20,7 @@ class SuperXmlParser:
                     "SegmentationUpid",
                     "BreakDuration",
                 ]
-    
+
     def _split_attrs(self, node):
         node = node.replace("='", '="').replace("' ", '" ')
         attrs = [x for x in node.split(" ") if "=" in x]
@@ -71,8 +71,8 @@ class SuperXmlParser:
         fu slice up exemel into data chunks.
         """
         results = []
-        exemel = exemel.replace("\n", "").strip()
         splitted = exemel.split("<")
+        exemel = exemel.replace("\n", "").strip()
         for sp in splitted:
             if self._vrfy_sp(sp):
                 x = self._assemble(sp)
@@ -106,23 +106,25 @@ class SuperXmlParser:
                 return cmap[result["name"]](result)
         return {}
 
+    def _timesignal_children(self,ts):
+        for child in ts["children"]:
+            splice_time = self.splicetime(child)
+            ts["attrs"].update(splice_time)
+        return ts
+
     def timesignal(self, ts):
         """
         timesignal parses exemel for TimeSignal data
         and creates a loadable dict for the Cue class.
         """
-        for child in ts["children"]:
-            splice_time = self.splicetime(child)
-            ts["attrs"].update(splice_time)
-
-            setme = {
+        setme = {
                 "name": "Time Signal",
                 "command_type": 6,
-            }
+        }
 
-            ts["attrs"].update(setme)
-            return ts["attrs"]
-        return {}
+        ts["attrs"].update(setme)
+        ts = self._timesignal_children(ts)
+        return ts["attrs"]
 
     def privatecommand(self, pc):
         """
@@ -137,6 +139,16 @@ class SuperXmlParser:
         pc["attrs"].update(setme)
         return pc["attrs"]
 
+    def _spliceinsert_children(self,si):
+        for child in si["children"]:
+            splice_time = self.splicetime(child)
+            si["attrs"].update(splice_time)
+            if "pts_time" in si["attrs"]:
+                si["attrs"]["program_splice_flag"] = True
+            break_duration = self.breakduration(child)
+            si["attrs"].update(break_duration)
+        return si
+
     def spliceinsert(self, si):
         """
         spliceinsert parses exemel for SpliceInsert data
@@ -149,13 +161,7 @@ class SuperXmlParser:
             "duration_flag": False,
         }
         si["attrs"].update(setme)
-        for child in si["children"]:
-            splice_time = self.splicetime(child)
-            si["attrs"].update(splice_time)
-            if "pts_time" in si["attrs"]:
-                si["attrs"]["program_splice_flag"] = True
-            break_duration = self.breakduration(child)
-            si["attrs"].update(break_duration)
+        si = self._spliceinsert_children(si)
         return si["attrs"]
 
     def splicetime(self, st):
@@ -183,6 +189,21 @@ class SuperXmlParser:
             }
         return {}
 
+    def _segmentationdescriptor_children(self,dscptr):
+        for child in dscptr["children"]:
+            dr = self.deliveryrestrictions(child)
+            dscptr["attrs"].update(dr)
+            the_upid = self.upids(child)
+            dscptr["attrs"].update(the_upid)
+        return dscptr
+
+    def _segmentation_message(self,dscptr):
+        if dscptr["attrs"]["segmentation_type_id"] in table22:
+            dscptr["attrs"]["segmentation_message"] = table22[
+                dscptr["attrs"]["segmentation_type_id"]
+            ]
+        return dscptr
+
     def segmentationdescriptor(self, dscptr):
         """
         segmentationdescriptor creates a dict to be loaded.
@@ -197,16 +218,9 @@ class SuperXmlParser:
             "delivery_not_restricted_flag": True,
             "segmentation_event_id": hex(dscptr["attrs"]["segmentation_event_id"]),
         }
-        if dscptr["attrs"]["segmentation_type_id"] in table22:
-            dscptr["attrs"]["segmentation_message"] = table22[
-                dscptr["attrs"]["segmentation_type_id"]
-            ]
         dscptr["attrs"].update(setme)
-        for child in dscptr["children"]:
-            dr = self.deliveryrestrictions(child)
-            dscptr["attrs"].update(dr)
-            the_upid = self.upids(child)
-            dscptr["attrs"].update(the_upid)
+        dscptr = self._segmentation_message(dscptr)
+        dscptr = self._segmentationdescriptor_children(dscptr)
         return dscptr["attrs"]
 
     def upids(self, upid):
@@ -219,13 +233,12 @@ class SuperXmlParser:
             except ValueError:
                 seg_upid = upid["this"]
             seg_upid_type = upid["attrs"]["segmentation_upid_type"]
-            the_upid = {
+            return {
                 "segmentation_upid": upid["this"],
                 "segmentation_upid_type": seg_upid_type,
                 "segmentation_upid_type_name": upid_map[seg_upid_type][0],
                 "segmentation_upid_length": len(seg_upid),
             }
-            return the_upid
         return {}
 
     def availdescriptor(self, dscptr):
@@ -290,10 +303,8 @@ class SuperXmlParser:
                 return result["this"]
             if result["name"] == "SpliceInfoSection":
                 splice_info = self.spliceinfosection(result)
-        cmd = self.command(results)
-        dscptrs = self.descriptors(results)
         return {
             "info_section": splice_info,
-            "command": cmd,
-            "descriptors": dscptrs,
+            "command": self.command(results),
+            "descriptors": self.descriptors(results),
         }
