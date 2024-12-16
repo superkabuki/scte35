@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/pypy3
 
 """
 scte35 command line SCTE35 decoder.
@@ -308,6 +308,7 @@ def to_funk(this):
     """
     to_funk prints a cue in a variety of formats.
     """
+    cue=None
     if this in ["", b""]:
         return
     try:
