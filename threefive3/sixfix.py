@@ -30,7 +30,8 @@ class PreFix(Stream):
         super().decode(func=passed)
         global fixme
         fixme = list(set(fixme))
-        print("fixing these pids", fixme)
+        if fixme:
+            print("fixing these pids", fixme)
         return fixme
 
 
@@ -57,26 +58,30 @@ class SixFix(Stream):
                 pkt = pkt[:4] + self.pmt_payload
         return pkt
 
+    def _parse_pkts(self, out_file):
+        active = io.BytesIO()
+        pkt_count = 0
+        chunk_size = 2048
+        for pkt in self.iter_pkts():
+            pid = self._parse_pid(pkt[1], pkt[2])
+            pkt = self._parse_by_pid(pkt, pid)
+            active.write(pkt)
+            pkt_count = (pkt_count + 1) % chunk_size
+            if not pkt_count:
+                out_file.write(active.getbuffer())
+                active = io.BytesIO()
+
     def convert_pids(self):
         """
         convert_pids
         changes the stream type to 0x86 and replaces
         the existing PMT as it writes packets to the outfile
         """
-        active = io.BytesIO()
-        pkt_count = 0
-        chunk_size = 2048
-        if isinstance(self.out_file, str):
-            self.out_file = open(self.out_file, "wb")
-        with self.out_file as out_file:
-            for pkt in self.iter_pkts():
-                pid = self._parse_pid(pkt[1], pkt[2])
-                pkt = self._parse_by_pid(pkt, pid)
-                active.write(pkt)
-                pkt_count = (pkt_count + 1) % chunk_size
-                if not pkt_count:
-                    out_file.write(active.getbuffer())
-                    active = io.BytesIO()
+
+        #if isinstance(self.out_file, str):
+        #    self.out_file = open(self.out_file, "wb")
+        with open(self.out_file,"wb") as out_file:
+            self._parse_pkts(out_file)
 
     def _regen_pmt(self, n_seclen, pcr_pid, n_proginfolen, n_info_bites, n_streams):
         nbin = NBin()
@@ -106,17 +111,22 @@ class SixFix(Stream):
             n_payload = pointer_field + n_payload + (b"\xff" * pad)
         self.pmt_payload = n_payload
 
+    def _chk_payload(self, pay,pid):
+        pay = self._chk_partial(pay, pid, self._PMT_TID)
+        if not pay:
+            return False
+        return pay
+
     def _parse_pmt(self, pay, pid):
         """
         parse program maps for streams
         """
-        pay = self._chk_partial(pay, pid, self._PMT_TID)
-        if not pay:
-            return False
-        seclen = self._parse_length(pay[1], pay[2])
-        n_seclen = seclen + 6
-        if self._section_incomplete(pay, pid, seclen):
-            return False
+        pay = self._chk_payload(pay,pid)
+        if pay:
+            seclen = self._parse_length(pay[1], pay[2])
+            n_seclen = seclen + 6
+            if self._section_incomplete(pay, pid, seclen):
+                return False
         program_number = self._parse_program(pay[3], pay[4])
         pcr_pid = self._parse_pid(pay[8], pay[9])
         self.pids.pcr.add(pcr_pid)
