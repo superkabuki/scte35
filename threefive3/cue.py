@@ -24,10 +24,10 @@ class Cue(SCTE35Base):
     >>>> import threefive3
     >>>> Base64 = "/DAvAAAAAAAA///wBQb+dGKQoAAZAhdDVUVJSAAAjn+fCAgAAAAALKChijUCAKnMZ1g="
     >>>> cue = threefive3.Cue(Base64)
-
+    >>>> cue.show()
+    
     * A cue instance can be initialized with
      Base64, Bytes, Hex, Int, Json, Xml, or Xml+binary data.
-
 
     * Instance variables can be accessed via dot notation.
 
@@ -38,26 +38,7 @@ class Cue(SCTE35Base):
     >>>> cue.command.pts_time
     21695.740089
 
-    >>>> cue.info_section.table_id
-
-    '0xfc'
-
-    * display the Cue data
-
-    >>>> cue.show()
-
-    * encode to base64
-
-    >>>> cue.base64()
-
-    * encode to xml+bin
-
-    >>>> cue.xmlbin()
-
-    * encode to hex
-
-    >>>> cue.hex()
-
+   
     """
 
     def __init__(self, data=None, packet_data=None):
