@@ -5,8 +5,9 @@ threefive3.iframes
 
 import sys
 from functools import partial
-from new_reader import reader
+from .new_reader import reader
 
+PKT_SIZE = 188
 
 class IFramer:
     def __init__(self, shush=False):
