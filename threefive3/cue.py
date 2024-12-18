@@ -13,25 +13,23 @@ from .descriptors import splice_descriptor, descriptor_map
 from .crc import crc32
 from .xml import Node
 from .segmentation import table22
-from .sxp import SuperXmlParser
-
+from .x2c import xml2cue
 
 class Cue(SCTE35Base):
     """
-    The threefive3.Splice class handles parsing
+    The threefive3.Cue class handles parsing
     SCTE 35 message strings.
     Example usage:
 
-    >>>> import fu
+    >>>> import threefive3
     >>>> Base64 = "/DAvAAAAAAAA///wBQb+dGKQoAAZAhdDVUVJSAAAjn+fCAgAAAAALKChijUCAKnMZ1g="
     >>>> cue = threefive3.Cue(Base64)
 
-    # cue.decode() returns True on success,or False if decoding failed
+    * A cue instance can be initialized with
+     Base64, Bytes, Hex, Int, Json, Xml, or Xml+binary data.
 
-    >>>> cue.decode()
-    True
 
-    # After Calling cue.decode() the instance variables can be accessed via dot notation.
+    * Instance variables can be accessed via dot notation.
 
     >>>> cue.command
     {'command_length': 5, 'name': 'Time Signal', 'time_specified_flag': True,
@@ -43,6 +41,22 @@ class Cue(SCTE35Base):
     >>>> cue.info_section.table_id
 
     '0xfc'
+
+    * display the Cue data
+
+    >>>> cue.show()
+
+    * encode to base64
+
+    >>>> cue.base64()
+
+    * encode to xml+bin
+
+    >>>> cue.xmlbin()
+
+    * encode to hex
+
+    >>>> cue.hex()
 
     """
 
@@ -63,7 +77,6 @@ class Cue(SCTE35Base):
     def __repr__(self):
         return str(self.__dict__)
 
-    # decode
 
     def decode(self):
         """
@@ -400,13 +413,12 @@ class Cue(SCTE35Base):
         self.encode()
         return self.bites
 
-    def from_xml(self, gonzo):
+    def from_xml(self,gonzo):
         """
-        build_cue takes the data put into the gonzo dict
-        and builds a threefive3.Cue instance
+        from_xml converts xml to data that can
+        be loaded by a Cue instance.
         """
-        sxp = SuperXmlParser()
-        dat = sxp.xml2cue(gonzo)
+        dat = xml2cue(gonzo)
         if isinstance(
             dat, str
         ):  # a string  is returned for Binary xml tag, make sense?
