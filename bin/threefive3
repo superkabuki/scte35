@@ -320,8 +320,8 @@ def to_funk(this):
             cue = Cue(this)
         except:
             print2("Bad Data")
-        if cue:
-            funk()(cue)  #   func works here too.
+    if cue:
+        funk()(cue)  #   func works here too.
 
 
 def chk_stdin(args):
