@@ -81,6 +81,9 @@ class Cue(SCTE35Base):
     def decode(self):
         """
         Cue.decode() parses for SCTE35 data
+        
+        * decode doesn't need to be called directly
+           unless you initialize a Cue without data.
         """
         bites = self.bites
         self.descriptors = []
@@ -392,6 +395,10 @@ class Cue(SCTE35Base):
             'command': {dict},
             'descriptors': [list of {dicts}],
             }
+            
+        * load doesn't need to be called directly
+          unless you initialize a Cue without data.
+        
         """
         if isinstance(gonzo, bytes):
             gonzo = gonzo.decode()
@@ -402,7 +409,7 @@ class Cue(SCTE35Base):
                 self.decode()
                 return self.bites
             if gonzo.strip()[0] == "<":
-                self.from_xml(gonzo)
+                self._from_xml(gonzo)
                 return self.bites
             gonzo = json.loads(gonzo)
         if "command" not in gonzo:
@@ -413,9 +420,9 @@ class Cue(SCTE35Base):
         self.encode()
         return self.bites
 
-    def from_xml(self,gonzo):
+    def _from_xml(self,gonzo):
         """
-        from_xml converts xml to data that can
+        _from_xml converts xml to data that can
         be loaded by a Cue instance.
         """
         dat = xml2cue(gonzo)
