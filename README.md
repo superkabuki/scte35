@@ -3,7 +3,7 @@
 
 
 threefive continued.  SCTE-35 for the People.
-# Now with Super Advanced Error Detection Stuff. 
+# Now with Super Advanced Error Detection and Stuff. 
 * Does not generate Fatal errors, it won't break your process.
 * Displays what is in error and how to correct it.
 * Works in the cli
