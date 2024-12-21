@@ -5,9 +5,12 @@ threefive3.iframes
 
 import sys
 from functools import partial
-from .new_reader import reader
+from new_reader import reader
+from .spare import print2
 
-PKT_SIZE = 188
+
+PKT_SIZE=188
+
 
 class IFramer:
     def __init__(self, shush=False):
@@ -72,14 +75,7 @@ class IFramer:
             pts |= payload[13] >> 1
             return pts
 
-    def _is_key(self, pkt):
-        """
-        _is_key is key frame detection.
-        """
-        if self._nal(pkt):
-            return True
-        if not self._afc_flag(pkt):
-            return False
+    def _afc_approved(self,pkt):
         if self._pcr_flag(pkt):
             if self._rai_flag(pkt):
                 return True
@@ -87,16 +83,30 @@ class IFramer:
             return True
         return False
 
-    def parse(self, pkt):
+    def _is_key(self, pkt):
+        """
+        _is_key is key frame detection.
+        """
+        if self._nal(pkt):
+            return True
+        if  self._afc_flag(pkt):
+            return self._afc_approved(pkt)
+        return False
+
+    def _get_pts(self, pkt):
         pts = None
         if self._pusi_flag(pkt):
             if self._is_key(pkt):
                 pts = self._parse_pts(pkt)
-                if pts:
-                    pts = self._to90k(pts)
-                    if not self.shush:
-                        print(pts)
+                pts = self._to90k(pts)
+                if not self.shush:
+                    print2(pts)
         return pts
+
+    def parse(self, pkt):
+        return self._get_pts(pkt)
+
+
 
     def iter_pkts(self, video, num_pkts=1):
         """
@@ -134,6 +144,7 @@ def cli():
 def firstcli():
     iframer = IFramer()
     pts = iframer.first(sys.argv[1])
+    return pts
 
 
 if __name__ == "__main__":
