@@ -53,8 +53,7 @@ class Upid:
             except ValueError:
                 self.bitbin = BitBin(seg_upid.encode())
             return self.decode()
-        else:
-            self.upid_value = seg_upid
+        self.upid_value = seg_upid
         return self.upid_name, self.upid_value
 
     def _xml_format_attr(self):
