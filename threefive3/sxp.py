@@ -10,13 +10,13 @@ from .xml import strip_ns, iter_attrs
 
 class SuperXmlParser:
 
-    CHILD_NODES=[
-                    "Program",
-                    "SpliceTime",
-                    "DeliveryRestrictions",
-                    "SegmentationUpid",
-                    "BreakDuration",
-                ]
+    CHILD_NODES = [
+        "Program",
+        "SpliceTime",
+        "DeliveryRestrictions",
+        "SegmentationUpid",
+        "BreakDuration",
+    ]
 
     def _split_attrs(self, node):
         node = node.replace("='", '="').replace("' ", '" ')
