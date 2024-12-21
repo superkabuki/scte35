@@ -18,7 +18,7 @@ threefive continued.  SCTE-35 for the People.
 * If you think you have a bug, I need you to prove it. I need the entire error message, the code you're running, and the SCTE-35.
 ---
 # Special Requests 
-* __I am not here to teach you SCTE-35__.[ 
+* __I am not here to teach you SCTE-35__.
 * __If need some work done, this is what I do for a living, you can hire me.__
 * SCTE-35 is not intuitive. What will take you several months to figure out, will only take me a few hours to do.
 * If you want to discuss your project open an issue and I'll send you my contact info.
