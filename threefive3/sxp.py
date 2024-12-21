@@ -4,8 +4,9 @@ home of the SuperXmlParser class
 
 """
 
-from xml.sax.saxutils import escape, unescape
-from .xml import t2s, un_camel, un_xml, strip_ns, iter_attrs
+from xml.sax.saxutils import unescape
+from .xml import strip_ns, iter_attrs
+
 
 class SuperXmlParser:
 
@@ -35,8 +36,9 @@ class SuperXmlParser:
                 for x in attrs
             }
             attrs = iter_attrs(parsed)
-        finally:
-            return attrs
+        except:
+            pass
+        return attrs
 
     def mk_tag(self, data):
         """
