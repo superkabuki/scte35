@@ -1,7 +1,6 @@
 """
 x2c.py  xml to cue conversion
 """
-from .descriptors import descriptor_map, k_by_v
 from .segmentation import table20, table22
 from .sxp import SuperXmlParser
 from .upids import upid_map
@@ -233,4 +232,3 @@ def xml2cue( exemel):
         "command": _command(results),
         "descriptors": _descriptors(results),
     }
-
