@@ -163,7 +163,7 @@ class Node:
         self.depth = 0
         self.namespace = NameSpace()
         self.namespace.ns = ns
-        self.attr = None
+        self.attrs = None
         self._handle_attrs(attrs)
         self.children = []
 
