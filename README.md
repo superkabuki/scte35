@@ -30,7 +30,7 @@ sed -e 's/threefive/threefive3/g'
 ---
 # Special Requests 
 * __I am not here to teach you SCTE-35__.
-* __If need some work done, this is what I do for a living, you can hire me.__
+* If need some work done, this is what I do for a living, you can hire me.
 * If you want to discuss your project open an issue and I'll send you my contact info.
 ---
 
