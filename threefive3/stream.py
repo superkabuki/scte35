@@ -12,6 +12,7 @@ from .packetdata import PacketData
 from .streamtypes import streamtype_map
 from .iframes import IFramer
 
+
 def no_op(cue):
     """
     no_op is just a dummy func to pass to Stream.decode()
@@ -50,7 +51,7 @@ class ProgramInfo:
         self.service = b""
         self.streams = {}  # pid to stream_type mapping
 
-    def _mk_vee(self,k):
+    def _mk_vee(self, k):
         vee = int(self.streams[k], base=16)
         if vee in streamtype_map:
             vee = f"{hex(vee)}\t{streamtype_map[vee]}"
@@ -76,7 +77,6 @@ class ProgramInfo:
         print2("\t  Pid\t\tType")
         for k in keys:
             self._mk_vee(k)
-
 
 
 class Pids:
@@ -160,7 +160,7 @@ class Stream:
         self.the_scte35_pids = []
         self.pids = Pids()
         self.maps = Maps()
-        self.iframer=IFramer()
+        self.iframer = IFramer()
 
     def __repr__(self):
         return str(self.__dict__)
