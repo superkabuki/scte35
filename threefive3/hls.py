@@ -99,7 +99,7 @@ class Scte35Profile:
         """
         write_profile writes sc.profile for editing.
         """
-        with open(pro_file, "w") as pro_f:
+        with open(pro_file, "w","utf-8") as pro_f:
             for que, vee in vars(self).items():
                 line = f"{que} = "
                 line = self._list_in_profile(vee, line)
@@ -218,6 +218,7 @@ class Scte35Profile:
         """
         validate_cue use the parsing profile to validate a SCTE-35 Cue.
         """
+        pts=None
         line = None
         cue.decode()
         if cue.command.command_type in self.command_types:
@@ -632,14 +633,14 @@ class CuePuller:
         chk_x_daterange handles #EXT-X-DATERANGE tags.
         """
         self.show_tags(tags["#EXT-X-DATERANGE"])
-        #  for scte35_tag in ["SCTE35-OUT", "SCTE35-IN"]:
-        if scte35_tag in tags["#EXT-X-DATERANGE"]:
-            cue = Cue(tags["#EXT-X-DATERANGE"][scte35_tag])
-            pts, new_line = self.prof.validate_cue(cue)
-            if pts and new_line:
-                return self.set_cue_state(
-                    tags["#EXT-X-DATERANGE"][scte35_tag], new_line
-                )
+        for scte35_tag in ["SCTE35-OUT", "SCTE35-IN"]:
+            if scte35_tag in tags["#EXT-X-DATERANGE"]:
+                cue = Cue(tags["#EXT-X-DATERANGE"][scte35_tag])
+                pts, new_line = self.prof.validate_cue(cue)
+                if pts and new_line:
+                    return self.set_cue_state(
+                        tags["#EXT-X-DATERANGE"][scte35_tag], new_line
+                    )
         return self.invalid(line)
 
     def chk_x_oatcls(self, tags, line):
