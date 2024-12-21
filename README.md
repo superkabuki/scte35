@@ -15,10 +15,11 @@ threefive continued.  SCTE-35 for the People.
 
 # Issues and Bugs and Feature Requests 
 * If there is a bug in threefive3, please do report it and if it's valid, I will fix it.
-* If you think you have a bug, I need you to prove it. Show mee the entire error message, the code you're running, and the SCTE-35.
-* I give the software away, but I don't give my time away.
-* If need some work done, this is what I do for a living, you can hire me.
-* What will take you several months to figure out, will only take me a few hours to do.
+* If you think you have a bug, I need you to prove it. I need the entire error message, the code you're running, and the SCTE-35.
+---
+* __I am not here to teach you SCTE-35__.
+* __If need some work done, this is what I do for a living, you can hire me.__
+* SCTE-35 is not intuitive. What will take you several months to figure out, will only take me a few hours to do.
 * If you want to discuss your project open an issue and I'll send you my contact info.
 
 
