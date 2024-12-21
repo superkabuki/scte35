@@ -15,6 +15,7 @@ from .xml import Node
 from .segmentation import table22
 from .x2c import xml2cue
 
+
 class Cue(SCTE35Base):
     """
     The threefive3.Cue class handles parsing
@@ -25,7 +26,7 @@ class Cue(SCTE35Base):
     >>>> Base64 = "/DAvAAAAAAAA///wBQb+dGKQoAAZAhdDVUVJSAAAjn+fCAgAAAAALKChijUCAKnMZ1g="
     >>>> cue = threefive3.Cue(Base64)
     >>>> cue.show()
-    
+
     * A cue instance can be initialized with
      Base64, Bytes, Hex, Int, Json, Xml, or Xml+binary data.
 
@@ -38,7 +39,7 @@ class Cue(SCTE35Base):
     >>>> cue.command.pts_time
     21695.740089
 
-   
+
     """
 
     def __init__(self, data=None, packet_data=None):
@@ -58,11 +59,10 @@ class Cue(SCTE35Base):
     def __repr__(self):
         return str(self.__dict__)
 
-
     def decode(self):
         """
         Cue.decode() parses for SCTE35 data
-        
+
         * decode doesn't need to be called directly
            unless you initialize a Cue without data.
         """
@@ -210,8 +210,8 @@ class Cue(SCTE35Base):
         Cue.info_section.descriptor_loop_length,
         then call Cue._descriptor_loop
         """
-##        if len(bites) < 2:
-##            return False
+        ##        if len(bites) < 2:
+        ##            return False
         while bites:
             dll = (bites[0] << 8) | bites[1]
             self.info_section.descriptor_loop_length = dll
@@ -377,10 +377,10 @@ class Cue(SCTE35Base):
             'command': {dict},
             'descriptors': [list of {dicts}],
             }
-            
+
         * load doesn't need to be called directly
           unless you initialize a Cue without data.
-        
+
         """
         if isinstance(gonzo, bytes):
             gonzo = gonzo.decode()
@@ -402,7 +402,7 @@ class Cue(SCTE35Base):
         self.encode()
         return self.bites
 
-    def _from_xml(self,gonzo):
+    def _from_xml(self, gonzo):
         """
         _from_xml converts xml to data that can
         be loaded by a Cue instance.
