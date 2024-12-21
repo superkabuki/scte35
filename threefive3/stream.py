@@ -10,7 +10,7 @@ from .spare import print2
 from .cue import Cue
 from .packetdata import PacketData
 from .streamtypes import streamtype_map
-
+from .iframes import IFramer
 
 def no_op(cue):
     """
@@ -50,6 +50,14 @@ class ProgramInfo:
         self.service = b""
         self.streams = {}  # pid to stream_type mapping
 
+    def _mk_vee(self,k):
+        vee = int(self.streams[k], base=16)
+        if vee in streamtype_map:
+            vee = f"{hex(vee)}\t{streamtype_map[vee]}"
+        else:
+            vee = f"{vee} Unknown"
+        print2(f"\t  {k} [{hex(k)}]\t{vee}")
+
     def show(self):
         """
         show print2 the Program Infomation
@@ -67,12 +75,8 @@ class ProgramInfo:
         keys = sorted(self.streams)
         print2("\t  Pid\t\tType")
         for k in keys:
-            vee = int(self.streams[k], base=16)
-            if vee in streamtype_map:
-                vee = f"{hex(vee)}\t{streamtype_map[vee]}"
-            else:
-                vee = f"{vee} Unknown"
-            print2(f"\t  {k} [{hex(k)}]\t{vee}")
+            self._mk_vee(k)
+
 
 
 class Pids:
@@ -156,6 +160,7 @@ class Stream:
         self.the_scte35_pids = []
         self.pids = Pids()
         self.maps = Maps()
+        self.iframer=IFramer()
 
     def __repr__(self):
         return str(self.__dict__)
@@ -252,9 +257,7 @@ class Stream:
         func can be set to a custom function that accepts
         a threefive3.Cue instance as it's only argument.
         """
-        if not self._find_start():
-            return
-        num_pkts = 7
+        num_pkts = 280
         for chunk in self.iter_pkts(num_pkts=num_pkts):
             _ = [func(cue) for cue in self._mk_pkts(chunk) if cue]
             del _
@@ -530,7 +533,7 @@ class Stream:
         if not pay:
             if pid in self.pids.maybe_scte35:
                 self.pids.maybe_scte35.remove(pid)
-                return False
+            return False
         if pay[13] == self.show_null:
             return False
         return pay
