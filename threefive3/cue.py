@@ -210,13 +210,14 @@ class Cue(SCTE35Base):
         Cue.info_section.descriptor_loop_length,
         then call Cue._descriptor_loop
         """
-        if len(bites) < 2:
-            return False
-        dll = (bites[0] << 8) | bites[1]
-        self.info_section.descriptor_loop_length = dll
-        bites = bites[2:]
-        self._descriptor_loop(bites[:dll])
-        return bites[dll:]
+##        if len(bites) < 2:
+##            return False
+        while bites:
+            dll = (bites[0] << 8) | bites[1]
+            self.info_section.descriptor_loop_length = dll
+            bites = bites[2:]
+            self._descriptor_loop(bites[:dll])
+            return bites[dll:]
 
     def mk_info_section(self, bites):
         """
