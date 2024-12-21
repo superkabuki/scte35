@@ -2,15 +2,26 @@
 ![image](https://github.com/user-attachments/assets/b03595f6-04b0-4fc1-a5b7-ccc6ec3394d7)
 
 
-threefive continued.  SCTE-35 for the People.
+# Yes, I'm the guy who wrote threefive.
+> I wrote threefive because I couldn't find any SCTE-35 tools. There were a few libraries, but SCTE-35 wasn't their focus,
+> and they required writing several hundred lines of code to do anything. I think a library should save you time.
+# Why threefive3, why not just threefive?
+> Honestly, I wanted to rethink everything.After going through the code, I kept about 75% of it. I completely rewrote the Xml parser,I did a lot of work with the Cue class, HLS, and really tuned up the cli. The cli is amazing and super easy to use.
+# How do I upgrade my code to threefive3?
+> Despite making a lot of changes, the api remains. threefive3 is pretty much a drop in replacement for threefive. I used sed to upgrade my code.
+```js
+sed -e 's/threefive/threefive3/g'
+```
+> One thing to note, calling load or decode is no longer necessary for the Cue class, however, the methods are there in case you do call them.
 # Now with Super Advanced Error Detection and Stuff. 
+* This is super cool. 
 * Does not generate Fatal errors, it won't break your process.
 * Displays what is in error and how to correct it.
 * Works in the cli
 * Works in code.
 ![image](https://github.com/user-attachments/assets/581e0081-0c9d-4f9c-87a2-dd7f4cf3ce8c)
 
-![image](https://github.com/user-attachments/assets/6a430e12-19b8-422e-9545-b14ecdd7ce60)
+![image](https://github.com/user-attachments/assets/886a2ab8-06eb-4abd-94b8-2a24d905c670)
 
 
 # Issues and Bugs.
@@ -20,7 +31,6 @@ threefive continued.  SCTE-35 for the People.
 # Special Requests 
 * __I am not here to teach you SCTE-35__.
 * __If need some work done, this is what I do for a living, you can hire me.__
-* SCTE-35 is not intuitive. What will take you several months to figure out, will only take me a few hours to do.
 * If you want to discuss your project open an issue and I'll send you my contact info.
 ---
 
