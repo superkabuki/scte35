@@ -25,11 +25,9 @@ sed -e 's/threefive/threefive3/g'
 
 
 # Issues and Bugs.
-* If there is a bug in threefive3, please do report it and if it's valid, I will fix it.
-* If you think you have a bug, I need you to prove it. I need the entire error message, the code you're running, and the SCTE-35.
+* If you think you have a bug, I need you to prove it, show me the entire error message, the code you're running, and the SCTE-35.
 ---
 # Special Requests 
-* __I am not here to teach you SCTE-35__.
 * If need some work done, this is what I do for a living, you can hire me.
 * If you want to discuss your project open an issue and I'll send you my contact info.
 ---
@@ -56,6 +54,7 @@ ___
 
 ### The cli tool installs automatically with pip or the Makefile.
 
+
 * [__SCTE-35 Inputs__](#inputs)
 * [__SCTE-35 Outputs__](#outputs)
 * [__Parse __MPEGTS__ streams for __SCTE-35__](#streams)
@@ -65,127 +64,126 @@ ___
 * [__Repair SCTE-35 streams__ changed to __bin data__ by __ffmpeg__](#sixfix)
 
 
-### `Inputs` 
-* the cli can __decode SCTE-35__ from
- * [__Base64__](#base64)
- * [__Hex,__](#hex)
- * [__HLS,__](#hls)
- * [__JSON,__](#json)
- * [__Xml,__](#xml)
- * [__Xml+Bin__](#xmlbin)
- * [__MPEGTS Streams__](#streams)
+### Inputs
 
 * Most __inputs__ are __auto-detected.__ 
 * __stdin__ is __auto selected__ and __auto detected.__
 * __SCTE-35 data is printed to stderr__
 * __stdout is used when piping video__
-#### `Base64` 
-* parse SCTE-35 encoded in Base64
-```rebol
-threefive3 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU='
+
+| Input Type |     Cli Example                                                                                             |
+|------------|-------------------------------------------------------------------------------------------------------------|
+| Base64     |  `threefive3 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU='`
+| Hex        |`threefive3 0xfc301600000000000000fff00506fed605225b0000b0b65f3b`|
+| HLS        |`threefive3 hls https://example.com/master.m3u8`                                                             |
+| JSON       |`threefive3 < json.json`  |
+| Xml        | `threefive3  < xml.xml`                                                                                     |
+| Xmlbin     | `threefive3 < xmlbin.xml`                                                                                   |
+
+# Streams
+
+|Protocol       |  Cli Example                                                                                                                                       |
+|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+|  File         |   `threefive3 video.ts`                                                                                                                            |
+|  Http(s)      |   `threefive3 https://example.com/video.ts`                                                                                                        |
+|  Stdin        |  `threefive3 < video.ts`            |
+|  UDP Multicast|  `threefive3 udp://@235.35.3.5:9999`                                                                          |
+|  UDP Unicast  |                                                                      `threefive3 udp://10.0.0.7:5555`                                              |
+|  HLS          |                                                                                                    `threefive3 hls https://example.com/master.m3u8`|
+|               |                                                                                                                                                    |
+
+
+### Outputs
+* SCTE-35 output format
+* Any input (except HLS,) can be returned as any output. (Base64 to Hex, Mpegts to xml, etc...) 
+
+
+| Output Type | Cli Example         |
+|-------------|----------------------------------------------------------|
+| Base 64     |                                                                                                                                                                    `threefive3 0xfc301600000000000000fff00506fed605225b0000b0b65f3b  base64  `                                                                                                                                                                                                                                                                                                                                         |
+| Bytes       |                                                                                 `threefive3 0xfc301600000000000000fff00506fed605225b0000b0b65f3b  bytes`                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| Hex         | `threefive3 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU='  hex`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Integer     |                                                                                                                                                                                                                                                       `threefive3 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU='  int`   |
+| JSON        |                                                                                                                                                                                                                                                                                                              `threefive3 0xfc301600000000000000fff00506fed605225b0000b0b65f3b json ` |
+| Xml         |                                                                                                                                                                                                                                                                                                                                                                                                                        `threefive3 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' xml `                                                                                 `         |
+| Xml+bin     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        `threefive3 0xfc301600000000000000fff00506fed605225b0000b0b65f3b xmlbin   `      |`
+
+
+### Output Examples
+* This is how the outputs look.
+* Base64
+```js
+/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=
+```
+* Bytes
+```js
+b'\xfc0,\x00\x00\x00\x03(\x98\x00\xff\xf0\n\x05\x00\x00\x00\x01\x7f_\x99\x99\x01\x01\x00\x11\x02\x0fCUEI\x00\x00\x00\x00\x7f\x80\x01\x005\x00\x00-\x97A\x95'
+
+```
+* Hex
+```js
+0xfc302c00000003289800fff00a05000000017f5f999901010011020f43554549000000007f8001003500002d974195
+```
+* Int
+```js
+151622312799635094191794191736756941723013293850254190245706580675544251579467254651746556435953373552591284683157
+```
+* Json
+```js
+{
+    "info_section": {
+        "table_id": "0xfc",
+        "section_syntax_indicator": false,
+        "private": false,
+        "sap_type": "0x03",
+        "sap_details": "No Sap Type",
+        "section_length": 22,
+        "protocol_version": 0,
+        "encrypted_packet": false,
+        "encryption_algorithm": 0,
+        "pts_adjustment": 0.0,
+        "cw_index": "0x00",
+        "tier": "0x0fff",
+        "splice_command_length": 5,
+        "splice_command_type": 6,
+        "descriptor_loop_length": 0,
+        "crc": "0x9cfdb940"
+    },
+    "command": {
+        "command_length": 5,
+        "command_type": 6,
+        "name": "Time Signal",
+        "time_specified_flag": true,
+        "pts_time": 38556.091189
+    },
+    "descriptors": [],
+    "packet_data": {
+        "pid": "0x100",
+        "program": 1,
+        "pts": 1.4
+    }
+}
 ```
 
-#### `Hex`
-* parse SCTE-35 encoded in Hex
-```rebol
-threefive3 0xfc302c00000003289800fff00a05000000017f5f999901010011020f43554549000000007f8001003500002d974195
+* Xml
+```js
+<scte35:SpliceInfoSection xmlns:scte35="https://scte.org/schemas/35"  ptsAdjustment="207000" protocolVersion="0" sapType="3" tier="4095">
+   <scte35:SpliceInsert spliceEventId="1" spliceEventCancelIndicator="false" spliceImmediateFlag="true" eventIdComplianceFlag="true" availNum="1" availsExpected="1" outOfNetworkIndicator="false" uniqueProgramId="39321"/>
+   <!-- Provider Placement Opportunity End -->
+   <scte35:SegmentationDescriptor segmentationEventId="0" segmentationEventCancelIndicator="false" segmentationEventIdComplianceIndicator="true" segmentationTypeId="53" segmentNum="0" segmentsExpected="0">
+      <scte35:DeliveryRestrictions webDeliveryAllowedFlag="false" noRegionalBlackoutFlag="false" archiveAllowedFlag="false" deviceRestrictions="0"/>
+      <!-- Type 0x01 is deprecated. Use type 0x0C, MPU. -->
+      <scte35:SegmentationUpid segmentationUpidType="1" segmentationUpidFormat="hexbinary"/>
+   </scte35:SegmentationDescriptor>
+</scte35:SpliceInfoSection>
 ```
 
-#### `HLS`
-
-* parse SCTE-35 from HLS manifests and segments
-```rebol
-threefive3 hls https://example.com/master.m3u8
+* xml+bin
+```js
+<scte35:Signal xmlns:scte35="https://scte.org/schemas/35">
+   <scte35:Binary>/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=</scte35:Binary>
+</scte35:Signal>
 ```
-
-#### `Json`
-
-```rebol
-cat json.json | threefive3
-```
-#### `Xml`
-* you can make a xml.xml file like this:
-  * redirect 2 (stderr) to the file 
-```awk
-./threefive3  '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' xml 2> xml.xml
-```
-* pass in
-```rebol
-threefive3  < xml.xml
-```
-#### `Xmlbin`
-
-```rebol
-threefive3 < xmlbin.xml
-```
-___
-### `Outputs`
-
- * the cli can __encode SCTE-35__ to
- * [__Base64__](#base64-1)
- * [__Bytes__](#bytes)
- * [__Hex,__](#hex-1)
- * [__HLS,__](#hls-1)
- * [__JSON,__](#json-1)
- * [__Xml,__](#xml-1)
- * [__Xml+Bin__](#xmlbin-1)
-
-* default output is `json`
-
-#### json
-```rebol
-threefive3 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU='
-```
-
-#### `base64`
-```rebol
-threefive3 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' base64
-```
-#### `bytes`
-```rebol
-threefive3 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' bytes
-```
-#### `hex`
-```rebol
-threefive3 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' hex
-```
-#### `int`
-```rebol
-threefive3 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' int
-```
-#### `xml`
-```rebol
-threefive3 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' xml
-```
-#### `xml+bin`
-```rebol
-threefive3 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU=' xmlbin
-```
-___
-## Streams
-### `File and Network Protocols`
-
-#### `File` 
-```rebol
-threefive3 video.ts
-```
-#### `Http(s)` 
-```rebol
-threefive3 https://example.com/master.m3u8
-```
-#### `Multicast`
-```rebol
-threefive3 udp://@235.35.3.5:9999
-```
-#### `stdin`
-```rebol
-cat video.ts | threefive3
-```
-#### `Udp Unicast`
-```rebol
-threefive3 udp://10.0.0.7:5555
-```
-___
 
 ### `hls`
 * parse hls manifests and segments for SCTE-35
