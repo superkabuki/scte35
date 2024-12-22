@@ -19,9 +19,7 @@ sed -e 's/threefive/threefive3/g'
 * Displays what is in error and how to correct it.
 * Works in the cli
 * Works in code.
-![image](https://github.com/user-attachments/assets/581e0081-0c9d-4f9c-87a2-dd7f4cf3ce8c)
-
-![image](https://github.com/user-attachments/assets/886a2ab8-06eb-4abd-94b8-2a24d905c670)
+![image](https://github.com/user-attachments/assets/a5a13dfe-2d36-4956-8b85-c16161799c64)
 
 
 # Issues and Bugs.
