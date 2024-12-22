@@ -62,7 +62,7 @@ ___
 * [__Repair SCTE-35 streams__ changed to __bin data__ by __ffmpeg__](#sixfix)
 
 
-### Inputs
+# `Inputs`
 
 * Most __inputs__ are __auto-detected.__ 
 * __stdin__ is __auto selected__ and __auto detected.__
