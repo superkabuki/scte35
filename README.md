@@ -23,7 +23,7 @@ sed -e 's/threefive/threefive3/g'
 
 
 # Issues and Bugs.
-* If you think you have a bug, I need you to prove it, show me the entire error message, the code you're running, and the SCTE-35.
+* If you think you have a bug, I'll quickly fix it, but first I need you to prove it to me. Show me the entire error message, the code you're running, and the SCTE-35.
 ---
 # Special Requests 
 * If need some work done, this is what I do for a living, you can hire me.
