@@ -2,7 +2,7 @@
 ![image](https://github.com/user-attachments/assets/b03595f6-04b0-4fc1-a5b7-ccc6ec3394d7)
 
 
-# Yes, I'm the guy who wrote threefive.
+# Yes, I wrote threefive.
 > I wrote threefive because I couldn't find any SCTE-35 tools. There were a few libraries, but SCTE-35 wasn't their focus,
 > and they required writing several hundred lines of code to do anything. I think a library should save you time.
 # Why threefive3, why not just threefive?
