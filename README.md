@@ -1,5 +1,4 @@
-
-![image](https://github.com/user-attachments/assets/b03595f6-04b0-4fc1-a5b7-ccc6ec3394d7)
+![image](https://github.com/user-attachments/assets/adae03a1-9f85-403e-9dce-d134e0996903)
 
 
 #  I wrote threefive.
@@ -35,7 +34,7 @@ sed -e 's/threefive/threefive3/g'
 * Displays what is in error and how to correct it.
 * Works in the cli
 * Works in code.
-![image](https://github.com/user-attachments/assets/a5a13dfe-2d36-4956-8b85-c16161799c64)
+  ![image](https://github.com/user-attachments/assets/50331e73-cd0a-46d6-b265-1b212d625737)
 
 
 # Issues and Bugs.
@@ -71,7 +70,7 @@ ___
 
 * [__SCTE-35 Inputs__](#inputs)
 * [__SCTE-35 Outputs__](#outputs)
-* [__Parse __MPEGTS__ streams for __SCTE-35__](#streams)
+* [Parse __MPEGTS__ streams for __SCTE-35__](#streams)
 * [Parse __SCTE-35__ in __hls__](#hls)
 * [Display __MPEGTS__ __iframes__](#iframes)
 * [Display raw __SCTE-35 packets__ from __video streams__](#packets)
@@ -87,12 +86,12 @@ ___
 
 | Input Type |     Cli Example                                                                                             |
 |------------|-------------------------------------------------------------------------------------------------------------|
-| Base64     |  `threefive3 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU='`
-| Hex        |`threefive3 0xfc301600000000000000fff00506fed605225b0000b0b65f3b`|
-| HLS        |`threefive3 hls https://example.com/master.m3u8`                                                             |
-| JSON       |`threefive3 < json.json`  |
-| Xml        | `threefive3  < xml.xml`                                                                                     |
-| Xmlbin     | `threefive3 < xmlbin.xml`                                                                                   |
+| __Base64__     |  `threefive3 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU='`
+| __Hex__        |`threefive3 0xfc301600000000000000fff00506fed605225b0000b0b65f3b`|
+| __HLS__         |`threefive3 hls https://example.com/master.m3u8`                                                             |
+| __JSON__        |`threefive3 < json.json`  |
+| __Xml__         | `threefive3  < xml.xml`                                                                                     |
+| __Xmlbin__      | `threefive3 < xmlbin.xml`                                                                                   |
 
 # Streams
 
@@ -108,14 +107,16 @@ ___
 
 
 ### Outputs
-* SCTE-35 output format
-* Any input (except HLS,) can be returned as any output. (Base64 to Hex, Mpegts to xml, etc...) 
+* output type is determined by the key words __base64, bytes, hex, int, json, xml, and xmlbin__.
+* __json is the default__.
+* __Any input (except HLS,) can be returned as any output__
+  * examples __Base64 to Hex__, or  __Mpegts to Xml__, etc...) 
 
 
 | Output Type | Cli Example         |
 |-------------|----------------------------------------------------------|
-| Base 64     |                                                                                                                                                                    `threefive3 0xfc301600000000000000fff00506fed605225b0000b0b65f3b  base64  `                                                                                                                                                                                                                                                                                                                                         |
-| Bytes       |                                                                                 `threefive3 0xfc301600000000000000fff00506fed605225b0000b0b65f3b  bytes`                                                                                                                                                                                                                                                                                                                                                                                                                               |
+|__Base 64__     |                                                                                                                                                                    `threefive3 0xfc301600000000000000fff00506fed605225b0000b0b65f3b  base64  `                                                                                                                                                                                                                                                                                                                                         |
+| __Bytes__       |                                                                                 `threefive3 0xfc301600000000000000fff00506fed605225b0000b0b65f3b  bytes`                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | Hex         | `threefive3 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU='  hex`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | Integer     |                                                                                                                                                                                                                                                       `threefive3 '/DAsAAAAAyiYAP/wCgUAAAABf1+ZmQEBABECD0NVRUkAAAAAf4ABADUAAC2XQZU='  int`   |
 | JSON        |                                                                                                                                                                                                                                                                                                              `threefive3 0xfc301600000000000000fff00506fed605225b0000b0b65f3b json ` |
