@@ -5,11 +5,15 @@
 > I wrote threefive because I couldn't find any SCTE-35 tools. There were a few libraries, but SCTE-35 wasn't their focus,
 > and they required writing several hundred lines of code to do anything. I think a library should save you time.
 # Why threefive3, why not just threefive?
-* __Answer #1__ Github F2A'ed out of my account, and I have no idea where I put the recovery codes. I have more than one Internet account, where I am supposed to keep all this nonsense? F2A is complete nonsense. It doesn't matter how secure it is, if a security measure prevents me from accessing my account, that's not secure, that's locked out.
+* __Answer #1__ Github F2A'ed out of my account, and I have no idea where I put the recovery codes. I have more than one Internet account, where I am supposed to keep all this data? Should I store in some company's cloud so they can read it or give it away to Eastern European script kiddies? F2A is complete nonsense. It doesn't matter how secure it is, if a security measure prevents me from accessing my account, that's not secure, that's locked out.
 * __Answer #2__     Two repos with the same name, would be confusing.
 * __Answer #3__ I wanted to rethink everything. After going through the code, I kept about 75% of it. I completely rewrote the Xml parser,I did a lot of work with the Cue class, HLS, and really tuned up the cli. The cli is amazing and super easy to use.
 *  __Answer #4__  I came up with a really cool name, but it wasn't available on pypi.org for a package name.
 *  __Answer #5__  Really, I was just getting a little bored with the whole thing, I just wanted to shake things up a little, keep it fun.
+*  __Answer #6__ Have you seen chewy Tic Tacs? They're just mini jelly beans.
+*  __Answer #7__ I'll tell you the truth, everything is a lie.
+*  __Answer #8__  I heard that Obama is a lizard. I don't know about his wife.
+  
 # How do I upgrade my code to threefive3?
 > Despite making a lot of changes, the api remains. threefive3 is pretty much a drop in replacement for threefive. I used sed to upgrade my code.
 ```js
