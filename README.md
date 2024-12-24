@@ -5,13 +5,14 @@
 > I wrote threefive because I couldn't find any SCTE-35 tools. There were a few libraries, but SCTE-35 wasn't their focus,
 > and they required writing several hundred lines of code to do anything. I think a library should save you time.
 # Why threefive3, why not just threefive?
-* __Answer #1__ Github F2A'ed out of my account, and I have no idea where I put the recovery codes. I have more than one Internet account, where I am supposed to keep all this data? Should I store in some company's cloud so they can read it or give it away to Eastern European script kiddies? F2A is complete nonsense. It doesn't matter how secure it is, if a security measure prevents me from accessing my account, that's not secure, that's locked out.
-* __Answer #2__     Two repos with the same name, would be confusing.
-* __Answer #3__ I wanted to rethink everything. After going through the code, I kept about 75% of it. I completely rewrote the Xml parser,I did a lot of work with the Cue class, HLS, and really tuned up the cli. The cli is amazing and super easy to use.
+* __Answer #1__  <s>Github F2A'ed out of my account, and I have no idea where I put the recovery codes. I have more than one Internet account, where I am supposed to keep all this data? Should I store in some company's cloud so they can read it or give it away to Eastern European script kiddies? F2A is complete nonsense. It doesn't matter how secure it is, if a security measure prevents me from accessing my account, that's not secure, that's locked out.</s>
+* __Answer #2__     <s>Two repos with the same name, would be confusing.</s>
+* __Answer #3__  <s>I wanted to rethink everything. After going through the code, I kept about 75% of it. I completely rewrote the Xml parser,I did a lot of work with the Cue class, HLS, and really tuned up the cli. The cli is amazing and super easy to use.</s>
 *  __Answer #4__  I came up with a really cool name, but it wasn't available on pypi.org for a package name.
-*  __Answer #5__  Really, I was just getting a little bored with the whole thing, I just wanted to shake things up a little, keep it fun.
-*  __Answer #6__ Have you seen chewy Tic Tacs? They're just mini jelly beans.
-*  __Answer #7__ I'll tell you the truth, everything is a lie.
+*  __Answer #5__  <s>Really, I was just getting a little bored with the whole thing, I just wanted to shake things up a little, keep it fun.</s>
+*  __Answer #6__ <s>Have you seen chewy Tic Tacs? They're just mini jelly beans.</s>
+*  __Answer #7__ <s>I'll tell you the truth, everything is a lie.</s>
+*  __Answer #8__ <s>Obama is a lizard. I'm not sure about his wife.</s>
   
 # How do I upgrade my code to threefive3?
 > Despite making a lot of changes, the api remains. threefive3 is pretty much a drop in replacement for threefive. I used sed to upgrade my code.
@@ -22,7 +23,8 @@ sed -e 's/threefive/threefive3/g'
 >
 > 
 # Is threefive3 faster than threefive?
-* __threefive__ vs. __threefive3__ vs. __threefive3 next release__
+###  `threefive` vs. `threefive3`  vs. `threefive3 next release`
+#
 ![image](https://github.com/user-attachments/assets/7624c482-2a52-4d2b-83ff-25bac4720a34)
 
 
