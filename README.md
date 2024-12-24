@@ -24,10 +24,11 @@ sed -e 's/threefive/threefive3/g'
 ![image](https://github.com/user-attachments/assets/7624c482-2a52-4d2b-83ff-25bac4720a34)
 
 
-
 * The next release of __threefive3 parses 3.7GB of MPEGTS video in just 3.422 seconds. Over 1GB a second.__
-* 
+* _testing was done on a beatup chrome book reporting 5GB of RAM running Debian Sid_
+  
 ---
+
 # Now with Super Advanced Error Detection and Stuff. 
 * This is super cool. 
 * Does not generate Fatal errors, it won't break your process.
