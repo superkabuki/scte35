@@ -17,6 +17,17 @@
 sed -e 's/threefive/threefive3/g'
 ```
 > One thing to note, calling load or decode is no longer necessary for the Cue class, however, the methods are there in case you do call them.
+>
+> 
+# Is threefive3 faster than threefive?
+* __threefive__ vs. __threefive3__ vs. __threefive3 next release__
+![image](https://github.com/user-attachments/assets/7624c482-2a52-4d2b-83ff-25bac4720a34)
+
+
+
+* The next release of __threefive3 parses 3.7GB of MPEGTS video in just 3.422 seconds. Over 1GB a second.__
+* 
+---
 # Now with Super Advanced Error Detection and Stuff. 
 * This is super cool. 
 * Does not generate Fatal errors, it won't break your process.
