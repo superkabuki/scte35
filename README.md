@@ -1,7 +1,7 @@
 ![image](https://github.com/user-attachments/assets/adae03a1-9f85-403e-9dce-d134e0996903)
 
 
-#  I wrote threefive.
+
 > I wrote threefive because I couldn't find any SCTE-35 tools. There were a few libraries, but SCTE-35 wasn't their focus,
 > and they required writing several hundred lines of code to do anything. I think a library should save you time.
 # Why threefive3, why not just threefive?
