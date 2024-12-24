@@ -12,7 +12,6 @@
 *  __Answer #5__  Really, I was just getting a little bored with the whole thing, I just wanted to shake things up a little, keep it fun.
 *  __Answer #6__ Have you seen chewy Tic Tacs? They're just mini jelly beans.
 *  __Answer #7__ I'll tell you the truth, everything is a lie.
-*  __Answer #8__  I heard that Obama is a lizard. I don't know about his wife.
   
 # How do I upgrade my code to threefive3?
 > Despite making a lot of changes, the api remains. threefive3 is pretty much a drop in replacement for threefive. I used sed to upgrade my code.
