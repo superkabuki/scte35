@@ -99,7 +99,7 @@ class Scte35Profile:
         """
         write_profile writes sc.profile for editing.
         """
-        with open(pro_file, "w","utf-8") as pro_f:
+        with open(pro_file, "w", "utf-8") as pro_f:
             for que, vee in vars(self).items():
                 line = f"{que} = "
                 line = self._list_in_profile(vee, line)
@@ -127,10 +127,12 @@ class Scte35Profile:
         """
         clean_n_split a line.
         """
+        translate_map={34:94,10:94,9:94,32:94,39:94}
         this, that = None, None
-        bad = [" ", "\n", "\t", '"', "'"]
-        for bee in bad:
-            line = line.replace(bee, "")
+##        bad = [" ", "\n", "\t", '"', "'"]
+##        for bee in bad:
+##            line = line.replace(bee, "")
+        line=line.translate(translate_map).replace('^','')
         if line:
             this, that = line.split("=", 1)
             that = list(that.split(","))
@@ -196,7 +198,7 @@ class Scte35Profile:
 
     def _chk_pts(self, cue):
         pts = None
-        if "pts_time" in vars(cue.command) and cue.command.pts_time:
+        if cue.command.hasis("pts_time"):
             pts = self.set_pts(cue)
         return pts
 
@@ -218,7 +220,7 @@ class Scte35Profile:
         """
         validate_cue use the parsing profile to validate a SCTE-35 Cue.
         """
-        pts=None
+        pts = None
         line = None
         cue.decode()
         if cue.command.command_type in self.command_types:
@@ -234,7 +236,7 @@ class Scte35Profile:
         """
         line = None
         if cue.command.out_of_network_indicator:
-            if "break_duration" in vars(cue.command) and cue.command.break_duration:
+            if cue.command.hasis("break_duration"):
                 duration = cue.command.break_duration
                 line = f"#EXT-X-CUE-OUT:{duration}\n"
                 return line
@@ -243,23 +245,33 @@ class Scte35Profile:
             return line
         return line
 
+    def _is_dscptr_cueout(self,dscptr,line):
+        if dscptr.segmentation_type_id in self.starts:
+            self.seg_type = dscptr.segmentation_type_id + 1
+            if dscptr.hasis("segmentation_duration"):
+                duration = dscptr.segmentation_duration
+                line = f"#EXT-X-CUE-OUT:{duration}\n"
+        return line
+
+    def _is_dscptr_cuein(self,dscptr,line):
+        if dscptr.segmentation_type_id == self.seg_type:
+            line = "#EXT-X-CUE-IN\n"
+            self.seg_type = None
+        return line
+
+    def _validate_dscptr(self, dscptr,line):
+        if dscptr.tag in self.descriptor_tags:
+            line = self._is_dscptr_cueout(dscptr,line)
+            line = self._is_dscptr_cuein(dscptr,line)
+        return line
+
     def validate_time_signal(self, cue):
         """
         validate_time_signal is named appropriately.
         """
         line = None
         for dscptr in cue.descriptors:
-            if dscptr.tag in self.descriptor_tags:
-                if dscptr.segmentation_type_id in self.starts:
-                    self.seg_type = dscptr.segmentation_type_id + 1
-                    if "segmentation_duration" in vars(dscptr):
-                        duration = dscptr.segmentation_duration
-                        line = f"#EXT-X-CUE-OUT:{duration}\n"
-                        return line
-                if dscptr.segmentation_type_id == self.seg_type:
-                    line = "#EXT-X-CUE-IN\n"
-                    self.seg_type = None
-                    return line
+                line = self._validate_dscptr(dscptr,line)
         return line
 
 
@@ -765,7 +777,7 @@ class CuePuller:
         found in a segment.
         """
         for cue in seg.cues:
-            if "pts" in vars(cue.packet_data) and cue.packet_data.pts:
+            if cue.hasis("packet_data"):
                 self.pts = cue.packet_data.pts
             if cue.encode() != self.last_cue:
                 self.last_cue = cue.encode()
