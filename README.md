@@ -25,11 +25,10 @@ sed -e 's/threefive/threefive3/g'
 # Is threefive3 faster than threefive?
 ###  `threefive` vs. `threefive3`  vs. `threefive3 next release`
 #
-![image](https://github.com/user-attachments/assets/7624c482-2a52-4d2b-83ff-25bac4720a34)
+![image](https://github.com/user-attachments/assets/d197c3b7-add4-42e7-8ba6-6042f1d91648)
 
 
-* The next release of __threefive3 parses 3.7GB of MPEGTS video in just 3.422 seconds. Over 1GB a second.__
-* _testing was done on a beatup chrome book reporting 5GB of RAM running Debian Sid_
+* _testing was done on a beatup chrome book reporting 5GB of RAM running Debian Sid and PyPy 7.3.11_
   
 ---
 
