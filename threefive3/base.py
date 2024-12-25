@@ -105,6 +105,14 @@ class SCTE35Base:
             return True
         return False
 
+    def hasis(self,what):
+        """
+        hasis  obj "has" a what and what "is" returned.
+        """
+        if self.has(what):
+            return vars(self)[what]
+        return None
+
     @staticmethod
     def idxsplit(gonzo, sep):
         """
