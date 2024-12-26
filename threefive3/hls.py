@@ -178,12 +178,13 @@ class Scte35Profile:
         new_that = []
         for s in that:
             new_s = self._hex_or_int(s)
-            new_list.append(new_s)
+            new_that.append(new_s)
         return new_that
 
     def _hexed(self, this, that):
         if this in ["command_types", "descriptor_tags", "starts"]:
             return self._new_that(that)
+        return that
 
     @staticmethod
     def _this_that_none(this, that):
@@ -699,7 +700,7 @@ class CuePuller:
 
     def scte35(self, line):
         """
-        threefive3 processes SCTE-35 related tags.
+        superkabuki processes SCTE-35 related tags.
         """
         scte35_map = {
             "#EXT-X-DATERANGE": self.chk_x_daterange,
@@ -1087,7 +1088,7 @@ def cli():
 
         #!/usr/bin/env python3
 
-        from threefive3.hls import cli
+        from superkabuki.hls import cli
 
         if __name__ == "__main__":
             cli()
@@ -1111,7 +1112,7 @@ def cli():
 
 helpme = """
 
-[ threefive3 hls ]
+[ superkabuki hls ]
 
 [ Help ]
 
@@ -1121,11 +1122,11 @@ helpme = """
 
 [ Input ]
 
-    threefive3 hls takes an m3u8 URI as input.
+    superkabuki hls takes an m3u8 URI as input.
 
     M3U8 formats supported:
         * master  ( When a master.m3u8 used,
-                   threefive3 hls parses the first rendition it finds )
+                   superkabuki hls parses the first rendition it finds )
         * rendition
     Segment types supported:
     * AAC
@@ -1148,7 +1149,7 @@ helpme = """
 
 [ SCTE-35 ]
 
-    threefive3 hls displays SCTE-35 Embedded Cues as well as SCTE-35 HLS Tags.
+    superkabuki hls displays SCTE-35 Embedded Cues as well as SCTE-35 HLS Tags.
 
     Supported SCTE-35:
     * All Commands, Descriptors, and UPIDS
@@ -1168,7 +1169,7 @@ helpme = """
 
     running the command:
 
-            threefive3 hls profile
+            superkabuki hls profile
 
     will generate a default profile and write a file named hls.profile
     in the current working directory.
@@ -1195,7 +1196,7 @@ helpme = """
     * descriptor_tags:   set which Splice Descriptor Tags to parse.
     * starts:            set which Segmentation Type IDs to use to start breaks.
 
-    Edit the file as needed and then run threefive3 hls.
+    Edit the file as needed and then run superkabuki hls.
 
 [ Profile Formatting Rules ]
 
@@ -1222,7 +1223,7 @@ helpme = """
 
 [ Cool Features ]
 
-    * threefive3 hls can resume when started in the middle of an ad break.
+    * superkabuki hls can resume when started in the middle of an ad break.
 
             2023-10-13T05:59:50.24Z Resuming Ad Break
             2023-10-13T05:59:50.34Z Setting Break Timer to 17.733
@@ -1244,11 +1245,11 @@ helpme = """
 
 [ Example Usage ]
 
-	* Show this help:   threefive3 hls help
+	* Show this help:   superkabuki hls help
 
-	* Generate a new hls.profile:   threefive3 hls profile
+	* Generate a new hls.profile:   superkabuki hls profile
 
-	* parse an m3u8:    threefive3 hls  https://example.com/out/master.m3u8
+	* parse an m3u8:    superkabuki hls  https://example.com/out/master.m3u8
 
 """
 
