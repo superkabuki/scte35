@@ -9,9 +9,9 @@ import datetime
 import sys
 import time
 from collections import deque
+from m3ufu import M3uFu, TagParser, HEADER_TAGS
 from .segment import Segment
 from .cue import Cue
-from m3ufu import M3uFu, TagParser, HEADER_TAGS
 from .new_reader import reader
 
 REV = "\033[7m"
@@ -99,7 +99,7 @@ class Scte35Profile:
         """
         write_profile writes sc.profile for editing.
         """
-        with open(pro_file, "w", "utf-8") as pro_f:
+        with open(pro_file, "w", encoding="utf-8") as pro_f:
             for que, vee in vars(self).items():
                 line = f"{que} = "
                 line = self._list_in_profile(vee, line)
@@ -107,10 +107,13 @@ class Scte35Profile:
                 line = line.strip(",")
                 pro_f.write(line + "\n")
 
+    def _vee_to_hex(self, vee):
+        return [hex(eye) for eye in vee]
+
     def _vee_is_list(self, vee):
         if isinstance(vee, list):
             if isinstance(vee[0], int):
-                vee = [hex(eye) for eye in vee]
+                vee = self._vee_to_hex(vee)
         return vee
 
     def show_profile(self, headline):
@@ -123,22 +126,31 @@ class Scte35Profile:
             print(f"\t{que} = {vee}\n")
             time.sleep(0.3)
 
+    def _is_comment(self, line, this):
+        if line[0] == "#" or line[:2] == "//":
+            this = None
+        return this
+
+    def _split_this_that(self, line):
+        this, that = None, None
+        if line:
+            this, that = line.split("=", 1)
+            that = list(that.split(","))
+        this = self._is_comment(line, this)
+        return this, that
+
+    @staticmethod
+    def _clean(line):
+        translate_map = {34: 94, 10: 94, 9: 94, 32: 94, 39: 94}
+        # translate " ", "\n", "\t", '"', "'" to ^ and delete.
+        return line.translate(translate_map).replace("^", "")
+
     def clean_n_split(self, line):
         """
         clean_n_split a line.
         """
-        translate_map={34:94,10:94,9:94,32:94,39:94}
-        this, that = None, None
-##        bad = [" ", "\n", "\t", '"', "'"]
-##        for bee in bad:
-##            line = line.replace(bee, "")
-        line=line.translate(translate_map).replace('^','')
-        if line:
-            this, that = line.split("=", 1)
-            that = list(that.split(","))
-        if line.startswith("#") or line.startswith("//"):
-            this = None
-        return this, that
+        line = self._clean(line)
+        return self._split_this_that(line)
 
     def _string2bool(self, this, that):
         if this.startswith("parse") or this.startswith("expand"):
@@ -182,7 +194,7 @@ class Scte35Profile:
         read_profile reads sc.profile
         """
         try:
-            with open(pro_file, "r") as pro_handle:
+            with open(pro_file, "r", encoding="utf-8") as pro_handle:
                 self._parse_profile(pro_handle)
         finally:
             self.show_profile("Profile:")
@@ -230,22 +242,24 @@ class Scte35Profile:
             line = self._chk_time_signal(cue, line)
         return pts, line
 
-    def validate_splice_insert(self, cue):
-        """
-        validate_splice_insert is named appropriately.
-        """
+    def _is_splice_insert_cueout(self, cue):
         line = None
         if cue.command.out_of_network_indicator:
             if cue.command.hasis("break_duration"):
                 duration = cue.command.break_duration
                 line = f"#EXT-X-CUE-OUT:{duration}\n"
-                return line
-        else:
-            line = "#EXT-X-CUE-IN\n"
-            return line
         return line
 
-    def _is_dscptr_cueout(self,dscptr,line):
+    def validate_splice_insert(self, cue):
+        """
+        validate_splice_insert is named appropriately.
+        """
+        line = self._is_splice_insert_cueout(self, cue)
+        if not line:
+            line = "#EXT-X-CUE-IN\n"
+        return line
+
+    def _is_dscptr_cueout(self, dscptr, line):
         if dscptr.segmentation_type_id in self.starts:
             self.seg_type = dscptr.segmentation_type_id + 1
             if dscptr.hasis("segmentation_duration"):
@@ -253,16 +267,16 @@ class Scte35Profile:
                 line = f"#EXT-X-CUE-OUT:{duration}\n"
         return line
 
-    def _is_dscptr_cuein(self,dscptr,line):
+    def _is_dscptr_cuein(self, dscptr, line):
         if dscptr.segmentation_type_id == self.seg_type:
             line = "#EXT-X-CUE-IN\n"
             self.seg_type = None
         return line
 
-    def _validate_dscptr(self, dscptr,line):
+    def _validate_dscptr(self, dscptr, line):
         if dscptr.tag in self.descriptor_tags:
-            line = self._is_dscptr_cueout(dscptr,line)
-            line = self._is_dscptr_cuein(dscptr,line)
+            line = self._is_dscptr_cueout(dscptr, line)
+            line = self._is_dscptr_cuein(dscptr, line)
         return line
 
     def validate_time_signal(self, cue):
@@ -271,7 +285,7 @@ class Scte35Profile:
         """
         line = None
         for dscptr in cue.descriptors:
-                line = self._validate_dscptr(dscptr,line)
+            line = self._validate_dscptr(dscptr, line)
         return line
 
 
@@ -314,7 +328,7 @@ class SlidingWindow:
         """
         all_panes returns the current window panes joined.
         """
-        return "\n".join(set([a_pane.get() for a_pane in self.panes]))
+        return "\n".join({a_pane.get() for a_pane in self.panes})
 
     def slide_panes(self, a_pane):
         """
@@ -429,7 +443,7 @@ class CuePuller:
         when showcues is started.
         """
         for sidef in [self.sidecar, self.dumpfile, self.flat, self.m3u8]:
-            with open(sidef, "w+") as side_file:  # touch
+            with open(sidef, "w+", encoding="utf-8") as side_file:  # touch
                 pass
 
     def chk_aes(self, line):
@@ -450,7 +464,7 @@ class CuePuller:
         """
         to_sidecar writes (pts,hls tag) pairs to the sidecar file.
         """
-        with open(self.sidecar, "a") as sidecar:
+        with open(self.sidecar, "a", encoding="utf-8") as sidecar:
             sidecar.write(f"{round(pts,6)},{line}\n")
 
     def to_dump(self, pts, line):
@@ -557,11 +571,8 @@ class CuePuller:
         return "## " + line
 
     def show_tags(self, tags):
-        try:
-            for que, vee in tags.items():
-                print(f"{SUB}{que}: {vee}")
-        except:
-            return
+        for que, vee in tags.items():
+            print(f"{SUB}{que}: {vee}")
 
     def _set_break_timer(self, line, cont_tags):
         """
@@ -858,7 +869,10 @@ class CuePuller:
                 self.sleep_duration = round(target_duration * 0.5, 3)
                 print(f"{SUB}{REV} Target Duration {NORM} {target_duration}\n")
 
-    def mk_window_size(self, lines):
+    def _mk_window_size(self,lines):
+        return len([line for line in lines if "#EXTINF:" in line])
+    
+    def chk_window_size(self, lines):
         """
         mk_window_size sets the sliding window size
         for the output to match that off the input and
@@ -866,7 +880,7 @@ class CuePuller:
         for segments.
         """
         if not self.window_size:
-            self.window_size = len([line for line in lines if "#EXTINF:" in line])
+            self.window_size = self._mk_window_size(lines)
             self.sliding_window.size = self.window_size
             print(f"{SUB}{REV} Window Size {NORM} {self.window_size}\n")
 
@@ -972,7 +986,7 @@ class CuePuller:
         with reader(manifest) as m3u8:
             lines = []
             m3u8_lines = self.decode_lines(m3u8.readlines())
-            self.mk_window_size(m3u8_lines)
+            self.chk_window_size(m3u8_lines)
             for line in m3u8_lines:
                 self.chk_endlist(line)
                 if line.startswith("#"):
@@ -998,18 +1012,48 @@ class CuePuller:
             flat.write("#EXT-X-ENDLIST\n")
 
 
+def _chk_help():
+    if "help" in sys.argv:
+        print(helpme)
+        sys.exit()
+
+
+def _chk_profile():
+    if "profile" in sys.argv:
+        scp = Scte35Profile()
+        scp.write_profile("hls.profile")
+        sys.exit()
+
+
 def precheck():
     """
     precheck sys.argv for keywords
     that trigger a sys.exit().
     """
-    if "help" in sys.argv:
-        print(helpme)
-        sys.exit()
-    if "profile" in sys.argv:
-        scp = Scte35Profile()
-        scp.write_profile("hls.profile")
-        sys.exit()
+    _chk_help()
+    _chk_profile()
+
+
+def _segments_to_playlist():
+    fumo = M3uFu()
+    fumo.m3u8 = sys.argv[1]
+    fumo.decode()
+    return [segment for segment in fumo.segments if "#EXT-X-STREAM-INF" in segment.tags]
+
+
+def _mk_playlist(renditions):
+    playlist = False
+    if renditions:
+        playlist = _segments_to_playlist()
+    return playlist
+
+
+def _mk_renditions(arg):
+    return [line for line in arg if b"#EXT-X-STREAM-INF" in line]
+
+
+def _parse_renditions(arg):
+    return _mk_playlist(_mk_renditions(arg))
 
 
 def find_renditions():
@@ -1017,18 +1061,7 @@ def find_renditions():
     find_renditions search master.m3u8 for playable renditions.
     """
     with reader(sys.argv[1]) as arg:
-        renditions = [line for line in arg if b"#EXT-X-STREAM-INF" in line]
-        if renditions:
-            fumo = M3uFu()
-            fumo.m3u8 = sys.argv[1]
-            fumo.decode()
-            playlists = [
-                segment
-                for segment in fumo.segments
-                if "#EXT-X-STREAM-INF" in segment.tags
-            ]
-            return playlists
-    return False
+        return _parse_renditions(arg)
 
 
 def cli():
