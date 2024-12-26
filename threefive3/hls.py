@@ -95,25 +95,36 @@ class Scte35Profile:
             line = f"{line}{vee}"
         return line
 
+    def _mk_profile_line(self,que,vee):
+        line = f"{que} = "
+        line = self._list_in_profile(vee, line)
+        line = self._bool_in_profile(vee, line)
+        line = line.strip(",")
+        return line
+
+    def _write_profile_lines(self,pro_f):
+        for que, vee in vars(self).items():
+            line=self._mk_profile_line(que,vee)
+            pro_f.write(line + "\n")
+
     def write_profile(self, pro_file):
         """
         write_profile writes sc.profile for editing.
         """
         with open(pro_file, "w", encoding="utf-8") as pro_f:
-            for que, vee in vars(self).items():
-                line = f"{que} = "
-                line = self._list_in_profile(vee, line)
-                line = self._bool_in_profile(vee, line)
-                line = line.strip(",")
-                pro_f.write(line + "\n")
+            self._write_profile_lines(pro_f)
 
     def _vee_to_hex(self, vee):
         return [hex(eye) for eye in vee]
 
+    def _vee_is_ints(self,vee):
+        if isinstance(vee[0], int):
+            vee = self._vee_to_hex(vee)
+        return vee
+
     def _vee_is_list(self, vee):
         if isinstance(vee, list):
-            if isinstance(vee[0], int):
-                vee = self._vee_to_hex(vee)
+            vee = self._vee_is_ints(vee)
         return vee
 
     def show_profile(self, headline):
@@ -157,16 +168,22 @@ class Scte35Profile:
             return [False, True][that[0] == "True"]
         return that
 
+    @staticmethod
+    def _hex_or_int(s):
+        if s.lower().startswith("0x"):
+            return int(s, 16)
+        return int(s)
+
+    def _new_that(self, that):
+        new_that = []
+        for s in that:
+            new_s = self._hex_or_int(s)
+            new_list.append(new_s)
+        return new_that
+
     def _hexed(self, this, that):
         if this in ["command_types", "descriptor_tags", "starts"]:
-            new_that = []
-            for s in that:
-                if s.lower().startswith("0x"):
-                    new_that.append(int(s, 16))
-                else:
-                    new_that.append(int(s))
-            return new_that
-        return that
+            return self._new_that(that)
 
     @staticmethod
     def _this_that_none(this, that):
@@ -871,7 +888,7 @@ class CuePuller:
 
     def _mk_window_size(self,lines):
         return len([line for line in lines if "#EXTINF:" in line])
-    
+
     def chk_window_size(self, lines):
         """
         mk_window_size sets the sliding window size
