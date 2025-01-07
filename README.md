@@ -6,9 +6,9 @@
 > and they required writing several hundred lines of code to do anything. I think a library should save you time.
 # Why threefive3, why not just threefive?
 * __Answer #1__  <s>Github F2A'ed out of my account, and I have no idea where I put the recovery codes. I have more than one Internet account, where I am supposed to keep all this data? Should I store in some company's cloud so they can read it or give it away to Eastern European script kiddies? F2A is complete nonsense. It doesn't matter how secure it is, if a security measure prevents me from accessing my account, that's not secure, that's locked out.</s>
-* __Answer #2__     Two repos with the same name, would be confusing.
+* __Answer #2__    <s> Two repos with the same name, would be confusing. </s>
 * __Answer #3__  <s>I wanted to rethink everything. After going through the code, I kept about 75% of it. I completely rewrote the Xml parser,I did a lot of work with the Cue class, HLS, and really tuned up the cli. The cli is amazing and super easy to use.</s>
-*  __Answer #4__  I came up with a really cool name, but it wasn't available on pypi.org for a package name.
+*  __Answer #4__ <s> I came up with a really cool name, but it wasn't available on pypi.org for a package name.</s>
 *  __Answer #5__  <s>Really, I was just getting a little bored with the whole thing, I just wanted to shake things up a little, keep it fun.</s>
 *  __Answer #6__ Have you seen chewy Tic Tacs? They're just mini jelly beans.
 *  __Answer #7__ <s>I'll tell you the truth, everything is a lie.</s>
