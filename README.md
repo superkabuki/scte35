@@ -25,8 +25,8 @@ sed -e 's/threefive/threefive3/g'
 # Is threefive3 faster than threefive?
 ###  `threefive` vs. `threefive3`  vs. `threefive3 next release`
 #
+![image](https://github.com/user-attachments/assets/c3b8f741-01f4-40c1-b980-5c9df40c288c)
 
-![image](https://github.com/user-attachments/assets/2e8a2866-1242-4338-aa93-2258183092a0)
 
 
 
