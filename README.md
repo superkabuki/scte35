@@ -25,7 +25,9 @@ sed -e 's/threefive/threefive3/g'
 # Is threefive3 faster than threefive?
 ###  `threefive` vs. `threefive3`  vs. `threefive3 next release`
 #
-![image](https://github.com/user-attachments/assets/d197c3b7-add4-42e7-8ba6-6042f1d91648)
+
+![image](https://github.com/user-attachments/assets/2e8a2866-1242-4338-aa93-2258183092a0)
+
 
 
 * _testing was done on a beatup chrome book reporting 5GB of RAM running Debian Sid and PyPy 7.3.11_
