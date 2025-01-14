@@ -9,7 +9,7 @@ from new_reader import reader
 from .spare import print2
 
 
-PKT_SIZE=188
+PKT_SIZE = 188
 
 
 class IFramer:
@@ -68,14 +68,14 @@ class IFramer:
         if len(payload) < 14:
             return
         if self._pts_flag(payload):
-            pts = ((payload[9] >> 1) & 7) << 30
+            pts = (payload[9] & 14) << 29
             pts |= payload[10] << 22
             pts |= (payload[11] >> 1) << 15
             pts |= payload[12] << 7
             pts |= payload[13] >> 1
             return pts
 
-    def _afc_approved(self,pkt):
+    def _afc_approved(self, pkt):
         if self._pcr_flag(pkt):
             if self._rai_flag(pkt):
                 return True
@@ -89,7 +89,7 @@ class IFramer:
         """
         if self._nal(pkt):
             return True
-        if  self._afc_flag(pkt):
+        if self._afc_flag(pkt):
             return self._afc_approved(pkt)
         return False
 
@@ -103,10 +103,17 @@ class IFramer:
                     print2(pts)
         return pts
 
+    def ticks(self, pkt):
+        """
+        tcks return pts ticks
+        """
+        if self._pusi_flag(pkt):
+            if self._is_key(pkt):
+                return self._parse_pts(pkt)
+        return None
+
     def parse(self, pkt):
         return self._get_pts(pkt)
-
-
 
     def iter_pkts(self, video, num_pkts=1):
         """
