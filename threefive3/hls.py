@@ -95,16 +95,16 @@ class Scte35Profile:
             line = f"{line}{vee}"
         return line
 
-    def _mk_profile_line(self,que,vee):
+    def _mk_profile_line(self, que, vee):
         line = f"{que} = "
         line = self._list_in_profile(vee, line)
         line = self._bool_in_profile(vee, line)
         line = line.strip(",")
         return line
 
-    def _write_profile_lines(self,pro_f):
+    def _write_profile_lines(self, pro_f):
         for que, vee in vars(self).items():
-            line=self._mk_profile_line(que,vee)
+            line = self._mk_profile_line(que, vee)
             pro_f.write(line + "\n")
 
     def write_profile(self, pro_file):
@@ -117,7 +117,7 @@ class Scte35Profile:
     def _vee_to_hex(self, vee):
         return [hex(eye) for eye in vee]
 
-    def _vee_is_ints(self,vee):
+    def _vee_is_ints(self, vee):
         if isinstance(vee[0], int):
             vee = self._vee_to_hex(vee)
         return vee
@@ -700,7 +700,7 @@ class CuePuller:
 
     def scte35(self, line):
         """
-        superkabuki processes SCTE-35 related tags.
+        threefive3 processes SCTE-35 related tags.
         """
         scte35_map = {
             "#EXT-X-DATERANGE": self.chk_x_daterange,
@@ -887,12 +887,12 @@ class CuePuller:
                 self.sleep_duration = round(target_duration * 0.5, 3)
                 print(f"{SUB}{REV} Target Duration {NORM} {target_duration}\n")
 
-    def _mk_window_size(self,lines):
+    def _mk_window_size(self, lines):
         return len([line for line in lines if "#EXTINF:" in line])
 
     def chk_window_size(self, lines):
         """
-        mk_window_size sets the sliding window size
+        chk_window_size sets the sliding window size
         for the output to match that off the input and
         determine how long to keep media data info
         for segments.
@@ -1088,7 +1088,7 @@ def cli():
 
         #!/usr/bin/env python3
 
-        from superkabuki.hls import cli
+        from threefive3.hls import cli
 
         if __name__ == "__main__":
             cli()
@@ -1112,7 +1112,7 @@ def cli():
 
 helpme = """
 
-[ superkabuki hls ]
+[ threefive3 hls ]
 
 [ Help ]
 
@@ -1122,11 +1122,11 @@ helpme = """
 
 [ Input ]
 
-    superkabuki hls takes an m3u8 URI as input.
+    threefive3 hls takes an m3u8 URI as input.
 
     M3U8 formats supported:
         * master  ( When a master.m3u8 used,
-                   superkabuki hls parses the first rendition it finds )
+                   threefive3 hls parses the first rendition it finds )
         * rendition
     Segment types supported:
     * AAC
@@ -1149,7 +1149,7 @@ helpme = """
 
 [ SCTE-35 ]
 
-    superkabuki hls displays SCTE-35 Embedded Cues as well as SCTE-35 HLS Tags.
+    threefive3 hls displays SCTE-35 Embedded Cues as well as SCTE-35 HLS Tags.
 
     Supported SCTE-35:
     * All Commands, Descriptors, and UPIDS
@@ -1169,7 +1169,7 @@ helpme = """
 
     running the command:
 
-            superkabuki hls profile
+            threefive3 hls profile
 
     will generate a default profile and write a file named hls.profile
     in the current working directory.
@@ -1196,7 +1196,7 @@ helpme = """
     * descriptor_tags:   set which Splice Descriptor Tags to parse.
     * starts:            set which Segmentation Type IDs to use to start breaks.
 
-    Edit the file as needed and then run superkabuki hls.
+    Edit the file as needed and then run threefive3 hls.
 
 [ Profile Formatting Rules ]
 
@@ -1223,7 +1223,7 @@ helpme = """
 
 [ Cool Features ]
 
-    * superkabuki hls can resume when started in the middle of an ad break.
+    * threefive3 hls can resume when started in the middle of an ad break.
 
             2023-10-13T05:59:50.24Z Resuming Ad Break
             2023-10-13T05:59:50.34Z Setting Break Timer to 17.733
@@ -1245,11 +1245,11 @@ helpme = """
 
 [ Example Usage ]
 
-	* Show this help:   superkabuki hls help
+	* Show this help:   threefive3 hls help
 
-	* Generate a new hls.profile:   superkabuki hls profile
+	* Generate a new hls.profile:   threefive3 hls profile
 
-	* parse an m3u8:    superkabuki hls  https://example.com/out/master.m3u8
+	* parse an m3u8:    threefive3 hls  https://example.com/out/master.m3u8
 
 """
 
