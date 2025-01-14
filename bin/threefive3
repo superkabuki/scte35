@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/pypy3
 
 """
 scte35 command line SCTE35 decoder.
@@ -13,7 +13,8 @@ from threefive3.new_reader import reader
 from threefive3 import Cue, Stream, print2, version
 from threefive3.hls import cli as hlscli
 from threefive3.sixfix import sixfix
-from sideways import cli as sidecli
+
+# from sideways import cli as sidecli
 
 REV = "\033[7;1m"
 NORM = "\033[27m\033[0m"
@@ -308,7 +309,7 @@ def to_funk(this):
     """
     to_funk prints a cue in a variety of formats.
     """
-    cue=None
+    cue = None
     if this in ["", b""]:
         return
     try:
@@ -320,6 +321,7 @@ def to_funk(this):
             cue = Cue(this)
         except:
             print2("Bad Data")
+            sys.exit()
     if cue:
         funk()(cue)  #   func works here too.
 
@@ -336,9 +338,11 @@ def chk_stdin(args):
             two = reader(sys.stdin.buffer).read()
             args.append((one + two).decode())  # no rewind on stdin
         else:
-            reader(sys.stdin.buffer).read(187)  # drop first packet
-            Stream(sys.stdin.buffer).decode(func=funk())
-            sys.exit()
+            two = reader(sys.stdin.buffer).read(187)
+            strm = Stream(sys.stdin.buffer)
+            strm._parse(one + two)  # dont drop first packet
+            strm.decode(func=funk())
+            sys.exit()  # I keep forgetting why I do
     return args
 
 
