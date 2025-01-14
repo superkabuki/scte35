@@ -105,7 +105,7 @@ class SCTE35Base:
             return True
         return False
 
-    def hasis(self,what):
+    def hasis(self, what):
         """
         hasis  obj "has" a what and what "is" returned.
         """
