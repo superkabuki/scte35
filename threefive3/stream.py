@@ -670,7 +670,7 @@ class Stream:
         parse program maps for streams
         """
         pay, seclen, program_number = self._mk_pmt_payload(pay, pid)
-         if not program_number:
+        if not program_number:
              return False
         pcr_pid = self._parse_pid(pay[8], pay[9])
         # if program_number not in self.maps.prgm:
