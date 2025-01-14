@@ -663,9 +663,6 @@ class Stream:
         if self._section_incomplete(pay, pid, seclen):
             return False
         program_number = self._parse_program(pay[3], pay[4])
-        ##        if self.the_program:
-        ##            if program_number != self.the_program:
-        ##            return False
         return pay, seclen, program_number
 
     def _parse_pmt(self, pay, pid):
@@ -673,8 +670,8 @@ class Stream:
         parse program maps for streams
         """
         pay, seclen, program_number = self._mk_pmt_payload(pay, pid)
-        #  if not program_number:
-        #     return False
+         if not program_number:
+             return False
         pcr_pid = self._parse_pid(pay[8], pay[9])
         # if program_number not in self.maps.prgm:
         self.maps.prgm[program_number] = ProgramInfo()
