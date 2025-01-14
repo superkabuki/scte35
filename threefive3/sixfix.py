@@ -129,12 +129,10 @@ class SixFix(Stream):
             if self._section_incomplete(pay, pid, seclen):
                 return False
         program_number = self._parse_program(pay[3], pay[4])
-        prgm =program_number
         pcr_pid = self._parse_pid(pay[8], pay[9])
         self.pids.pcr.add(pcr_pid)
         self.maps.pid_prgm[pcr_pid] = program_number
         self.maps.pid_prgm[pid] = program_number
-
         proginfolen = self._parse_length(pay[10], pay[11])
         idx = 12
         n_proginfolen = proginfolen + len(self.CUEI_DESCRIPTOR)
