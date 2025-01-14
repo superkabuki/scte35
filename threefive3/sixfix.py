@@ -45,7 +45,8 @@ class SixFix(Stream):
 
     def __init__(self, tsdata=None):
         super().__init__(tsdata)
-        self.pmt_payload = None
+        self.pmt_payloads = {}
+        self.pid_prog={}
         self.con_pids = set()
         self.out_file = "sixfixed-" + tsdata.rsplit("/")[-1]
         self.in_file = sys.stdin.buffer
@@ -54,8 +55,9 @@ class SixFix(Stream):
         if pid in self.pids.tables:
             self._parse_tables(pkt, pid)
         if pid in self.pids.pmt:
-            if self.pmt_payload:
-                pkt = pkt[:4] + self.pmt_payload
+            prgm=self.pid2prgm(pid)
+            if prgm in self.pmt_payloads:
+                pkt = pkt[:4] + self.pmt_payloads[prgm]
         return pkt
 
     def _parse_pkts(self, out_file):
@@ -77,20 +79,19 @@ class SixFix(Stream):
         changes the stream type to 0x86 and replaces
         the existing PMT as it writes packets to the outfile
         """
-
         # if isinstance(self.out_file, str):
         #    self.out_file = open(self.out_file, "wb")
         with open(self.out_file, "wb") as out_file:
             self._parse_pkts(out_file)
 
-    def _regen_pmt(self, n_seclen, pcr_pid, n_proginfolen, n_info_bites, n_streams):
+    def _regen_pmt(self,prgm, n_seclen, pcr_pid, n_proginfolen, n_info_bites, n_streams):
         nbin = NBin()
         nbin.add_int(2, 8)  # 0x02
         nbin.add_int(1, 1)  # section Syntax indicator
         nbin.add_int(0, 1)  # 0
         nbin.add_int(3, 2)  # reserved
         nbin.add_int(n_seclen, 12)  # section length
-        nbin.add_int(1, 16)  # program number
+        nbin.add_int(prgm, 16)  # program number
         nbin.add_int(3, 2)  # reserved
         nbin.add_int(0, 5)  # version
         nbin.add_int(1, 1)  # current_next_indicator
@@ -109,7 +110,7 @@ class SixFix(Stream):
         pointer_field = b"\x00"
         if pad > 0:
             n_payload = pointer_field + n_payload + (b"\xff" * pad)
-        self.pmt_payload = n_payload
+        self.pmt_payloads[prgm] = n_payload
 
     def _chk_payload(self, pay, pid):
         pay = self._chk_partial(pay, pid, self._PMT_TID)
@@ -128,9 +129,12 @@ class SixFix(Stream):
             if self._section_incomplete(pay, pid, seclen):
                 return False
         program_number = self._parse_program(pay[3], pay[4])
+        prgm =program_number
         pcr_pid = self._parse_pid(pay[8], pay[9])
         self.pids.pcr.add(pcr_pid)
         self.maps.pid_prgm[pcr_pid] = program_number
+        self.maps.pid_prgm[pid] = program_number
+
         proginfolen = self._parse_length(pay[10], pay[11])
         idx = 12
         n_proginfolen = proginfolen + len(self.CUEI_DESCRIPTOR)
@@ -147,7 +151,7 @@ class SixFix(Stream):
         si_len = seclen - 9
         si_len -= proginfolen
         n_streams = self._parse_program_streams(si_len, pay, idx, program_number)
-        self._regen_pmt(n_seclen, pcr_pid, n_proginfolen, n_info_bites, n_streams)
+        self._regen_pmt(program_number,n_seclen, pcr_pid, n_proginfolen, n_info_bites, n_streams)
         return True
 
     def _parse_program_streams(self, si_len, pay, idx, program_number):
