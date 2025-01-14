@@ -1,6 +1,7 @@
 """
 x2c.py  xml to cue conversion
 """
+
 from .segmentation import table20, table22
 from .sxp import SuperXmlParser
 from .upids import upid_map
@@ -12,6 +13,7 @@ def _spliceinfosection(sis):
     and returns a loadable dict
     """
     return sis["attrs"]
+
 
 def _command(results):
     """
@@ -30,27 +32,30 @@ def _command(results):
             return cmap[result["name"]](result)
     return {}
 
+
 def _timesignal_children(ts):
     for child in ts["children"]:
         splice_time = _splicetime(child)
         ts["attrs"].update(splice_time)
     return ts
 
-def _timesignal( ts):
+
+def _timesignal(ts):
     """
     timesignal parses exemel for TimeSignal data
     and creates a loadable dict for the Cue class.
     """
     setme = {
-            "name": "Time Signal",
-            "command_type": 6,
+        "name": "Time Signal",
+        "command_type": 6,
     }
 
     ts["attrs"].update(setme)
     ts = _timesignal_children(ts)
     return ts["attrs"]
 
-def _privatecommand( pc):
+
+def _privatecommand(pc):
     """
     privatecommand parses exemel for PrivateCommand
     data and creates a loadable dict for the Cue class.
@@ -63,6 +68,7 @@ def _privatecommand( pc):
     pc["attrs"].update(setme)
     return pc["attrs"]
 
+
 def _spliceinsert_children(si):
     for child in si["children"]:
         splice_time = _splicetime(child)
@@ -73,7 +79,8 @@ def _spliceinsert_children(si):
         si["attrs"].update(break_duration)
     return si
 
-def _spliceinsert( si):
+
+def _spliceinsert(si):
     """
     spliceinsert parses exemel for SpliceInsert data
     and creates a loadable dict for the Cue class.
@@ -88,7 +95,8 @@ def _spliceinsert( si):
     si = _spliceinsert_children(si)
     return si["attrs"]
 
-def _splicetime( st):
+
+def _splicetime(st):
     """
     splicetime parses xml from a splice command
     to get pts_time, sets time_specified_flag to True
@@ -100,7 +108,8 @@ def _splicetime( st):
         }
     return {}
 
-def _breakduration( bd):
+
+def _breakduration(bd):
     """
     breakduration parses xml for break duration, break_auto_return
     and sets duration_flag to True.
@@ -113,6 +122,7 @@ def _breakduration( bd):
         }
     return {}
 
+
 def _segmentationdescriptor_children(dscptr):
     for child in dscptr["children"]:
         dr = _deliveryrestrictions(child)
@@ -121,6 +131,7 @@ def _segmentationdescriptor_children(dscptr):
         dscptr["attrs"].update(the_upid)
     return dscptr
 
+
 def _segmentation_message(dscptr):
     if dscptr["attrs"]["segmentation_type_id"] in table22:
         dscptr["attrs"]["segmentation_message"] = table22[
@@ -128,7 +139,8 @@ def _segmentation_message(dscptr):
         ]
     return dscptr
 
-def _segmentationdescriptor( dscptr):
+
+def _segmentationdescriptor(dscptr):
     """
     segmentationdescriptor creates a dict to be loaded.
     """
@@ -146,6 +158,7 @@ def _segmentationdescriptor( dscptr):
     dscptr = _segmentation_message(dscptr)
     dscptr = _segmentationdescriptor_children(dscptr)
     return dscptr["attrs"]
+
 
 def _upid(a_upid):
     """
@@ -165,13 +178,15 @@ def _upid(a_upid):
         }
     return {}
 
-def _availdescriptor( dscptr):
+
+def _availdescriptor(dscptr):
     setme = {
         "tag": 0,
         "identifier": "CUEI",
     }
     dscptr["attrs"].update(setme)
     return dscptr["attrs"]
+
 
 ##    def dtmfdescriptor(dscptr)
 ##        """
@@ -184,7 +199,8 @@ def _availdescriptor( dscptr):
 ##        self.load(gonzo["DTMFDescriptor"])
 ##        self.dtmf_count = len(self.dtmf_chars)
 
-def _timedescriptor( dscptr):
+
+def _timedescriptor(dscptr):
     setme = {
         "tag": 3,
         "identifier": "CUEI",
@@ -192,7 +208,8 @@ def _timedescriptor( dscptr):
     dscptr["attrs"].update(setme)
     return dscptr["attrs"]
 
-def _descriptors( results):
+
+def _descriptors(results):
     dmap = {
         "AvailDescriptor": _availdescriptor,
         # "DTMFDescriptor",
@@ -205,7 +222,8 @@ def _descriptors( results):
             out.append(dmap[result["name"]](result))
     return out
 
-def _deliveryrestrictions( dr):
+
+def _deliveryrestrictions(dr):
     if dr["name"] == "DeliveryRestrictions":
         setme = {
             "delivery_not_restricted_flag": False,
@@ -215,12 +233,13 @@ def _deliveryrestrictions( dr):
         return dr["attrs"]
     return {}
 
-def xml2cue( exemel):
+
+def xml2cue(exemel):
     """
     xml2cue returns a base64 string for xmlbin
     and a dict for xml
     """
-    sxp=SuperXmlParser()
+    sxp = SuperXmlParser()
     results = sxp.fu(exemel)
     for result in results:
         if result["name"] == "Binary":
