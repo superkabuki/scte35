@@ -78,9 +78,9 @@ class SixFix(Stream):
         the existing PMT as it writes packets to the outfile
         """
 
-        #if isinstance(self.out_file, str):
+        # if isinstance(self.out_file, str):
         #    self.out_file = open(self.out_file, "wb")
-        with open(self.out_file,"wb") as out_file:
+        with open(self.out_file, "wb") as out_file:
             self._parse_pkts(out_file)
 
     def _regen_pmt(self, n_seclen, pcr_pid, n_proginfolen, n_info_bites, n_streams):
@@ -111,7 +111,7 @@ class SixFix(Stream):
             n_payload = pointer_field + n_payload + (b"\xff" * pad)
         self.pmt_payload = n_payload
 
-    def _chk_payload(self, pay,pid):
+    def _chk_payload(self, pay, pid):
         pay = self._chk_partial(pay, pid, self._PMT_TID)
         if not pay:
             return False
@@ -121,7 +121,7 @@ class SixFix(Stream):
         """
         parse program maps for streams
         """
-        pay = self._chk_payload(pay,pid)
+        pay = self._chk_payload(pay, pid)
         if pay:
             seclen = self._parse_length(pay[1], pay[2])
             n_seclen = seclen + 6
