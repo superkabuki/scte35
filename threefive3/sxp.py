@@ -69,8 +69,8 @@ class SuperXmlParser:
         fu slice up exemel into data chunks.
         """
         results = []
-        splitted = exemel.split("<")
         exemel = exemel.replace("\n", "").strip()
+        splitted = exemel.split("<")
         for sp in splitted:
             if self._vrfy_sp(sp):
                 x = self._assemble(sp)
