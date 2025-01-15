@@ -2,21 +2,6 @@
 
 # Latest version is v3.0.7
 
-# If you're new to SCTE-35 let me explain.
-* SCTE-35 is not intuitive, You won't just "figures it out".
-* The only issues I will address are bugs that I agree are bugs in the threefive3 code.
-* You need to know what you're doing to use this software effectively.
-* I am not going to be your SCTE-35 translator.
-* I will not answer all of your SCTE-35 questions
-* I will solve your SCTE-35 problems.
-* I don't want you to buy me a beer, if you want my experience and knowledge, I do contract work.
-* If you have a project and you do not know SCTE-35 you should probably try to hire me.
-* SCTE-35 code that takes me two weeks to write, will take you six months to a year to write. Seriously.
-  
-#  If you know SCTE-35, you'll love threefive3. 
-* threefive has been used in production by most major broadcasters for over three years.
-* The code is some of the fastest python you'll ever see. It's fast and it is super clean with a cyclomatic complexity of __1.98__
-
 # Why threefive3, why not just threefive?
 * __Answer #1__  <s>Github F2A'ed out of my account, and I have no idea where I put the recovery codes. I have more than one Internet account, where I am supposed to keep all this data? Should I store in some company's cloud so they can read it or give it away to Eastern European script kiddies? F2A is complete nonsense. It doesn't matter how secure it is, if a security measure prevents me from accessing my account, that's not secure, that's locked out.</s>
 * __Answer #2__    <s> Two repos with the same name, would be confusing. </s>
