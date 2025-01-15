@@ -1,9 +1,22 @@
 ![image](https://github.com/user-attachments/assets/adae03a1-9f85-403e-9dce-d134e0996903)
 
+# Latest version is v3.0.7
 
+# If you're new to SCTE-35 let me explain.
+* SCTE-35 is not intuitive, You won't just "figures it out".
+* The only issues I will address are bugs that I agree are bugs in the threefive3 code.
+* You need to know what you're doing to use this software effectively.
+* I am not going to be your SCTE-35 translator.
+* I will not answer all of your SCTE-35 questions
+* I will solve your SCTE-35 problems.
+* I don't want you to buy me a beer, if you want my experience and knowledge, I do contract work.
+* If you have a project and you do not know SCTE-35 you should probably try to hire me.
+* SCTE-35 code that takes me two weeks to write, will take you six months to a year to write. Seriously.
+  
+#  If you know SCTE-35, you'll love threefive3. 
+* threefive has been used in production by most major broadcasters for over three years.
+* The code is some of the fastest python you'll ever see. It's fast and it is super clean with a cyclomatic complexity of __1.98__
 
-> I wrote threefive because I couldn't find any SCTE-35 tools. There were a few libraries, but SCTE-35 wasn't their focus,
-> and they required writing several hundred lines of code to do anything. I think a library should save you time.
 # Why threefive3, why not just threefive?
 * __Answer #1__  <s>Github F2A'ed out of my account, and I have no idea where I put the recovery codes. I have more than one Internet account, where I am supposed to keep all this data? Should I store in some company's cloud so they can read it or give it away to Eastern European script kiddies? F2A is complete nonsense. It doesn't matter how secure it is, if a security measure prevents me from accessing my account, that's not secure, that's locked out.</s>
 * __Answer #2__    <s> Two repos with the same name, would be confusing. </s>
@@ -17,7 +30,7 @@
 # How do I upgrade my code to threefive3?
 > Despite making a lot of changes, the api remains. threefive3 is pretty much a drop in replacement for threefive. I used sed to upgrade my code.
 ```js
-sed -e 's/threefive/threefive3/g'
+sed -i 's/threefive/threefive3/g'
 ```
 > One thing to note, calling load or decode is no longer necessary for the Cue class, however, the methods are there in case you do call them.
 >
@@ -44,9 +57,9 @@ sed -e 's/threefive/threefive3/g'
 
 
 # Issues and Bugs.
-* If you think you have a bug, I'll quickly fix it, but first I need you to prove it to me. Show me the entire error message, the code you're running, and the SCTE-35.
+* If you think you have a bug, I'll quickly fix it, but first I need you to prove it to me. __Show me the entire error message, the code you're running, and if the SCTE-35 is in video, the video stream. You think your stream has proprietary data, we call those UPIDS. I am not going to spend my time trying to guess what your issue might be because you don't trust me. 
 ---
-# Special Requests 
+# Special Requests.
 * If need some work done, this is what I do for a living, you can hire me.
 * If you want to discuss your project open an issue and I'll send you my contact info.
 ---
