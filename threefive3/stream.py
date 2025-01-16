@@ -658,10 +658,10 @@ class Stream:
         program_number = False
         pay = self._chk_partial(pay, pid, self.PMT_TID)
         if not pay:
-            return False
+            return False, False, False
         seclen = self._parse_length(pay[1], pay[2])
         if self._section_incomplete(pay, pid, seclen):
-            return False
+            return False, False, False
         program_number = self._parse_program(pay[3], pay[4])
         return pay, seclen, program_number
 
