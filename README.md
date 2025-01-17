@@ -58,10 +58,15 @@ sed -i 's/threefive/threefive3/g'
 
 
 # Issues and Bugs.
-* If you think you have a bug, I'll quickly fix it, but first I need you to prove it to me. __Show me the entire error message, the code you're running, and if the SCTE-35 is in video, the video stream. You think your stream has proprietary data, we call those UPIDS. I am not going to spend my time trying to guess what your issue might be because you don't trust me. 
+* If you think you have a bug, I'll quickly fix it, but first I need you to prove it to me. __Show me the entire error message, the code you're running, and if the SCTE-35 is in video, the video stream__. You think your stream has proprietary data, we call those UPIDS. I am not going to spend my time trying to guess what your issue might be because you don't trust me.
+* Why am I being such a dick about this? Because nine out of ten issues opened are not bugs at all or even related to threefive3. Most of them are SCTE-35 questions.
+* I am not here to tutor you on SCTE-35. I do not work for SCTE.
 ---
-# Special Requests.
-* If need some work done, this is what I do for a living, you can hire me.
+# Special Request and Contract Work.
+* If need some work done, this is what I do for a living, you can hire me, it's usually a month or two wait before I have an opening.
+* SCTE-35 is not easy to learn, there is over 1000 pages of specs you really need understand.  ISO 13818,RFC 4326, SCTE-30,SCTE-35, SCTE-67, SCTE-104, SCTE-214, HLS, DAS and few others. 
+* It reminds me of DNS or Sendmail configurations. It's a lot turn learn, but once you get things setup, you can pretty forget about it.
+* I know SCTE-35 really really well. It's all I've for the last five years. I'm probably not the best SCTE-35 guy, but I'm the top ten, if not the top five.
 * If you want to discuss your project open an issue and I'll send you my contact info.
 ---
 
