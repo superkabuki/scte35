@@ -1,3 +1,5 @@
+[Cue Class](https://github.com/superkabuki/scte35/cue.md)
+
 ![image](https://github.com/user-attachments/assets/adae03a1-9f85-403e-9dce-d134e0996903)
 
 # Latest version is v3.0.9
