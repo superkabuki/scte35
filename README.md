@@ -1,4 +1,4 @@
-[Cue Class](https://github.com/superkabuki/scte35/cue.md)
+[Cue Class Docs](https://github.com/superkabuki/scte35/cue.md)
 
 ![image](https://github.com/user-attachments/assets/adae03a1-9f85-403e-9dce-d134e0996903)
 
@@ -9,27 +9,16 @@
 * __Answer #1__
     * <s>Github F2A'ed out of my account, and I have no idea where I put the recovery codes. I have more than one Internet account, where I am supposed to keep all this data? Should I store in some company's cloud so they can read it or give it away to Eastern European script kiddies? F2A is complete nonsense. It doesn't matter how secure it is, if a security measure prevents me from accessing my account, that's not secure, that's locked out.</s>
 
-* __Answer #2__
-    * <s> Two repos with the same name, would be confusing. </s>
-
-* __Answer #3__
-    * <s>I wanted to rethink everything. After going through the code, I kept about 75% of it. I completely rewrote the Xml parser,I did a lot of work with the Cue class, HLS, and really tuned up the cli. The cli is amazing and super easy to use.</s>
-
 *  __Answer #4__
     *  <s>I came up with a really cool name, but it wasn't available on pypi.org for a package name.</s>
 
 *  __Answer #5__
     * <s>Really, I was just getting a little bored with the whole thing, I just wanted to shake things up a little, keep it fun.</s>
 
-*  __Answer #6__
-    *  <s>Have you seen chewy Tic Tacs? They're just mini jelly beans.</s>
-
 *  __Answer #7__
     * <s>I'll tell you the truth, everything is a lie.</s>
 
-*  __Answer #8__
-    * Obama is a lizard. I'm not sure about his wife.
-  
+
 # How do I upgrade my code to threefive3?
 > Despite making a lot of changes, the api remains. threefive3 is pretty much a drop in replacement for threefive. I used sed to upgrade my code.
 ```js
@@ -211,7 +200,6 @@ ___
  threefive3 help
 ```
 ## [iodisco.com/scte35](https://iodisco.com/scte35)
-[![image](https://github.com/user-attachments/assets/28d228c5-56e2-41d3-a053-eebd3af958f1)
-![image](https://github.com/user-attachments/assets/07c52c21-e83e-438d-91b0-6f502f0d1d43)](https://iodisco.com/scte35)
-___
+![image](https://github.com/user-attachments/assets/4df85c44-a078-4da0-97e2-5daefcf2509d)
+
 
