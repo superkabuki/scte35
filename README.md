@@ -2,7 +2,16 @@
 
 ![image](https://github.com/user-attachments/assets/adae03a1-9f85-403e-9dce-d134e0996903)
 
-# Latest version is v3.0.9
+# Latest version is v3.0.11
+
+### tunein.com, this one. 
+#### Use like this 
+```js
+threefive3 hls https://example.com/master.m3u8
+or
+threefive3 hls help
+
+```
 
 # Why threefive3, why not just threefive?
 
