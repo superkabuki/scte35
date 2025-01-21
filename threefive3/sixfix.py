@@ -105,11 +105,11 @@ class SixFix(Stream):
         nbin.add_bites(n_streams)
         a_crc = crc32(nbin.bites)
         nbin.add_int(a_crc, 32)
-        n_payload = nbin.bites
-        pad = 187 - (len(n_payload) + 4)
         pointer_field = b"\x00"
+        n_payload = pointer_field +nbin.bites
+        pad =184 -len(n_payload)
         if pad > 0:
-            n_payload = pointer_field + n_payload + (b"\xff" * pad)
+            n_payload = n_payload + (b"\xff" * pad)
         self.pmt_payloads[prgm] = n_payload
 
     def _chk_payload(self, pay, pid):
