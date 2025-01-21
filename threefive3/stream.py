@@ -230,10 +230,11 @@ class Stream:
         """
         while self._tsdata:
             one = self._tsdata.read(1)
-            if one[0] == self.SYNC_BYTE:
-                tail = self._tsdata.read(self.PACKET_SIZE - 1)
-                self._parse(one + tail)
-                return True
+            if one:
+                if one[0]== self.SYNC_BYTE:
+                    tail = self._tsdata.read(self.PACKET_SIZE - 1)
+                    self._parse(one + tail)
+                    return True
         print2("No Stream Found\n")
         return False
 
@@ -448,8 +449,9 @@ class Stream:
             head_size += afl + 1  # +1 for afl byte
         return pkt[head_size:]
 
-    def _pmt_pid(self, pay, pid, outdata):
+    def _pmt_pid(self, pkt, pid, outdata):
         if pid in self.pids.pmt:
+            pay = self._parse_payload(pkt)
             outdata = self._parse_pmt(pay, pid)
         return outdata
 
@@ -473,7 +475,7 @@ class Stream:
         pay = self._parse_payload(pkt)
         if self._same_as_last(pay, pid):
             return outdata
-        outdata = self._pmt_pid(pay, pid, outdata)
+        outdata = self._pmt_pid(pkt, pid, outdata)
         outdata = self._pat_pid(pay, pid, outdata)
         outdata = self._sdt_pid(pay, pid, outdata)
         return outdata
@@ -509,17 +511,11 @@ class Stream:
             self._chk_pts(pkt, pid)
         return self._chk_scte35(pkt, pid)
 
-    ## This is stupid slow. set.union performance sucks.
-    ##    def _pid_has_scte35(self, pid):
-    # 4.47 secs
-    ##        return pid in self.pids.scte35.union(self.pids.maybe_scte35)
     def _pid_has_scte35(self, pid):
-        #  3.37, 3,371, 3.381, 3.400, 3.388, 3.374, 3.384
-        # return (pid in self.pids.scte35 or pid in self.pids.maybe_scte35)
-        # 3.348, 3.324, 3.326,3.325,3.312, 3.300, 3.328   winner
-        return pid in (self.pids.scte35 or self.pids.maybe_scte35)
-        # 4.128 wtf? I tested it seven times 4.135, 4.125, 4.279, 4.128, 4.118,4.138
-        # return pid in (self.pids.scte35|self.pids.maybe_scte35)
+        #  return pid in self.pids.scte35.union(self.pids.maybe_scte35) #   union sucks. 4.47 secs
+        # return (pid in self.pids.scte35 or pid in self.pids.maybe_scte35) # 3.37 secs
+        return pid in (self.pids.scte35 or self.pids.maybe_scte35) # 3.326 secs
+        # return pid in (self.pids.scte35|self.pids.maybe_scte35)  # wtf? 4.128  secs 
 
     def _chk_partial(self, pay, pid, sep):
         if pid in self.maps.partial:
@@ -591,8 +587,8 @@ class Stream:
         return cue
 
     def _mk_pinfo(self, service_id, pn, sn):
-        # if service_id not in self.maps.prgm:
-        self.maps.prgm[service_id] = ProgramInfo()
+        if service_id not in self.maps.prgm:
+            self.maps.prgm[service_id] = ProgramInfo()
         pinfo = self.maps.prgm[service_id]
         pinfo.provider = pn
         pinfo.service = sn
@@ -653,31 +649,28 @@ class Stream:
             idx += chunk_size
         return True
 
-    def _mk_pmt_payload(self, pay, pid):
-        seclen = False
-        program_number = False
-        pay = self._chk_partial(pay, pid, self.PMT_TID)
-        if not pay:
-            return False, False, False
-        seclen = self._parse_length(pay[1], pay[2])
-        if self._section_incomplete(pay, pid, seclen):
-            return False, False, False
-        program_number = self._parse_program(pay[3], pay[4])
-        return pay, seclen, program_number
 
     def _parse_pmt(self, pay, pid):
         """
         parse program maps for streams
         """
-        pay, seclen, program_number = self._mk_pmt_payload(pay, pid)
+        pay = self._chk_partial(pay, pid, self.PMT_TID)
+        if not pay:
+            return False
+        seclen = self._parse_length(pay[1], pay[2])
+        if self._section_incomplete(pay, pid, seclen):
+            return False
+        program_number = self._parse_program(pay[3], pay[4])
         if not program_number:
              return False
         pcr_pid = self._parse_pid(pay[8], pay[9])
-        # if program_number not in self.maps.prgm:
-        self.maps.prgm[program_number] = ProgramInfo()
+        if program_number not in self.maps.prgm:
+            self.maps.prgm[program_number] = ProgramInfo()
         pinfo = self.maps.prgm[program_number]
         pinfo.pid = pid
+        print(pid)
         pinfo.pcr_pid = pcr_pid
+        print(pcr_pid)
         self.pids.pcr.add(pcr_pid)
         self.maps.pid_prgm[pcr_pid] = program_number
         proginfolen = self._parse_length(pay[10], pay[11])
