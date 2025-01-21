@@ -72,9 +72,10 @@ class Cue(SCTE35Base):
             bites = self.mk_info_section(bites)
             bites = self._set_splice_command(bites)
             bites = self._mk_descriptors(bites)
-            crc = hex(int.from_bytes(bites[0:4], byteorder="big"))
-            self.info_section.crc = crc
-            return True
+            if bites:
+                crc = hex(int.from_bytes(bites[0:4], byteorder="big"))
+                self.info_section.crc = crc
+                return True
         return False
 
     def _descriptor_loop(self, loop_bites):
