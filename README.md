@@ -4,30 +4,6 @@
 
 # Latest version is v3.0.11
 
-### tunein.com, this one. 
-#### Use like this 
-```js
-threefive3 hls https://example.com/master.m3u8
-or
-threefive3 hls help
-
-```
-
-# Why threefive3, why not just threefive?
-
-* __Answer #1__
-    * <s>Github F2A'ed out of my account, and I have no idea where I put the recovery codes. I have more than one Internet account, where I am supposed to keep all this data? Should I store in some company's cloud so they can read it or give it away to Eastern European script kiddies? F2A is complete nonsense. It doesn't matter how secure it is, if a security measure prevents me from accessing my account, that's not secure, that's locked out.</s>
-
-*  __Answer #4__
-    *  <s>I came up with a really cool name, but it wasn't available on pypi.org for a package name.</s>
-
-*  __Answer #5__
-    * <s>Really, I was just getting a little bored with the whole thing, I just wanted to shake things up a little, keep it fun.</s>
-
-*  __Answer #7__
-    * <s>I'll tell you the truth, everything is a lie.</s>
-
-
 # How do I upgrade my code to threefive3?
 > Despite making a lot of changes, the api remains. threefive3 is pretty much a drop in replacement for threefive. I used sed to upgrade my code.
 ```js
@@ -37,16 +13,16 @@ sed -i 's/threefive/threefive3/g'
 >
 > 
 # Is threefive3 faster than threefive?
-###  `threefive` vs. `threefive3`  vs. `threefive3 next release`
-#
+#  Yes.
 ![image](https://github.com/user-attachments/assets/c3b8f741-01f4-40c1-b980-5c9df40c288c)
 
-
-
-
-* _testing was done on a beatup chrome book reporting 5GB of RAM running Debian Sid and PyPy 7.3.11_
-  
 ---
+# Super cool new features include:
+* SuperXmlParser, 81 lines of ass-kicking xml parsing.
+* Cli auto-detects inputs even on stdin.
+* The Stream is even faster than before. threefive3 with pypy3 can parse video at over 1GB/sec.
+* The Cue class now automatically calls load() and decode() if you init with data.
+* Built in SCTE-35 HLS support, all HLS SCTE-35 tags are supported. 
 
 # Now with Super Advanced Error Detection and Stuff. 
 * This is super cool. 
@@ -56,19 +32,6 @@ sed -i 's/threefive/threefive3/g'
 * Works in code.
   ![image](https://github.com/user-attachments/assets/50331e73-cd0a-46d6-b265-1b212d625737)
 
-
-# Issues and Bugs.
-* If you think you have a bug, I'll quickly fix it, but first I need you to prove it to me. __Show me the entire error message, the code you're running, and if the SCTE-35 is in video, the video stream__. You think your stream has proprietary data, we call those UPIDS. I am not going to spend my time trying to guess what your issue might be because you don't trust me.
-* Why am I being such a dick about this? Because nine out of ten issues opened are not bugs at all or even related to threefive3. Most of them are SCTE-35 questions.
-* I am not here to tutor you on SCTE-35. I do not work for SCTE.
----
-# Special Request and Contract Work.
-* If need some work done, this is what I do for a living, you can hire me, it's usually a month or two wait before I have an opening.
-* SCTE-35 is not easy to learn, there is over 1000 pages of specs you really need understand.  ISO 13818,RFC 4326, SCTE-30,SCTE-35, SCTE-67, SCTE-104, SCTE-214, HLS, DAS and few others. 
-* It reminds me of DNS or Sendmail configurations. It's a lot turn learn, but once you get things setup, you can pretty forget about it.
-* I know SCTE-35 really really well. It's all I've for the last five years. I'm probably not the best SCTE-35 guy, but I'm the top ten, if not the top five.
-* If you want to discuss your project open an issue and I'll send you my contact info.
----
 
 # `Install`
 * python3 via pip
