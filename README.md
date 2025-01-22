@@ -1,30 +1,38 @@
 [Cue Class Docs](https://github.com/superkabuki/scte35/cue.md)
 
-![image](https://github.com/user-attachments/assets/adae03a1-9f85-403e-9dce-d134e0996903)
 
-# Latest version is v3.0.11
+![image](https://github.com/user-attachments/assets/35111a14-302b-4ae4-8448-c054eca198b7)
 
-# How do I upgrade my code to threefive3?
-> Despite making a lot of changes, the api remains. threefive3 is pretty much a drop in replacement for threefive. I used sed to upgrade my code.
+
+### Q. What is the latest version?
+
+### A.  v3.0.11
+
+### Q. How do I upgrade my code to threefive3?
+
+### A. sed.
 ```js
 sed -i 's/threefive/threefive3/g'
 ```
-> One thing to note, calling load or decode is no longer necessary for the Cue class, however, the methods are there in case you do call them.
->
-> 
-# Is threefive3 faster than threefive?
-#  Yes.
+--- 
+### Q. Is threefive3 faster than threefive?
+
+### A.  Yes.
 ![image](https://github.com/user-attachments/assets/c3b8f741-01f4-40c1-b980-5c9df40c288c)
 
 ---
-# Super cool new features include:
+### Q. Does threefive3 have these super cool new features?
 * SuperXmlParser, 81 lines of ass-kicking xml parsing.
 * Cli auto-detects inputs even on stdin.
 * The Stream is even faster than before. threefive3 with pypy3 can parse video at over 1GB/sec.
 * The Cue class now automatically calls load() and decode() if you init with data.
 * Built in SCTE-35 HLS support, all HLS SCTE-35 tags are supported. 
 
-# Now with Super Advanced Error Detection and Stuff. 
+### A. Yes.
+---
+### Q. Does threefive3 now come with Super Advanced Error Detection? 
+
+### A. Yes.
 * This is super cool. 
 * Does not generate Fatal errors, it won't break your process.
 * Displays what is in error and how to correct it.
@@ -32,6 +40,12 @@ sed -i 's/threefive/threefive3/g'
 * Works in code.
   ![image](https://github.com/user-attachments/assets/50331e73-cd0a-46d6-b265-1b212d625737)
 
+---
+
+### Q. Is it true you just upgraded your mail servers to OpenSmtpd after 20 years of Sendmail?
+
+### A. Yes.
+---
 
 # `Install`
 * python3 via pip
