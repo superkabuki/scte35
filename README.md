@@ -18,7 +18,8 @@ sed -i 's/threefive/threefive3/g'
 ### Q. Is threefive3 faster than threefive?
 
 ### A.  Yes.
-![image](https://github.com/user-attachments/assets/c3b8f741-01f4-40c1-b980-5c9df40c288c)
+![image](https://github.com/user-attachments/assets/2bc29448-3ffc-4a49-b670-226e4e13c4d1)
+
 
 ---
 ### Q. Does threefive3 have these super cool new features?
