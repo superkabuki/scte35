@@ -1,51 +1,34 @@
 [Cue Class Docs](https://github.com/superkabuki/scte35/cue.md)
 
 
-![image](https://github.com/user-attachments/assets/35111a14-302b-4ae4-8448-c054eca198b7)
+# threefive3
 
+#### Q. `What is the latest version?`
 
-### Q. What is the latest version?
+#### A.  `v3.0.11`
 
-### A.  v3.0.11
+#### Q. `How do I upgrade my code to threefive3?`
 
-### Q. How do I upgrade my code to threefive3?
-
-### A. sed.
+#### A. `sed.`
 ```js
 sed -i 's/threefive/threefive3/g'
 ```
 --- 
-### Q. Is threefive3 faster than threefive?
+#### Q. `Is threefive3 faster than threefive?`
 
-### A.  Yes.
-![image](https://github.com/user-attachments/assets/2bc29448-3ffc-4a49-b670-226e4e13c4d1)
-
+#### A.  `Yes.`
 
 ---
-### Q. Does threefive3 have these super cool new features?
-* SuperXmlParser, 81 lines of ass-kicking xml parsing.
-* Cli auto-detects inputs even on stdin.
-* The Stream is even faster than before. threefive3 with pypy3 can parse video at over 1GB/sec.
-* The Cue class now automatically calls load() and decode() if you init with data.
-* Built in SCTE-35 HLS support, all HLS SCTE-35 tags are supported. 
+#### Q. `Does threefive3 have super cool new features?`
 
-### A. Yes.
+#### A. `Yes.`
 ---
-### Q. Does threefive3 now come with Super Advanced Error Detection? 
+#### Q. `Does threefive3 now come with Super Advanced Error Detection?` 
 
-### A. Yes.
-* This is super cool. 
-* Does not generate Fatal errors, it won't break your process.
-* Displays what is in error and how to correct it.
-* Works in the cli
-* Works in code.
+#### A. `Yes.`
+
   ![image](https://github.com/user-attachments/assets/50331e73-cd0a-46d6-b265-1b212d625737)
 
----
-
-### Q. Is it true you just upgraded your mail servers to OpenSmtpd after 20 years of Sendmail?
-
-### A. Yes.
 ---
 
 # `Install`
